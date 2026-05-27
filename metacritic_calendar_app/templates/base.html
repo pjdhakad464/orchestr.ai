@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Release Calendar Scraper{% endblock %}</title>
+    <title>{% block title %}Asana LF Automation Tasks{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -57,18 +57,17 @@
       <div class="suite-navbar-brand">OrchestrAI</div>
       <div class="suite-navbar-links">
         <a href="/" class="suite-navbar-link">Data Ops Validator</a>
-        <a href="/title-lookup/" class="suite-navbar-link">Title URL Lookup</a>
-        <a href="/calendar/" class="suite-navbar-link active">Release Calendar</a>
+        <a href="/calendar/" class="suite-navbar-link active">Asana LF Automation Tasks</a>
         <a href="/imdb/" class="suite-navbar-link">IMDb Lookup</a>
       </div>
     </nav>
     <div class="page-shell">
       <header class="hero">
         <p class="eyebrow">Standalone App</p>
-        <h1>Release Calendar Scraper</h1>
+        <h1>Asana LF Automation Tasks</h1>
         <p class="hero-text">
-          Pull Metacritic calendar rows or Box Office Mojo's domestic release schedule,
-          enrich TV shows with IMDb episode counts, and export spreadsheet-friendly files.
+          Select a day of the week to view and run its scheduled automation tasks,
+          fetch fresh releases, match IMDb IDs, and export reports.
         </p>
       </header>
       <main>{% block content %}{% endblock %}</main>

@@ -234,9 +234,17 @@ class MetacriticCalendarService:
     def _attach_imdb_ids(self, items: list[MetacriticCalendarItem]) -> None:
         lookup_cache: dict[tuple[str, str, str], str] = {}
         for item in items:
+            title_type = ""
             if item.section == "games":
+                title_type = "videoGame"
+            elif item.section == "movies":
+                title_type = "movie"
+            elif item.section == "tv":
+                title_type = "tv"
+
+            if not title_type:
                 continue
-            title_type = "movie" if item.section == "movies" else "tv"
+
             release_year = item.release_date[:4] if re.fullmatch(r"\d{4}-\d{2}-\d{2}", item.release_date) else ""
             cache_key = (item.title.casefold(), title_type, release_year)
             if cache_key not in lookup_cache:

@@ -20,6 +20,7 @@ from metacritic_calendar_app.models import (
     MetacriticTvClassificationSnapshot,
     TvImdbEpisodeCountSnapshot,
 )
+from metacritic_calendar_app.services.billboard import BillboardService, BillboardArtistSnapshot
 from metacritic_calendar_app.services.calendar import MetacriticCalendarError, MetacriticCalendarService
 from metacritic_calendar_app.services.box_office_mojo import BoxOfficeMojoCalendarError, BoxOfficeMojoCalendarService
 from metacritic_calendar_app.services.imdb_episode_counts import (
@@ -39,6 +40,7 @@ calendar_service = MetacriticCalendarService(settings.request_timeout_seconds)
 box_office_mojo_service = BoxOfficeMojoCalendarService(settings.request_timeout_seconds)
 tv_imdb_episode_count_service = TvImdbEpisodeCountService(calendar_service=calendar_service)
 tv_classification_report_service = MetacriticTvClassificationReportService(calendar_service=calendar_service)
+billboard_service = BillboardService(settings.request_timeout_seconds)
 
 CALENDAR_OPTIONS = [
     ("all", "All sections"),
@@ -74,10 +76,14 @@ def build_context(
     box_office_snapshot: BoxOfficeMojoReleaseWindowSnapshot | None = None,
     tv_imdb_snapshot: TvImdbEpisodeCountSnapshot | None = None,
     tv_classification_snapshot: MetacriticTvClassificationSnapshot | None = None,
+    billboard_snapshot: BillboardArtistSnapshot | None = None,
     error_message: str = "",
     box_office_error_message: str = "",
     tv_imdb_error_message: str = "",
     tv_classification_error_message: str = "",
+    billboard_error_message: str = "",
+    selected_day: str = "monday",
+    selected_task: str = "",
     selected_calendar_types: list[str] | None = None,
     selected_calendar_start_date: str | None = None,
     selected_calendar_end_date: str | None = None,
@@ -113,10 +119,14 @@ def build_context(
         "box_office_snapshot": box_office_snapshot,
         "tv_imdb_snapshot": tv_imdb_snapshot,
         "tv_classification_snapshot": tv_classification_snapshot,
+        "billboard_snapshot": billboard_snapshot,
         "error_message": error_message,
         "box_office_error_message": box_office_error_message,
         "tv_imdb_error_message": tv_imdb_error_message,
         "tv_classification_error_message": tv_classification_error_message,
+        "billboard_error_message": billboard_error_message,
+        "selected_day": selected_day,
+        "selected_task": selected_task,
         "selected_calendar_types": selected_types,
         "selected_calendar_type": selected_types[0] if selected_types else "all",
         "selected_calendar_start_date": selected_calendar_start_date or "",
@@ -265,9 +275,148 @@ def tv_classification_snapshot_to_response_payload(snapshot: MetacriticTvClassif
     return payload
 
 
+def store_billboard_snapshot(snapshot: BillboardArtistSnapshot) -> str:
+    export_id = str(uuid.uuid4())
+    snapshot.export_id = export_id
+    cache.set(f"billboard:{export_id}", snapshot)
+    return export_id
+
+
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "index.html", build_context(request))
+
+
+@router.post("/run-task", response_class=HTMLResponse)
+async def run_task(
+    request: Request,
+    day: Annotated[str, Form()] = "monday",
+    task: Annotated[str, Form()] = "",
+    date_window: Annotated[str, Form()] = DEFAULT_TV_IMDB_DATE_WINDOW_KEY,
+    custom_start_date: Annotated[str, Form()] = "",
+    custom_end_date: Annotated[str, Form()] = "",
+) -> HTMLResponse:
+    snapshot = None
+    box_office_snapshot = None
+    tv_imdb_snapshot = None
+    tv_classification_snapshot = None
+    billboard_snapshot = None
+
+    error_message = ""
+    box_office_error_message = ""
+    tv_imdb_error_message = ""
+    tv_classification_error_message = ""
+    billboard_error_message = ""
+
+    try:
+        if task == "monday_billboard":
+            billboard_snapshot = await billboard_service.get_top_artists_snapshot()
+            store_billboard_snapshot(billboard_snapshot)
+        elif task == "monday_review_release":
+            box_office_snapshot = await run_in_threadpool(box_office_mojo_service.fetch_upcoming_12_months_snapshot)
+            store_box_office_snapshot(box_office_snapshot)
+        elif task == "monday_box_office":
+            box_office_snapshot = await run_in_threadpool(box_office_mojo_service.fetch_last_7_days_snapshot)
+            store_box_office_snapshot(box_office_snapshot)
+        elif task in ("monday_tv_metadata", "tuesday_tv_metadata", "wednesday_tv_metadata", "thursday_tv_metadata", "friday_tv_metadata"):
+            tv_imdb_snapshot = await run_in_threadpool(
+                tv_imdb_episode_count_service.fetch_snapshot,
+                date_window,
+                custom_start_date or None,
+                custom_end_date or None,
+            )
+            store_tv_imdb_snapshot(tv_imdb_snapshot)
+        elif task == "tuesday_film_adding":
+            snapshot = await run_in_threadpool(calendar_service.fetch_snapshot, ["movies"])
+            if custom_start_date or custom_end_date:
+                start_date_parsed, end_date_parsed = resolve_calendar_date_range(custom_start_date, custom_end_date)
+                apply_calendar_date_filter(snapshot, start_date_parsed, end_date_parsed)
+            store_snapshot(snapshot)
+        elif task == "wednesday_calendar_scrape":
+            snapshot = await run_in_threadpool(calendar_service.fetch_snapshot, ["tv"])
+            if custom_start_date or custom_end_date:
+                start_date_parsed, end_date_parsed = resolve_calendar_date_range(custom_start_date, custom_end_date)
+                apply_calendar_date_filter(snapshot, start_date_parsed, end_date_parsed)
+            store_snapshot(snapshot)
+        elif task == "thursday_tv_adding":
+            tv_classification_snapshot = await run_in_threadpool(tv_classification_report_service.fetch_snapshot)
+            store_tv_classification_snapshot(tv_classification_snapshot)
+        elif task == "friday_brand_review":
+            snapshot = await run_in_threadpool(calendar_service.fetch_snapshot, ["games"])
+            if custom_start_date or custom_end_date:
+                start_date_parsed, end_date_parsed = resolve_calendar_date_range(custom_start_date, custom_end_date)
+                apply_calendar_date_filter(snapshot, start_date_parsed, end_date_parsed)
+            store_snapshot(snapshot)
+        else:
+            error_message = f"Unknown automation task: {task}"
+    except Exception as exc:
+        import traceback
+        traceback.print_exc()
+        if task == "monday_billboard":
+            billboard_error_message = str(exc)
+        elif task in ("monday_review_release", "monday_box_office"):
+            box_office_error_message = str(exc)
+        elif "tv_metadata" in task:
+            tv_imdb_error_message = str(exc)
+        elif task == "thursday_tv_adding":
+            tv_classification_error_message = str(exc)
+        else:
+            error_message = str(exc)
+
+    return templates.TemplateResponse(
+        request,
+        "index.html",
+        build_context(
+            request,
+            snapshot=snapshot,
+            box_office_snapshot=box_office_snapshot,
+            tv_imdb_snapshot=tv_imdb_snapshot,
+            tv_classification_snapshot=tv_classification_snapshot,
+            billboard_snapshot=billboard_snapshot,
+            error_message=error_message,
+            box_office_error_message=box_office_error_message,
+            tv_imdb_error_message=tv_imdb_error_message,
+            tv_classification_error_message=tv_classification_error_message,
+            billboard_error_message=billboard_error_message,
+            selected_day=day,
+            selected_task=task,
+            selected_tv_imdb_date_window=date_window,
+            selected_tv_imdb_start_date=custom_start_date,
+            selected_tv_imdb_end_date=custom_end_date,
+        ),
+    )
+
+
+@router.get("/billboard/export/{export_id}/csv")
+async def export_billboard_csv(export_id: str):
+    import csv as csv_module
+    snapshot = cache.get(f"billboard:{export_id}")
+    if not isinstance(snapshot, BillboardArtistSnapshot):
+        return HTMLResponse("Export expired. Run the Billboard search again.", status_code=404)
+
+    output = io.StringIO()
+    writer = csv_module.DictWriter(
+        output,
+        fieldnames=["rank", "name", "slug", "gender", "profession", "imdb_id", "wikipedia_url"]
+    )
+    writer.writeheader()
+    for item in snapshot.items:
+        writer.writerow({
+            "rank": item.rank,
+            "name": item.name,
+            "slug": item.slug,
+            "gender": item.gender,
+            "profession": item.profession,
+            "imdb_id": item.imdb_id,
+            "wikipedia_url": item.wikipedia_url
+        })
+    data = output.getvalue().encode("utf-8-sig")
+    filename = f"billboard_artists_{snapshot.generated_at.strftime('%Y%m%d')}.csv"
+    return StreamingResponse(
+        io.BytesIO(data),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.get("/calendar/search", response_class=HTMLResponse)

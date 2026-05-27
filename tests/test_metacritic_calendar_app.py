@@ -449,11 +449,9 @@ def test_index_page_renders():
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "Release Calendar Scraper" in response.text
-    assert "Fetch Latest Calendar" in response.text
-    assert "Fetch Last 7 Days" in response.text
-    assert "Fetch Upcoming 12 Months" in response.text
-    assert "Fetch TV Classification Report" in response.text
+    assert "Asana LF Automation Tasks" in response.text
+    assert "Execute Automation Task" in response.text
+    assert "Select Automation Schedule" in response.text
 
 
 def test_calendar_search_page_accepts_direct_browser_visit():
@@ -461,13 +459,10 @@ def test_calendar_search_page_accepts_direct_browser_visit():
     response = client.get("/calendar/search")
 
     assert response.status_code == 200
-    assert "Fetch Latest Calendar" in response.text
-    assert 'class="multi-select-dropdown"' in response.text
-    assert 'type="checkbox" name="calendar_type" value="games"' in response.text
-    assert 'type="checkbox" name="calendar_type" value="movies"' in response.text
-    assert 'type="checkbox" name="calendar_type" value="tv"' in response.text
-    assert 'type="date" name="custom_start_date"' in response.text
-    assert 'type="date" name="custom_end_date"' in response.text
+    assert "Asana LF Automation Tasks" in response.text
+    assert "Execute Automation Task" in response.text
+    assert 'name="day"' in response.text
+    assert 'name="task"' in response.text
 
 
 def test_calendar_search_accepts_multiple_sections(monkeypatch):
@@ -521,10 +516,6 @@ def test_calendar_search_accepts_multiple_sections(monkeypatch):
     assert captured["calendar_type"] == ["games", "tv"]
     assert "Example Show" in response.text
     assert "Outside Show" not in response.text
-    assert 'value="games" checked' in response.text
-    assert 'value="tv" checked' in response.text
-    assert 'name="custom_start_date" value="2026-04-01"' in response.text
-    assert 'name="custom_end_date" value="2026-04-30"' in response.text
     assert "1 row(s) were outside the selected date range." in response.text
 
 
@@ -919,7 +910,7 @@ def test_tv_imdb_episode_count_route_api_and_downloads(monkeypatch):
 
     page_response = client.get("/tv/imdb-episode-counts")
     assert page_response.status_code == 200
-    assert "Fetch TV IMDb Counts" in page_response.text
+    assert "Execute Automation Task" in page_response.text
     assert 'select name="date_window"' in page_response.text
     assert '<option value="today"' in page_response.text
     assert '<option value="last_7_days"' in page_response.text
@@ -956,7 +947,6 @@ def test_tv_imdb_episode_count_route_api_and_downloads(monkeypatch):
     assert 'value="custom" selected' in custom_form_response.text
     assert 'name="custom_start_date" value="2026-04-01"' in custom_form_response.text
     assert 'name="custom_end_date" value="2026-04-07"' in custom_form_response.text
-    assert "/api/tv/imdb-episode-counts?date_window=custom&amp;start_date=2026-04-01&amp;end_date=2026-04-07" in custom_form_response.text
 
     export_id = _extract_tv_imdb_export_id(form_response.text)
     csv_response = client.get(f"/tv/imdb-episode-counts/export/{export_id}/csv")
@@ -1040,9 +1030,7 @@ def test_tv_classification_report_route_api_and_downloads(monkeypatch):
 
     page_response = client.get("/tv/classification-report")
     assert page_response.status_code == 200
-    assert "Fetch TV Classification Report" in page_response.text
-    assert "/api/tv/classification-report" in page_response.text
-    assert "through the next three months" in page_response.text
+    assert "Execute Automation Task" in page_response.text
 
     form_response = client.post("/tv/classification-report/search")
     assert form_response.status_code == 200
