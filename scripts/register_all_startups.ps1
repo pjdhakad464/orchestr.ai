@@ -19,9 +19,7 @@ $services = @(
     @{ Name = "Validator Engine"; Port = 8000; App = "app.main:app"; LogPrefix = "app.8000"; TaskName = "Playground Validator Engine" },
     @{ Name = "Title URL Lookup App"; Port = 8001; App = "title_url_lookup_app.main:app"; LogPrefix = "title_url_lookup_app.8001"; TaskName = "Playground Title URL Lookup App" },
     @{ Name = "Metacritic Calendar App"; Port = 8002; App = "metacritic_calendar_app.main:app"; LogPrefix = "metacritic_calendar_app.8002"; TaskName = "Playground Metacritic Calendar App" },
-    @{ Name = "IMDb Lookup App"; Port = 8003; App = "imdb_lookup_app.main:app"; LogPrefix = "imdb_lookup_app.8003"; TaskName = "Playground IMDb Lookup App" },
-    @{ Name = "Instagram Comment News Filter"; Port = 8004; App = "instagram_comment_news_filter.main:app"; LogPrefix = "instagram_comment_news_filter.8004"; TaskName = "Playground Instagram Comment News Filter" },
-    @{ Name = "Meta Instagram Comment Analyzer"; Port = 8010; App = "meta_instagram_comment_analyzer.main:app"; LogPrefix = "meta_instagram_comment_analyzer.8010"; TaskName = "Playground Meta Instagram Comment Analyzer" }
+    @{ Name = "IMDb Lookup App"; Port = 8003; App = "imdb_lookup_app.main:app"; LogPrefix = "imdb_lookup_app.8003"; TaskName = "Playground IMDb Lookup App" }
 )
 
 function Resolve-PythonCommand {

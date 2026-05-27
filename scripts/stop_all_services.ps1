@@ -1,7 +1,7 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$ports = @(8000, 8001, 8002, 8003, 8004, 8010)
+$ports = @(8000, 8001, 8002, 8003)
 
 Write-Host "Stopping all services on ports: $($ports -join ', ')..."
 
