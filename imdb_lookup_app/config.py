@@ -7,10 +7,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_FILE = BASE_DIR / ".env"
 
 
+import os
+
+is_vercel = os.environ.get("VERCEL") == "1"
+
 class Settings(BaseSettings):
     imdb_lookup_title_basics_url: str = "https://datasets.imdbws.com/title.basics.tsv.gz"
     imdb_lookup_name_basics_url: str = "https://datasets.imdbws.com/name.basics.tsv.gz"
-    imdb_lookup_dataset_dir: str = ""
+    imdb_lookup_dataset_dir: str = "/tmp/imdb_datasets" if is_vercel else ""
     imdb_lookup_refresh_hours: int = 24
     imdb_lookup_export_ttl_seconds: int = 900
 

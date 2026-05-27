@@ -1,6 +1,9 @@
-from __future__ import annotations
-
+import os
+import sys
 from pathlib import Path
+
+# Add root folder to sys.path for Vercel import resolution
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles

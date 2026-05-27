@@ -48,4 +48,5 @@ htmlcov/
 
 # Google credentials
 *.json
+!vercel.json
 !pyproject.toml

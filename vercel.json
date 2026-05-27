@@ -1,0 +1,38 @@
+{
+  "builds": [
+    {
+      "src": "app/main.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "title_url_lookup_app/main.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "metacritic_calendar_app/main.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "imdb_lookup_app/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/title-lookup/(.*)",
+      "dest": "title_url_lookup_app/main.py"
+    },
+    {
+      "src": "/calendar/(.*)",
+      "dest": "metacritic_calendar_app/main.py"
+    },
+    {
+      "src": "/imdb/(.*)",
+      "dest": "imdb_lookup_app/main.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "app/main.py"
+    }
+  ]
+}

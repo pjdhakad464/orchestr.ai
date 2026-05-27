@@ -7,16 +7,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_FILE = BASE_DIR / ".env"
 
 
+import os
+
+is_vercel = os.environ.get("VERCEL") == "1"
+
 class Settings(BaseSettings):
     request_timeout_seconds: int = 12
     cache_ttl_seconds: int = 900
-    validation_history_db: str = ""
-    validation_output_dir: str = ""
+    validation_history_db: str = "/tmp/validation_history.sqlite3" if is_vercel else ""
+    validation_output_dir: str = "/tmp/validated_runs" if is_vercel else ""
     validation_history_limit: int = 10
     google_service_account_file: str = ""
     google_drive_folder_id: str = ""
     wikimedia_contact: str = "local-app"
-    wikipedia_cache_dir: str = ""
+    wikipedia_cache_dir: str = "/tmp/wikipedia_cache" if is_vercel else ""
     wikipedia_refresh_hours: int = 24
     tmdb_api_key: str = ""
     tmdb_read_access_token: str = ""
