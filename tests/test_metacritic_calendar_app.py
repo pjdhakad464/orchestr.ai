@@ -450,8 +450,8 @@ def test_index_page_renders():
 
     assert response.status_code == 200
     assert "Asana LF Automation Tasks" in response.text
-    assert "Execute Automation Task" in response.text
-    assert "Select Automation Schedule" in response.text
+    assert "1. Billboard Top Artists Brand Discovery" in response.text
+    assert "4. TV Season & Episode Metadata Adding" in response.text
 
 
 def test_calendar_search_page_accepts_direct_browser_visit():
@@ -460,8 +460,6 @@ def test_calendar_search_page_accepts_direct_browser_visit():
 
     assert response.status_code == 200
     assert "Asana LF Automation Tasks" in response.text
-    assert "Execute Automation Task" in response.text
-    assert 'name="day"' in response.text
     assert 'name="task"' in response.text
 
 
@@ -910,7 +908,7 @@ def test_tv_imdb_episode_count_route_api_and_downloads(monkeypatch):
 
     page_response = client.get("/tv/imdb-episode-counts")
     assert page_response.status_code == 200
-    assert "Execute Automation Task" in page_response.text
+    assert "Asana LF Automation Tasks" in page_response.text
     assert 'select name="date_window"' in page_response.text
     assert '<option value="today"' in page_response.text
     assert '<option value="last_7_days"' in page_response.text
@@ -1030,7 +1028,7 @@ def test_tv_classification_report_route_api_and_downloads(monkeypatch):
 
     page_response = client.get("/tv/classification-report")
     assert page_response.status_code == 200
-    assert "Execute Automation Task" in page_response.text
+    assert "Asana LF Automation Tasks" in page_response.text
 
     form_response = client.post("/tv/classification-report/search")
     assert form_response.status_code == 200

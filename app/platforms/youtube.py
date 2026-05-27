@@ -13,11 +13,11 @@ class YouTubeAdapter(BasePlatformAdapter):
             return None
         if segments[0].startswith("@"):
             return segments[0]
-        if segments[0] in {"channel", "user", "c"} and len(segments) > 1:
+        if segments[0] in {"channel", "user"} and len(segments) > 1:
             return segments[1]
         return None
 
     def is_valid_profile_url(self, url: str) -> bool:
         path = urlparse(url).path.lower()
-        valid_prefixes = ("/@", "/channel/", "/user/", "/c/")
+        valid_prefixes = ("/@", "/channel/", "/user/")
         return path.startswith(valid_prefixes)

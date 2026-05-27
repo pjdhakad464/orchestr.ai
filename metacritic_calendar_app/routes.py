@@ -290,7 +290,6 @@ async def index(request: Request) -> HTMLResponse:
 @router.post("/run-task", response_class=HTMLResponse)
 async def run_task(
     request: Request,
-    day: Annotated[str, Form()] = "monday",
     task: Annotated[str, Form()] = "",
     date_window: Annotated[str, Form()] = DEFAULT_TV_IMDB_DATE_WINDOW_KEY,
     custom_start_date: Annotated[str, Form()] = "",
@@ -309,16 +308,16 @@ async def run_task(
     billboard_error_message = ""
 
     try:
-        if task == "monday_billboard":
+        if task == "billboard":
             billboard_snapshot = await billboard_service.get_top_artists_snapshot()
             store_billboard_snapshot(billboard_snapshot)
-        elif task == "monday_review_release":
+        elif task == "review_release":
             box_office_snapshot = await run_in_threadpool(box_office_mojo_service.fetch_upcoming_12_months_snapshot)
             store_box_office_snapshot(box_office_snapshot)
-        elif task == "monday_box_office":
+        elif task == "box_office":
             box_office_snapshot = await run_in_threadpool(box_office_mojo_service.fetch_last_7_days_snapshot)
             store_box_office_snapshot(box_office_snapshot)
-        elif task in ("monday_tv_metadata", "tuesday_tv_metadata", "wednesday_tv_metadata", "thursday_tv_metadata", "friday_tv_metadata"):
+        elif task == "tv_metadata":
             tv_imdb_snapshot = await run_in_threadpool(
                 tv_imdb_episode_count_service.fetch_snapshot,
                 date_window,
@@ -326,22 +325,22 @@ async def run_task(
                 custom_end_date or None,
             )
             store_tv_imdb_snapshot(tv_imdb_snapshot)
-        elif task == "tuesday_film_adding":
+        elif task == "film_adding":
             snapshot = await run_in_threadpool(calendar_service.fetch_snapshot, ["movies"])
             if custom_start_date or custom_end_date:
                 start_date_parsed, end_date_parsed = resolve_calendar_date_range(custom_start_date, custom_end_date)
                 apply_calendar_date_filter(snapshot, start_date_parsed, end_date_parsed)
             store_snapshot(snapshot)
-        elif task == "wednesday_calendar_scrape":
+        elif task == "calendar_scrape":
             snapshot = await run_in_threadpool(calendar_service.fetch_snapshot, ["tv"])
             if custom_start_date or custom_end_date:
                 start_date_parsed, end_date_parsed = resolve_calendar_date_range(custom_start_date, custom_end_date)
                 apply_calendar_date_filter(snapshot, start_date_parsed, end_date_parsed)
             store_snapshot(snapshot)
-        elif task == "thursday_tv_adding":
+        elif task == "tv_adding":
             tv_classification_snapshot = await run_in_threadpool(tv_classification_report_service.fetch_snapshot)
             store_tv_classification_snapshot(tv_classification_snapshot)
-        elif task == "friday_brand_review":
+        elif task == "brand_review":
             snapshot = await run_in_threadpool(calendar_service.fetch_snapshot, ["games"])
             if custom_start_date or custom_end_date:
                 start_date_parsed, end_date_parsed = resolve_calendar_date_range(custom_start_date, custom_end_date)
@@ -352,13 +351,13 @@ async def run_task(
     except Exception as exc:
         import traceback
         traceback.print_exc()
-        if task == "monday_billboard":
+        if task == "billboard":
             billboard_error_message = str(exc)
-        elif task in ("monday_review_release", "monday_box_office"):
+        elif task in ("review_release", "box_office"):
             box_office_error_message = str(exc)
-        elif "tv_metadata" in task:
+        elif task == "tv_metadata":
             tv_imdb_error_message = str(exc)
-        elif task == "thursday_tv_adding":
+        elif task == "tv_adding":
             tv_classification_error_message = str(exc)
         else:
             error_message = str(exc)
@@ -378,7 +377,6 @@ async def run_task(
             tv_imdb_error_message=tv_imdb_error_message,
             tv_classification_error_message=tv_classification_error_message,
             billboard_error_message=billboard_error_message,
-            selected_day=day,
             selected_task=task,
             selected_tv_imdb_date_window=date_window,
             selected_tv_imdb_start_date=custom_start_date,
@@ -432,6 +430,13 @@ async def search_calendar(
     custom_end_date: Annotated[str, Form()] = "",
 ) -> HTMLResponse:
     selected_calendar_types = calendar_type or DEFAULT_CALENDAR_TYPES
+    task_map = {
+        "movies": "film_adding",
+        "tv": "calendar_scrape",
+        "games": "brand_review",
+    }
+    primary_type = selected_calendar_types[0] if selected_calendar_types else "tv"
+    task = task_map.get(primary_type, "calendar_scrape")
     try:
         start_date, end_date = resolve_calendar_date_range(custom_start_date, custom_end_date)
         snapshot = await run_in_threadpool(calendar_service.fetch_snapshot, selected_calendar_types)
@@ -443,6 +448,7 @@ async def search_calendar(
             build_context(
                 request,
                 error_message=str(exc),
+                selected_task=task,
                 selected_calendar_types=selected_calendar_types,
                 selected_calendar_start_date=custom_start_date,
                 selected_calendar_end_date=custom_end_date,
@@ -456,6 +462,7 @@ async def search_calendar(
         build_context(
             request,
             snapshot=snapshot,
+            selected_task=task,
             selected_calendar_types=selected_calendar_types,
             selected_calendar_start_date=custom_start_date,
             selected_calendar_end_date=custom_end_date,
@@ -471,14 +478,14 @@ async def search_box_office_mojo_last_7_days(request: Request) -> HTMLResponse:
         return templates.TemplateResponse(
             request,
             "index.html",
-            build_context(request, box_office_error_message=str(exc)),
+            build_context(request, box_office_error_message=str(exc), selected_task="box_office"),
         )
 
     store_box_office_snapshot(snapshot)
     return templates.TemplateResponse(
         request,
         "index.html",
-        build_context(request, box_office_snapshot=snapshot),
+        build_context(request, box_office_snapshot=snapshot, selected_task="box_office"),
     )
 
 
@@ -490,14 +497,14 @@ async def search_box_office_mojo_upcoming_12_months(request: Request) -> HTMLRes
         return templates.TemplateResponse(
             request,
             "index.html",
-            build_context(request, box_office_error_message=str(exc)),
+            build_context(request, box_office_error_message=str(exc), selected_task="review_release"),
         )
 
     store_box_office_snapshot(snapshot)
     return templates.TemplateResponse(
         request,
         "index.html",
-        build_context(request, box_office_snapshot=snapshot),
+        build_context(request, box_office_snapshot=snapshot, selected_task="review_release"),
     )
 
 
@@ -519,14 +526,14 @@ async def search_tv_classification_report(request: Request) -> HTMLResponse:
         return templates.TemplateResponse(
             request,
             "index.html",
-            build_context(request, tv_classification_error_message=str(exc)),
+            build_context(request, tv_classification_error_message=str(exc), selected_task="tv_adding"),
         )
 
     store_tv_classification_snapshot(snapshot)
     return templates.TemplateResponse(
         request,
         "index.html",
-        build_context(request, tv_classification_snapshot=snapshot),
+        build_context(request, tv_classification_snapshot=snapshot, selected_task="tv_adding"),
     )
 
 
@@ -554,6 +561,7 @@ async def search_tv_imdb_episode_counts(
                 selected_tv_imdb_date_window=date_window,
                 selected_tv_imdb_start_date=custom_start_date,
                 selected_tv_imdb_end_date=custom_end_date,
+                selected_task="tv_metadata",
             ),
         )
 
@@ -561,7 +569,7 @@ async def search_tv_imdb_episode_counts(
     return templates.TemplateResponse(
         request,
         "index.html",
-        build_context(request, tv_imdb_snapshot=snapshot),
+        build_context(request, tv_imdb_snapshot=snapshot, selected_task="tv_metadata"),
     )
 
 

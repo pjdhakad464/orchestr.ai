@@ -296,12 +296,22 @@ class ImdbEpisodeCountService:
 
     def _ensure_episode_counts_index(self) -> Path:
         dataset_dir = self._imdb_dataset_dir()
+        db_path = dataset_dir / IMDB_EPISODE_COUNTS_INDEX_FILENAME
+
+        import os
+        if os.environ.get("VERCEL") == "1":
+            if db_path.exists():
+                return db_path
+            raise ImdbEpisodeCountError(
+                "IMDb episode counts dataset is not available on Vercel deployment due to bundle size constraints. "
+                "Please run this task in a local environment."
+            )
+
         dataset_dir.mkdir(parents=True, exist_ok=True)
         episode_path = self._ensure_dataset_file(
             self._episode_dataset_source(),
             dataset_dir / IMDB_TITLE_EPISODE_FILENAME,
         )
-        db_path = dataset_dir / IMDB_EPISODE_COUNTS_INDEX_FILENAME
 
         with IMDB_EPISODE_COUNTS_LOCK:
             if self._index_is_current(db_path, episode_path):

@@ -2,50 +2,71 @@
 
 {% block content %}
 <style>
-  .day-selector-grid {
+  .task-accordion {
     display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
   }
-  .day-tab {
-    flex: 1;
-    min-width: 120px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 14px;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: #475569;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .day-tab:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-    color: #0f172a;
-  }
-  .day-tab.active {
-    background: #e0e7ff;
-    border-color: #6366f1;
-    color: #4f46e5;
-    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1), 0 2px 4px -1px rgba(99, 102, 241, 0.06);
-  }
-  .day-tab input {
-    display: none;
-  }
-  .task-form-panel {
+  .task-card {
     background: #ffffff;
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 32px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+  .task-card:hover {
+    border-color: #cbd5e1;
+  }
+  .task-header {
+    background: #f8fafc;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+  }
+  .task-header:hover {
+    background: #f1f5f9;
+  }
+  .panel-header-active {
+    background: #e0e7ff !important;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+  }
+  .task-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .task-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0f172a;
+  }
+  .task-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+  .toggle-icon {
+    font-size: 1.25rem;
+    color: #94a3b8;
+    transition: transform 0.2s ease;
+  }
+  .panel-header-active .toggle-icon {
+    transform: rotate(180deg);
+    color: #4f46e5;
+  }
+  .task-panel-content {
+    padding: 24px;
+    background: #ffffff;
+    border-top: 1px solid #f1f5f9;
   }
   .form-row {
     margin-bottom: 20px;
+    max-width: 600px;
   }
   .form-row label {
     display: block;
@@ -103,586 +124,863 @@
   .submit-btn:hover {
     background: #4338ca;
   }
+  .results-wrapper {
+    margin-top: 24px;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 24px;
+  }
 </style>
 
-<section class="panel">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Task Scheduler Dashboard</p>
-      <h2>Select Automation Schedule</h2>
-    </div>
-    <p class="meta">Choose a day and trigger the automated pipeline tasks configured for that weekday.</p>
-  </div>
-
-  <form method="post" action="/calendar/run-task" class="task-form-panel" id="task-form">
-    <!-- Day Selection -->
-    <div class="day-selector-grid">
-      {% for day_val in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] %}
-      <label class="day-tab {% if day_val == selected_day %}active{% endif %}" data-day="{{ day_val }}">
-        <input type="radio" name="day" value="{{ day_val }}" {% if day_val == selected_day %}checked{% endif %} onchange="updateTasks()" />
-        {{ day_val | title }}
-      </label>
-      {% endfor %}
-    </div>
-
-    <!-- Task Selection Dropdown -->
-    <div class="form-row">
-      <label for="task-select">Automated Task</label>
-      <select name="task" id="task-select" onchange="updateInputVisibility()">
-        <!-- Filled dynamically by JavaScript -->
-      </select>
-    </div>
-
-    <!-- TV Episode Count Options (Conditional) -->
-    <div id="tv-window-container" style="display: none;" class="form-row">
-      <label for="date-window">Date Window Segment</label>
-      <select name="date_window" id="date-window">
-        {% for value, label in tv_imdb_date_window_options %}
-        <option value="{{ value }}" {% if value == selected_tv_imdb_date_window %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <!-- Date Range Option (Conditional) -->
-    <div id="date-range-container" style="display: none;" class="form-row">
-      <label>Custom Date Filter (Optional)</label>
-      <div class="date-input-grid" style="display: flex; gap: 12px;">
-        <label style="flex: 1;">
-          <span style="font-size: 0.8rem; color: #64748b;">Start Date</span>
-          <input type="date" name="custom_start_date" value="{{ selected_tv_imdb_start_date }}" />
-        </label>
-        <label style="flex: 1;">
-          <span style="font-size: 0.8rem; color: #64748b;">End Date</span>
-          <input type="date" name="custom_end_date" value="{{ selected_tv_imdb_end_date }}" />
-        </label>
+<div class="task-accordion">
+  <!-- 1. Billboard Top Artists -->
+  <div class="task-card">
+    <div class="task-header" id="billboard-header" onclick="togglePanel('billboard')">
+      <div class="task-title-group">
+        <span class="task-title">1. Billboard Top Artists Brand Discovery</span>
+        <span class="task-desc">Pull the Artist 100 chart and resolve genders, professions, IMDb ids, and Wikipedia links.</span>
       </div>
+      <span class="toggle-icon">▼</span>
     </div>
+    <div class="task-panel-content" id="billboard-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="billboard" />
+        <button type="submit" class="submit-btn">Run Billboard Scraper</button>
+      </form>
+      
+      {% if billboard_error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>Scrape Error</strong>
+        <p>{{ billboard_error_message }}</p>
+      </div>
+      {% endif %}
 
-    <button type="submit" class="submit-btn">Execute Automation Task</button>
-  </form>
+      {% if billboard_snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Billboard Artist 100</p>
+            <h2>{{ billboard_snapshot.items | length }} artists resolved</h2>
+          </div>
+          <p class="meta">Generated {{ billboard_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        
+        {% if billboard_snapshot.export_id %}
+        <div class="export-bar">
+          <p class="meta">Download the resolved list of Billboard artists with resolved metadata details.</p>
+          <a class="export-link" href="/calendar/billboard/export/{{ billboard_snapshot.export_id }}/csv">Download CSV</a>
+        </div>
+        {% endif %}
 
-  {% if error_message %}
-  <div class="error-panel">
-    <strong>Task Execution Error</strong>
-    <p>{{ error_message }}</p>
-  </div>
-  {% endif %}
-  {% if billboard_error_message %}
-  <div class="error-panel">
-    <strong>Billboard Scrape Error</strong>
-    <p>{{ billboard_error_message }}</p>
-  </div>
-  {% endif %}
-  {% if box_office_error_message %}
-  <div class="error-panel">
-    <strong>Box Office Mojo Error</strong>
-    <p>{{ box_office_error_message }}</p>
-  </div>
-  {% endif %}
-  {% if tv_imdb_error_message %}
-  <div class="error-panel">
-    <strong>TV IMDb Counts Error</strong>
-    <p>{{ tv_imdb_error_message }}</p>
-  </div>
-  {% endif %}
-  {% if tv_classification_error_message %}
-  <div class="error-panel">
-    <strong>TV Classification Report Error</strong>
-    <p>{{ tv_classification_error_message }}</p>
-  </div>
-  {% endif %}
-</section>
-
-<!-- ================= RESULTS RENDERERS ================= -->
-
-<!-- 1. Billboard Top Artists Results -->
-{% if billboard_snapshot %}
-<section class="panel">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Billboard Artist 100 Results</p>
-      <h2>{{ billboard_snapshot.items | length }} artists resolved</h2>
-    </div>
-    <p class="meta">
-      Generated {{ billboard_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
-    </p>
-  </div>
-
-  {% if billboard_snapshot.notes %}
-  <div class="note-strip">
-    {% for note in billboard_snapshot.notes %}
-    <p>{{ note }}</p>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  {% if billboard_snapshot.export_id %}
-  <div class="export-bar">
-    <p class="meta">resolved list of Billboard artists with genders, professions, IMDb ids, and Wikipedia URLs.</p>
-    <div class="export-actions">
-      <a class="export-link" href="/calendar/billboard/export/{{ billboard_snapshot.export_id }}/csv">Download CSV</a>
-    </div>
-  </div>
-  {% endif %}
-
-  <div class="table-shell">
-    <table class="results-table">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Artist Name</th>
-          <th>Gender</th>
-          <th>Profession(s)</th>
-          <th>IMDb ID</th>
-          <th>Wikipedia Link</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in billboard_snapshot.items %}
-        <tr>
-          <td>{{ item.rank }}</td>
-          <td>
-            {% if item.slug %}
-            <a href="https://www.billboard.com/artist/{{ item.slug }}/" target="_blank" rel="noreferrer">{{ item.name }}</a>
-            {% else %}
-            {{ item.name }}
-            {% endif %}
-          </td>
-          <td>
-            <span class="badge {% if item.gender.lower() == 'male' %}badge-male{% elif item.gender.lower() == 'female' %}badge-female{% else %}badge-neutral{% endif %}">
-              {{ item.gender | title if item.gender else "Unknown" }}
-            </span>
-          </td>
-          <td>{{ item.profession or "-" }}</td>
-          <td>
-            {% if item.imdb_id %}
-            <a href="https://www.imdb.com/name/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
-            {% else %}
-            -
-            {% endif %}
-          </td>
-          <td>
-            {% if item.wikipedia_url %}
-            <a href="{{ item.wikipedia_url }}" target="_blank" rel="noreferrer">Wikipedia Page</a>
-            {% else %}
-            -
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</section>
-{% endif %}
-
-<!-- 2. Box Office Mojo Results -->
-{% if box_office_snapshot %}
-<section class="panel">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Box Office Mojo Results</p>
-      <h2>{{ box_office_snapshot.items | length }} rows</h2>
-    </div>
-    <p class="meta">
-      Report: {{ box_office_snapshot.report_label }} |
-      Window: {{ box_office_snapshot.window_start.isoformat() }} to {{ box_office_snapshot.window_end.isoformat() }} |
-      Generated: {{ box_office_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
-    </p>
-  </div>
-
-  {% if box_office_snapshot.notes %}
-  <div class="note-strip">
-    {% for note in box_office_snapshot.notes %}
-    <p>{{ note }}</p>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  {% if box_office_snapshot.export_id %}
-  <div class="export-bar">
-    <p class="meta">Exports include every visible release detail captured from Box Office Mojo's domestic schedule page for the selected report window.</p>
-    <div class="export-actions">
-      <a class="export-link" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv">Download CSV</a>
-      <a class="export-link secondary" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx">Download Excel</a>
+        <div class="table-shell">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Artist Name</th>
+                <th>Gender</th>
+                <th>Profession(s)</th>
+                <th>IMDb ID</th>
+                <th>Wikipedia Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in billboard_snapshot.items %}
+              <tr>
+                <td>{{ item.rank }}</td>
+                <td>
+                  {% if item.slug %}
+                  <a href="https://www.billboard.com/artist/{{ item.slug }}/" target="_blank" rel="noreferrer">{{ item.name }}</a>
+                  {% else %}
+                  {{ item.name }}
+                  {% endif %}
+                </td>
+                <td>
+                  <span class="badge {% if item.gender.lower() == 'male' %}badge-male{% elif item.gender.lower() == 'female' %}badge-female{% else %}badge-neutral{% endif %}">
+                    {{ item.gender | title if item.gender else "Unknown" }}
+                  </span>
+                </td>
+                <td>{{ item.profession or "-" }}</td>
+                <td>
+                  {% if item.imdb_id %}
+                  <a href="https://www.imdb.com/name/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+                <td>
+                  {% if item.wikipedia_url %}
+                  <a href="{{ item.wikipedia_url }}" target="_blank" rel="noreferrer">Wikipedia Page</a>
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
-  {% endif %}
 
-  <div class="table-shell">
-    <table class="results-table">
-      <thead>
-        <tr>
-          <th>Release Date</th>
-          <th>Title</th>
-          <th>Release Notes</th>
-          <th>Genres</th>
-          <th>Cast</th>
-          <th>Runtime</th>
-          <th>Distributor</th>
-          <th>Scale</th>
-          <th>IMDb ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in box_office_snapshot.items %}
-        <tr>
-          <td>{{ item.release_date }}</td>
-          <td>
-            {% if item.url %}
-            <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-            {% else %}
-            {{ item.title }}
-            {% endif %}
-          </td>
-          <td>{{ item.release_notes or "-" }}</td>
-          <td>{{ item.genres or "-" }}</td>
-          <td>{{ item.cast or "-" }}</td>
-          <td>{{ item.runtime or "-" }}</td>
-          <td>{{ item.distributor or "-" }}</td>
-          <td>{{ item.scale or "-" }}</td>
-          <td>
-            {% if item.imdb_id %}
-            <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
-            {% else %}
-            -
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</section>
-{% endif %}
-
-<!-- 3. TV IMDb Results (Episode Counts) -->
-{% if tv_imdb_snapshot %}
-<section class="panel">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">TV IMDb Results</p>
-      <h2>{{ tv_imdb_snapshot.items | length }} rows</h2>
+  <!-- 2. Review Domestic Release (Mojo Upcoming 12m) -->
+  <div class="task-card">
+    <div class="task-header" id="review_release-header" onclick="togglePanel('review_release')">
+      <div class="task-title-group">
+        <span class="task-title">2. Brand Maintenance // Review Domestic Release</span>
+        <span class="task-desc">Pull Box Office Mojo's upcoming 12 months movie releases schedule.</span>
+      </div>
+      <span class="toggle-icon">▼</span>
     </div>
-    <p class="meta">
-      Window: {{ tv_imdb_snapshot.window_start.isoformat() if tv_imdb_snapshot.window_start else "-" }}
-      to {{ tv_imdb_snapshot.window_end.isoformat() if tv_imdb_snapshot.window_end else "-" }} |
-      Segment: {{ tv_imdb_snapshot.date_window_label }} |
-      Generated: {{ tv_imdb_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
-    </p>
-  </div>
+    <div class="task-panel-content" id="review_release-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="review_release" />
+        <button type="submit" class="submit-btn">Run Upcoming 12m Fetch</button>
+      </form>
+      
+      {% if selected_task == 'review_release' and box_office_error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>Box Office Mojo Error</strong>
+        <p>{{ box_office_error_message }}</p>
+      </div>
+      {% endif %}
 
-  {% if tv_imdb_snapshot.notes %}
-  <div class="note-strip">
-    {% for note in tv_imdb_snapshot.notes %}
-    <p>{{ note }}</p>
-    {% endfor %}
-  </div>
-  {% endif %}
+      {% if selected_task == 'review_release' and box_office_snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Upcoming Domestic Movie Releases ({{ box_office_snapshot.report_label }})</p>
+            <h2>{{ box_office_snapshot.items | length }} movies found</h2>
+          </div>
+          <p class="meta">Generated: {{ box_office_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        {% if box_office_snapshot.notes %}
+        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          {% for note in box_office_snapshot.notes %}
+          <p>{{ note }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
 
-  {% if tv_imdb_snapshot.export_id %}
-  <div class="export-bar">
-    <p class="meta">CSV export includes only the selected TV season and episode count columns.</p>
-    <div class="export-actions">
-      <a class="export-link" href="/calendar/tv/imdb-episode-counts/export/{{ tv_imdb_snapshot.export_id }}/csv">Download CSV</a>
-    </div>
-  </div>
-  {% endif %}
+        {% if box_office_snapshot.export_id %}
+        <div class="export-bar">
+          <p class="meta">Export full visible release details captured for the selected report window.</p>
+          <div class="export-actions">
+            <a class="export-link" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv">Download CSV</a>
+            <a class="export-link secondary" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx">Download Excel</a>
+          </div>
+        </div>
+        {% endif %}
 
-  <div class="table-shell">
-    <table class="results-table tv-imdb-table">
-      <thead>
-        <tr>
-          <th>release_date</th>
-          <th>title</th>
-          <th>network_distributor</th>
-          <th>imdb_id</th>
-          <th>latest_season_number</th>
-          <th>latest_season_episode_count</th>
-          <th>latest_season_start_date</th>
-          <th>latest_season_end_date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in tv_imdb_snapshot.items %}
-        <tr>
-          <td>{{ item.release_date or "-" }}</td>
-          <td>
-            {% if item.metacritic_url %}
-            <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-            {% else %}
-            {{ item.title }}
-            {% endif %}
-          </td>
-          <td>{{ item.network_distributor or "-" }}</td>
-          <td>
-            {% if item.imdb_url %}
-            <a href="{{ item.imdb_url }}" target="_blank" rel="noreferrer">{{ item.imdb_id or "-" }}</a>
-            {% else %}
-            {{ item.imdb_id or "-" }}
-            {% endif %}
-          </td>
-          <td>{{ item.latest_season_number if item.latest_season_number is not none else "-" }}</td>
-          <td>{{ item.latest_season_episode_count if item.latest_season_episode_count is not none else "-" }}</td>
-          <td>{{ item.latest_season_start_date or "-" }}</td>
-          <td>{{ item.latest_season_end_date or "-" }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</section>
-{% endif %}
-
-<!-- 4. TV Classification Report Results -->
-{% if tv_classification_snapshot %}
-<section class="panel">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">TV Classification Results</p>
-      <h2>{{ tv_classification_snapshot.items | length }} rows</h2>
-    </div>
-    <p class="meta">
-      Window:
-      {{ tv_classification_snapshot.window_start.isoformat() if tv_classification_snapshot.window_start else "-" }}
-      to {{ tv_classification_snapshot.window_end.isoformat() if tv_classification_snapshot.window_end else "-" }} |
-      Generated: {{ tv_classification_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
-    </p>
-  </div>
-
-  {% if tv_classification_snapshot.notes %}
-  <div class="note-strip">
-    {% for note in tv_classification_snapshot.notes %}
-    <p>{{ note }}</p>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  {% if tv_classification_snapshot.export_id %}
-  <div class="export-bar">
-    <p class="meta">Exports use YYYY-MM-DD release dates and include movies, series, mini-series, and other rows.</p>
-    <div class="export-actions">
-      <a class="export-link" href="/calendar/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/csv">Download CSV</a>
-      <a class="export-link secondary" href="/calendar/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/xlsx">Download Excel</a>
+        <div class="table-shell">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Release Date</th>
+                <th>Title</th>
+                <th>Release Notes</th>
+                <th>Genres</th>
+                <th>Cast</th>
+                <th>Runtime</th>
+                <th>Distributor</th>
+                <th>Scale</th>
+                <th>IMDb ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in box_office_snapshot.items %}
+              <tr>
+                <td>{{ item.release_date }}</td>
+                <td>
+                  {% if item.url %}
+                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  {% else %}
+                  {{ item.title }}
+                  {% endif %}
+                </td>
+                <td>{{ item.release_notes or "-" }}</td>
+                <td>{{ item.genres or "-" }}</td>
+                <td>{{ item.cast or "-" }}</td>
+                <td>{{ item.runtime or "-" }}</td>
+                <td>{{ item.distributor or "-" }}</td>
+                <td>{{ item.scale or "-" }}</td>
+                <td>
+                  {% if item.imdb_id %}
+                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
-  {% endif %}
 
-  <div class="table-shell">
-    <table class="results-table tv-classification-table">
-      <thead>
-        <tr>
-          <th>Release Date</th>
-          <th>Title</th>
-          <th>IMDb ttcode</th>
-          <th>Network</th>
-          <th>Daypart</th>
-          <th>Program Type</th>
-          <th>Language Type</th>
-          <th>Genre 1</th>
-          <th>Genre 2</th>
-          <th>Genre 3</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in tv_classification_snapshot.items %}
-        <tr>
-          <td>{{ item.release_date or "-" }}</td>
-          <td>
-            {% if item.metacritic_url %}
-            <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-            {% else %}
-            {{ item.title }}
-            {% endif %}
-          </td>
-          <td>{{ item.imdb_ttcode or "-" }}</td>
-          <td>{{ item.network or "-" }}</td>
-          <td>{{ item.daypart or "-" }}</td>
-          <td>{{ item.program_type or "-" }}</td>
-          <td>{{ item.language_type or "-" }}</td>
-          <td>{{ item.genre_1 or "-" }}</td>
-          <td>{{ item.genre_2 or "-" }}</td>
-          <td>{{ item.genre_3 or "-" }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</section>
-{% endif %}
-
-<!-- 5. General Calendar Results (Movies, Series, Video Games) -->
-{% if snapshot %}
-<section class="panel">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Metacritic Calendar Results</p>
-      <h2>{{ snapshot.items | length }} rows</h2>
+  <!-- 3. Box Office Metadata Update (Mojo 7 Days) -->
+  <div class="task-card">
+    <div class="task-header" id="box_office-header" onclick="togglePanel('box_office')">
+      <div class="task-title-group">
+        <span class="task-title">3. Brand Maintenance // Box Office Metadata Update</span>
+        <span class="task-desc">Pull Box Office Mojo's domestic movie releases for the last 7 days.</span>
+      </div>
+      <span class="toggle-icon">▼</span>
     </div>
-    <p class="meta">
-      Calendar: {{ snapshot.calendar_type.replace('_', ' ').title() }} |
-      Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
-    </p>
-  </div>
+    <div class="task-panel-content" id="box_office-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="box_office" />
+        <button type="submit" class="submit-btn">Run Last 7 Days Fetch</button>
+      </form>
+      
+      {% if selected_task == 'box_office' and box_office_error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>Box Office Mojo Error</strong>
+        <p>{{ box_office_error_message }}</p>
+      </div>
+      {% endif %}
 
-  {% if snapshot.notes %}
-  <div class="note-strip">
-    {% for note in snapshot.notes %}
-    <p>{{ note }}</p>
-    {% endfor %}
-  </div>
-  {% endif %}
+      {% if selected_task == 'box_office' and box_office_snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Recent Movie Releases (7 Days) ({{ box_office_snapshot.report_label }})</p>
+            <h2>{{ box_office_snapshot.items | length }} movies found</h2>
+          </div>
+          <p class="meta">Generated: {{ box_office_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        {% if box_office_snapshot.notes %}
+        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          {% for note in box_office_snapshot.notes %}
+          <p>{{ note }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
 
-  {% if snapshot.export_id %}
-  <div class="export-bar">
-    <p class="meta">CSV export includes section, group label, release date, provider/platforms, availability, details, Metascore, and IMDb ID.</p>
-    <div class="export-actions">
-      <a class="export-link" href="/calendar/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+        {% if box_office_snapshot.export_id %}
+        <div class="export-bar">
+          <div class="export-actions">
+            <a class="export-link" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv">Download CSV</a>
+            <a class="export-link secondary" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx">Download Excel</a>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="table-shell">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Release Date</th>
+                <th>Title</th>
+                <th>Release Notes</th>
+                <th>Genres</th>
+                <th>Cast</th>
+                <th>Runtime</th>
+                <th>Distributor</th>
+                <th>Scale</th>
+                <th>IMDb ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in box_office_snapshot.items %}
+              <tr>
+                <td>{{ item.release_date }}</td>
+                <td>
+                  {% if item.url %}
+                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  {% else %}
+                  {{ item.title }}
+                  {% endif %}
+                </td>
+                <td>{{ item.release_notes or "-" }}</td>
+                <td>{{ item.genres or "-" }}</td>
+                <td>{{ item.cast or "-" }}</td>
+                <td>{{ item.runtime or "-" }}</td>
+                <td>{{ item.distributor or "-" }}</td>
+                <td>{{ item.scale or "-" }}</td>
+                <td>
+                  {% if item.imdb_id %}
+                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
-  {% endif %}
 
-  <div class="table-shell">
-    <table class="results-table">
-      <thead>
-        <tr>
-          <th>Section</th>
-          <th>Group</th>
-          <th>Release Date</th>
-          <th>Title</th>
-          <th>Provider / Platform</th>
-          <th>Availability</th>
-          <th>Details</th>
-          <th>Metascore</th>
-          <th>IMDb ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in snapshot.items %}
-        <tr>
-          <td>{{ item.section_label }}</td>
-          <td>{{ item.group_label }}</td>
-          <td>{{ item.release_date or "-" }}</td>
-          <td>
-            {% if item.url %}
-            <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-            {% else %}
-            {{ item.title }}
-            {% endif %}
-          </td>
-          <td>{{ item.provider or "-" }}</td>
-          <td>{{ item.availability or "-" }}</td>
-          <td>{{ item.details or "-" }}</td>
-          <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
-          <td>
-            {% if item.imdb_id %}
-            <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
-            {% else %}
-            -
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <!-- 4. TV Season & Episode Metadata Adding -->
+  <div class="task-card">
+    <div class="task-header" id="tv_metadata-header" onclick="togglePanel('tv_metadata')">
+      <div class="task-title-group">
+        <span class="task-title">4. TV Season & Episode Metadata Adding</span>
+        <span class="task-desc">Pull Metacritic TV releases and fetch IMDb season & episode counts. (Common to all days)</span>
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="task-panel-content" id="tv_metadata-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="tv_metadata" />
+        
+        <div class="form-row">
+          <label for="date-window">Date Window Segment</label>
+          <select name="date_window" id="date-window">
+            {% for value, label in tv_imdb_date_window_options %}
+            <option value="{{ value }}" {% if value == selected_tv_imdb_date_window %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Custom Date Filter (Optional)</label>
+          <div class="date-input-grid" style="display: flex; gap: 12px;">
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">Start Date</span>
+              <input type="date" name="custom_start_date" value="{{ selected_tv_imdb_start_date }}" />
+            </label>
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">End Date</span>
+              <input type="date" name="custom_end_date" value="{{ selected_tv_imdb_end_date }}" />
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Run TV Metadata Scraper</button>
+      </form>
+      
+      {% if tv_imdb_error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>TV IMDb Counts Error</strong>
+        <p>{{ tv_imdb_error_message }}</p>
+      </div>
+      {% endif %}
+
+      {% if tv_imdb_snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">TV IMDb Episode Count Results</p>
+            <h2>{{ tv_imdb_snapshot.items | length }} TV shows resolved</h2>
+          </div>
+          <p class="meta">Segment: {{ tv_imdb_snapshot.date_window_label }} | Generated: {{ tv_imdb_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+
+        {% if tv_imdb_snapshot.export_id %}
+        <div class="export-bar">
+          <a class="export-link" href="/calendar/tv/imdb-episode-counts/export/{{ tv_imdb_snapshot.export_id }}/csv">Download CSV</a>
+        </div>
+        {% endif %}
+
+        <div class="table-shell">
+          <table class="results-table tv-imdb-table">
+            <thead>
+              <tr>
+                <th>release_date</th>
+                <th>title</th>
+                <th>network_distributor</th>
+                <th>imdb_id</th>
+                <th>latest_season_number</th>
+                <th>latest_season_episode_count</th>
+                <th>latest_season_start_date</th>
+                <th>latest_season_end_date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in tv_imdb_snapshot.items %}
+              <tr>
+                <td>{{ item.release_date or "-" }}</td>
+                <td>
+                  {% if item.metacritic_url %}
+                  <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  {% else %}
+                  {{ item.title }}
+                  {% endif %}
+                </td>
+                <td>{{ item.network_distributor or "-" }}</td>
+                <td>
+                  {% if item.imdb_url %}
+                  <a href="{{ item.imdb_url }}" target="_blank" rel="noreferrer">{{ item.imdb_id or "-" }}</a>
+                  {% else %}
+                  {{ item.imdb_id or "-" }}
+                  {% endif %}
+                </td>
+                <td>{{ item.latest_season_number if item.latest_season_number is not none else "-" }}</td>
+                <td>{{ item.latest_season_episode_count if item.latest_season_episode_count is not none else "-" }}</td>
+                <td>{{ item.latest_season_start_date or "-" }}</td>
+                <td>{{ item.latest_season_end_date or "-" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
   </div>
-</section>
-{% endif %}
 
-{% if not billboard_snapshot and not box_office_snapshot and not tv_imdb_snapshot and not tv_classification_snapshot and not snapshot %}
-<section class="panel empty-state">
-  <h2>Select a weekday task and execute to load automation data.</h2>
-  <p>Your results will be populated here as a spreadsheet-friendly table with direct data exports.</p>
-</section>
-{% endif %}
+  <!-- 5. Weekly Film Title Adding (Metacritic Movies) -->
+  <div class="task-card">
+    <div class="task-header" id="film_adding-header" onclick="togglePanel('film_adding')">
+      <div class="task-title-group">
+        <span class="task-title">5. Brand Discovery // Weekly Film Title Adding</span>
+        <span class="task-desc">Scrape major upcoming movie release dates from Metacritic.</span>
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="task-panel-content" id="film_adding-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="film_adding" />
+        
+        <div class="form-row">
+          <label>Custom Date Filter (Optional)</label>
+          <div class="date-input-grid" style="display: flex; gap: 12px;">
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">Start Date</span>
+              <input type="date" name="custom_start_date" value="{{ selected_calendar_start_date }}" />
+            </label>
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">End Date</span>
+              <input type="date" name="custom_end_date" value="{{ selected_calendar_end_date }}" />
+            </label>
+          </div>
+        </div>
 
-<!-- Dynamic day-wise task loading and field visibility script -->
+        <button type="submit" class="submit-btn">Run Movie Calendar Scraper</button>
+      </form>
+      
+      {% if selected_task == 'film_adding' and error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>Calendar Scrape Error</strong>
+        <p>{{ error_message }}</p>
+      </div>
+      {% endif %}
+
+      {% if selected_task == 'film_adding' and snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Movie Calendar Results</p>
+            <h2>{{ snapshot.items | length }} movies found</h2>
+          </div>
+          <p class="meta">Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        {% if snapshot.notes %}
+        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          {% for note in snapshot.notes %}
+          <p>{{ note }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if snapshot.export_id %}
+        <div class="export-bar">
+          <a class="export-link" href="/calendar/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+        </div>
+        {% endif %}
+
+        <div class="table-shell">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Group</th>
+                <th>Release Date</th>
+                <th>Title</th>
+                <th>Provider / Platform</th>
+                <th>Availability</th>
+                <th>Details</th>
+                <th>Metascore</th>
+                <th>IMDb ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in snapshot.items %}
+              <tr>
+                <td>{{ item.section_label }}</td>
+                <td>{{ item.group_label }}</td>
+                <td>{{ item.release_date or "-" }}</td>
+                <td>
+                  {% if item.url %}
+                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  {% else %}
+                  {{ item.title }}
+                  {% endif %}
+                </td>
+                <td>{{ item.provider or "-" }}</td>
+                <td>{{ item.availability or "-" }}</td>
+                <td>{{ item.details or "-" }}</td>
+                <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
+                <td>
+                  {% if item.imdb_id %}
+                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 6. Metacritic Premiere Calendar Title Scrape (Metacritic TV) -->
+  <div class="task-card">
+    <div class="task-header" id="calendar_scrape-header" onclick="togglePanel('calendar_scrape')">
+      <div class="task-title-group">
+        <span class="task-title">6. Brand Discovery // Metacritic Premiere Calendar Title Scrape</span>
+        <span class="task-desc">Scrape major upcoming TV shows premiere dates from Metacritic.</span>
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="task-panel-content" id="calendar_scrape-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="calendar_scrape" />
+        
+        <div class="form-row">
+          <label>Custom Date Filter (Optional)</label>
+          <div class="date-input-grid" style="display: flex; gap: 12px;">
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">Start Date</span>
+              <input type="date" name="custom_start_date" value="{{ selected_calendar_start_date }}" />
+            </label>
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">End Date</span>
+              <input type="date" name="custom_end_date" value="{{ selected_calendar_end_date }}" />
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Run TV Calendar Scraper</button>
+      </form>
+      
+      {% if selected_task == 'calendar_scrape' and error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>Calendar Scrape Error</strong>
+        <p>{{ error_message }}</p>
+      </div>
+      {% endif %}
+
+      {% if selected_task == 'calendar_scrape' and snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">TV Calendar Results</p>
+            <h2>{{ snapshot.items | length }} TV releases found</h2>
+          </div>
+          <p class="meta">Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        {% if snapshot.notes %}
+        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          {% for note in snapshot.notes %}
+          <p>{{ note }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if snapshot.export_id %}
+        <div class="export-bar">
+          <a class="export-link" href="/calendar/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+        </div>
+        {% endif %}
+
+        <div class="table-shell">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Group</th>
+                <th>Release Date</th>
+                <th>Title</th>
+                <th>Provider / Platform</th>
+                <th>Availability</th>
+                <th>Details</th>
+                <th>Metascore</th>
+                <th>IMDb ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in snapshot.items %}
+              <tr>
+                <td>{{ item.section_label }}</td>
+                <td>{{ item.group_label }}</td>
+                <td>{{ item.release_date or "-" }}</td>
+                <td>
+                  {% if item.url %}
+                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  {% else %}
+                  {{ item.title }}
+                  {% endif %}
+                </td>
+                <td>{{ item.provider or "-" }}</td>
+                <td>{{ item.availability or "-" }}</td>
+                <td>{{ item.details or "-" }}</td>
+                <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
+                <td>
+                  {% if item.imdb_id %}
+                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 7. Weekly TV Title Adding (TV Classification Report) -->
+  <div class="task-card">
+    <div class="task-header" id="tv_adding-header" onclick="togglePanel('tv_adding')">
+      <div class="task-title-group">
+        <span class="task-title">7. Brand Discovery // Weekly TV Title Adding</span>
+        <span class="task-desc">Generate TV classification report (daypart, language, genres) from upcoming TV calendar.</span>
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="task-panel-content" id="tv_adding-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="tv_adding" />
+        <button type="submit" class="submit-btn">Run TV Classification</button>
+      </form>
+      
+      {% if tv_classification_error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>TV Classification Error</strong>
+        <p>{{ tv_classification_error_message }}</p>
+      </div>
+      {% endif %}
+
+      {% if tv_classification_snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">TV Classification Results</p>
+            <h2>{{ tv_classification_snapshot.items | length }} rows classified</h2>
+          </div>
+          <p class="meta">Window: {{ tv_classification_snapshot.window_start.isoformat() }} to {{ tv_classification_snapshot.window_end.isoformat() }} | Generated {{ tv_classification_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        {% if tv_classification_snapshot.notes %}
+        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          {% for note in tv_classification_snapshot.notes %}
+          <p>{{ note }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if tv_classification_snapshot.export_id %}
+        <div class="export-bar">
+          <p class="meta">Exports include movies, series, mini-series, and other rows classified in the window.</p>
+          <div class="export-actions">
+            <a class="export-link" href="/calendar/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/csv">Download CSV</a>
+            <a class="export-link secondary" href="/calendar/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/xlsx">Download Excel</a>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="table-shell">
+          <table class="results-table tv-classification-table">
+            <thead>
+              <tr>
+                <th>Release Date</th>
+                <th>Title</th>
+                <th>IMDb ttcode</th>
+                <th>Network</th>
+                <th>Daypart</th>
+                <th>Program Type</th>
+                <th>Language Type</th>
+                <th>Genre 1</th>
+                <th>Genre 2</th>
+                <th>Genre 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in tv_classification_snapshot.items %}
+              <tr>
+                <td>{{ item.release_date or "-" }}</td>
+                <td>
+                  {% if item.metacritic_url %}
+                  <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  {% else %}
+                  {{ item.title }}
+                  {% endif %}
+                </td>
+                <td>{{ item.imdb_ttcode or "-" }}</td>
+                <td>{{ item.network or "-" }}</td>
+                <td>{{ item.daypart or "-" }}</td>
+                <td>{{ item.program_type or "-" }}</td>
+                <td>{{ item.language_type or "-" }}</td>
+                <td>{{ item.genre_1 or "-" }}</td>
+                <td>{{ item.genre_2 or "-" }}</td>
+                <td>{{ item.genre_3 or "-" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 8. Brand Review (Video Game) -->
+  <div class="task-card">
+    <div class="task-header" id="brand_review-header" onclick="togglePanel('brand_review')">
+      <div class="task-title-group">
+        <span class="task-title">8. Brand Discovery // Brand Review (Video Game)</span>
+        <span class="task-desc">Scrape major upcoming video game release dates from Metacritic and resolve IMDb ids.</span>
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="task-panel-content" id="brand_review-content" style="display: none;">
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="brand_review" />
+        
+        <div class="form-row">
+          <label>Custom Date Filter (Optional)</label>
+          <div class="date-input-grid" style="display: flex; gap: 12px;">
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">Start Date</span>
+              <input type="date" name="custom_start_date" value="{{ selected_calendar_start_date }}" />
+            </label>
+            <label style="flex: 1;">
+              <span style="font-size: 0.8rem; color: #64748b;">End Date</span>
+              <input type="date" name="custom_end_date" value="{{ selected_calendar_end_date }}" />
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Run Video Game Scraper</button>
+      </form>
+      
+      {% if selected_task == 'brand_review' and error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>Calendar Scrape Error</strong>
+        <p>{{ error_message }}</p>
+      </div>
+      {% endif %}
+
+      {% if selected_task == 'brand_review' and snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Video Game Calendar Results</p>
+            <h2>{{ snapshot.items | length }} video games found</h2>
+          </div>
+          <p class="meta">Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        {% if snapshot.notes %}
+        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          {% for note in snapshot.notes %}
+          <p>{{ note }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if snapshot.export_id %}
+        <div class="export-bar">
+          <a class="export-link" href="/calendar/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+        </div>
+        {% endif %}
+
+        <div class="table-shell">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Group</th>
+                <th>Release Date</th>
+                <th>Title</th>
+                <th>Provider / Platform</th>
+                <th>Availability</th>
+                <th>Details</th>
+                <th>Metascore</th>
+                <th>IMDb ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in snapshot.items %}
+              <tr>
+                <td>{{ item.section_label }}</td>
+                <td>{{ item.group_label }}</td>
+                <td>{{ item.release_date or "-" }}</td>
+                <td>
+                  {% if item.url %}
+                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+                  {% else %}
+                  {{ item.title }}
+                  {% endif %}
+                </td>
+                <td>{{ item.provider or "-" }}</td>
+                <td>{{ item.availability or "-" }}</td>
+                <td>{{ item.details or "-" }}</td>
+                <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
+                <td>
+                  {% if item.imdb_id %}
+                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                  {% else %}
+                  -
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
 <script>
-  const tasksByDay = {
-    monday: [
-      { id: "monday_billboard", name: "1. Billboard Top Artists Brand Discovery", needsDates: false, needsTvWindow: false },
-      { id: "monday_review_release", name: "2. Brand Maintenance // Review Domestic Release", needsDates: false, needsTvWindow: false },
-      { id: "monday_box_office", name: "3. Brand Maintenance // Box Office Metadata Update", needsDates: false, needsTvWindow: false },
-      { id: "monday_tv_metadata", name: "4. TV Season & Episode Metadata Adding", needsDates: false, needsTvWindow: true }
-    ],
-    tuesday: [
-      { id: "tuesday_film_adding", name: "1. Brand Discovery // Weekly Film Title Adding", needsDates: true, needsTvWindow: false },
-      { id: "tuesday_tv_metadata", name: "2. TV Season & Episode Metadata Adding", needsDates: false, needsTvWindow: true }
-    ],
-    wednesday: [
-      { id: "wednesday_calendar_scrape", name: "1. Brand Discovery // Metacritic Premiere Calendar Title Scrape", needsDates: true, needsTvWindow: false },
-      { id: "wednesday_tv_metadata", name: "2. TV Season & Episode Metadata Adding", needsDates: false, needsTvWindow: true }
-    ],
-    thursday: [
-      { id: "thursday_tv_adding", name: "1. Brand Discovery // Weekly TV Title Adding", needsDates: false, needsTvWindow: false },
-      { id: "thursday_tv_metadata", name: "2. TV Season & Episode Metadata Adding", needsDates: false, needsTvWindow: true }
-    ],
-    friday: [
-      { id: "friday_brand_review", name: "1. Brand Discovery // Brand Review (Video Game)", needsDates: true, needsTvWindow: false },
-      { id: "friday_tv_metadata", name: "2. TV Season & Episode Metadata Adding", needsDates: false, needsTvWindow: true }
-    ]
-  };
-
-  function updateTasks() {
-    const day = document.querySelector('input[name="day"]:checked').value;
-    const taskSelect = document.getElementById("task-select");
-    taskSelect.innerHTML = "";
-    
-    const tasks = tasksByDay[day] || [];
-    tasks.forEach(t => {
-      const option = document.createElement("option");
-      option.value = t.id;
-      option.textContent = t.name;
-      taskSelect.appendChild(option);
-    });
-    
-    // Toggle active state classes on day buttons
-    document.querySelectorAll(".day-tab").forEach(tab => {
-      if (tab.dataset.day === day) {
-        tab.classList.add("active");
+  function togglePanel(panelId) {
+    const panels = document.querySelectorAll('.task-panel-content');
+    panels.forEach(p => {
+      if (p.id === panelId + '-content') {
+        const isHidden = p.style.display === 'none';
+        p.style.display = isHidden ? 'block' : 'none';
+        
+        // Toggle active styling class on header
+        const header = document.getElementById(panelId + '-header');
+        if (isHidden) {
+          header.classList.add('panel-header-active');
+        } else {
+          header.classList.remove('panel-header-active');
+        }
       } else {
-        tab.classList.remove("active");
+        p.style.display = 'none';
+        const otherHeader = p.id.replace('-content', '-header');
+        const headerEl = document.getElementById(otherHeader);
+        if (headerEl) {
+          headerEl.classList.remove('panel-header-active');
+        }
       }
     });
-
-    updateInputVisibility();
   }
 
-  function updateInputVisibility() {
-    const day = document.querySelector('input[name="day"]:checked').value;
-    const taskSelect = document.getElementById("task-select");
-    const taskId = taskSelect.value;
-    
-    const tasks = tasksByDay[day] || [];
-    const currentTask = tasks.find(t => t.id === taskId);
-    
-    const dateRangeCard = document.getElementById("date-range-container");
-    const tvWindowCard = document.getElementById("tv-window-container");
-    
-    if (currentTask) {
-      dateRangeCard.style.display = currentTask.needsDates ? "block" : "none";
-      tvWindowCard.style.display = currentTask.needsTvWindow ? "block" : "none";
-    } else {
-      dateRangeCard.style.display = "none";
-      tvWindowCard.style.display = "none";
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    // Set initial active states from backend model state if returning from task run
-    const initDay = "{{ selected_day | default('monday') }}";
-    const initTask = "{{ selected_task | default('') }}";
-    
-    const dayRadio = document.querySelector(`input[name="day"][value="${initDay}"]`);
-    if (dayRadio) {
-      dayRadio.checked = true;
-    }
-    
-    updateTasks();
-    
-    if (initTask) {
-      document.getElementById("task-select").value = initTask;
-      updateInputVisibility();
+  document.addEventListener('DOMContentLoaded', () => {
+    // If a task was just run, expand it, otherwise default to billboard
+    const activeTask = "{{ selected_task | default('billboard') }}";
+    if (activeTask) {
+      togglePanel(activeTask);
     }
   });
 </script>

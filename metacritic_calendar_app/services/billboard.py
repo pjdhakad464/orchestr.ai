@@ -9,8 +9,11 @@ import httpx
 from pydantic import BaseModel, Field
 from datetime import datetime
 
+import os
+
 # Database path (synchronized via sync_db.py)
-DB_PATH = Path("data/wikipedia_cache/wikipedia_cache.sqlite3")
+is_vercel = os.environ.get("VERCEL") == "1"
+DB_PATH = Path("/tmp/wikipedia_cache.sqlite3") if is_vercel else Path("data/wikipedia_cache/wikipedia_cache.sqlite3")
 
 class BillboardArtistItem(BaseModel):
     rank: int
@@ -28,20 +31,23 @@ class BillboardArtistSnapshot(BaseModel):
     notes: list[str] = Field(default_factory=list)
 
 def ensure_cache_table():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(DB_PATH) as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS billboard_artist_cache (
-                name TEXT PRIMARY KEY,
-                slug TEXT,
-                gender TEXT,
-                profession TEXT,
-                imdb_id TEXT,
-                wikipedia_url TEXT,
-                resolved_at INTEGER
-            )
-        """)
-        conn.commit()
+    try:
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS billboard_artist_cache (
+                    name TEXT PRIMARY KEY,
+                    slug TEXT,
+                    gender TEXT,
+                    profession TEXT,
+                    imdb_id TEXT,
+                    wikipedia_url TEXT,
+                    resolved_at INTEGER
+                )
+            """)
+            conn.commit()
+    except Exception as e:
+        print(f"Failed to ensure cache table: {e}")
 
 def get_cached_artist(name: str) -> dict | None:
     try:

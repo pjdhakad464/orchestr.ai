@@ -315,6 +315,17 @@ class ImdbLookupService:
 
     def _ensure_imdb_dataset_index(self) -> Path:
         dataset_dir = self._imdb_dataset_dir()
+        db_path = dataset_dir / IMDB_INDEX_FILENAME
+
+        import os
+        if os.environ.get("VERCEL") == "1":
+            if db_path.exists():
+                return db_path
+            raise ImdbLookupServiceError(
+                "IMDb dataset index is not available on Vercel deployment due to bundle size constraints. "
+                "Please run this task in a local environment."
+            )
+
         dataset_dir.mkdir(parents=True, exist_ok=True)
 
         title_path = self._ensure_dataset_file(
@@ -325,7 +336,6 @@ class ImdbLookupService:
             settings.imdb_lookup_name_basics_url,
             dataset_dir / IMDB_NAME_BASICS_FILENAME,
         )
-        db_path = dataset_dir / IMDB_INDEX_FILENAME
 
         with IMDB_INDEX_LOCK:
             if self._index_is_current(db_path, [title_path, name_path]):

@@ -492,16 +492,40 @@ def build_sample_rules_json() -> str:
     {
       "sheet": "*",
       "column": "companies",
-      "check": "contains",
-      "value": "Pristine Brand",
+      "check": "contains_any",
+      "values": ["Pristine Brand", "Pristine Talent", "Pristine Film", "Pristine TV"],
       "when": [
         {
           "column": "title",
           "operator": "endswith",
           "value": " - DAR"
+        },
+        {
+          "column": "title_category",
+          "operator": "equals",
+          "value": "TV Shows"
         }
       ],
-      "message": "DAR titles must include Pristine Brand in companies."
+      "message": "DAR TV Shows must include Pristine Brand, Pristine Talent, Pristine Film, or Pristine TV in companies."
+    },
+    {
+      "sheet": "*",
+      "column": "companies",
+      "check": "contains_any",
+      "values": ["Pristine Brand", "Pristine Talent", "Pristine Film"],
+      "when": [
+        {
+          "column": "title",
+          "operator": "endswith",
+          "value": " - DAR"
+        },
+        {
+          "column": "title_category",
+          "operator": "not_equals",
+          "value": "TV Shows"
+        }
+      ],
+      "message": "DAR titles must include Pristine Brand, Pristine Talent, or Pristine Film in companies."
     },
     {
       "sheet": "*",

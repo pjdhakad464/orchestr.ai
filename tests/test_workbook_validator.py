@@ -117,6 +117,7 @@ def test_social_reference_format_rejects_wrong_resource_types():
     assert _matches_social_reference_format("wikidata", "https://www.wikidata.org/wiki/Taylor_Swift")[0] is False
     assert _matches_social_reference_format("imdb", "abc123")[0] is False
     assert _matches_social_reference_format("youtube", "https://www.youtube.com/@OpenAI")[0] is True
+    assert _matches_social_reference_format("youtube", "http://www.youtube.com/@youdotcom")[0] is True
     assert _matches_social_reference_format("imdb", "nm1234567")[0] is True
 
 
@@ -2389,7 +2390,7 @@ def test_validate_workbook_supports_conditional_dar_and_url_rules():
             "Talent Subtype - Athlete\nGender - Man",
             "",
             "",
-            "Pristine Brand",
+            "Pristine Talent",
             "Pristine DAR Brands",
             "",
         ]
@@ -2414,7 +2415,7 @@ def test_validate_workbook_supports_conditional_dar_and_url_rules():
     assert catalog["F4"].fill.fill_type != "solid"
 
 
-def test_tv_show_dar_titles_require_pristine_brand_in_companies():
+def test_tv_show_dar_titles_allow_pristine_tv_in_companies():
     workbook = Workbook()
     sheet = workbook.active
     sheet.title = "Catalog"
@@ -2437,7 +2438,7 @@ def test_tv_show_dar_titles_require_pristine_brand_in_companies():
             "Program Type - Scripted",
             "Drama",
             "Drama",
-            "Pristine Brand",
+            "Pristine TV",
             "Pristine DAR Brands",
             "",
         ]
@@ -2552,9 +2553,40 @@ def test_validate_workbook_allows_blank_talent_genre():
     assert not any(issue.cell == "D2" and issue.rule == "not_blank_and_not_in" for issue in artifact.issues)
 
 
-def test_new_title_category_it_internet_computing():
-    from app.services.workbook_validator import build_sample_rules_json, parse_validation_rules
-    rules = parse_validation_rules(build_sample_rules_json())
-    category_rule = next(rule for rule in rules if rule.column == "title_category" and rule.check == "in")
-    assert "IT, Internet, Computing" in category_rule.values
+def test_it_internet_computing_category_is_allowed():
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Catalog"
+    sheet.append(
+        [
+            "title",
+            "title_category",
+            "title_sub_category",
+            "genre",
+            "primary_genre",
+            "companies",
+            "brand_set",
+            "facebook_page",
+        ]
+    )
+    sheet.append(
+        [
+            "Tech Title",
+            "IT, Internet, Computing",
+            "",
+            "",
+            "",
+            "Company",
+            "Competitive View",
+            "",
+        ]
+    )
 
+    buffer = io.BytesIO()
+    workbook.save(buffer)
+
+    rules = parse_validation_rules(build_sample_rules_json())
+    artifact = validate_workbook(buffer.getvalue(), "combined-it-categories.xlsx", rules)
+
+    title_category_issues = {issue.cell for issue in artifact.issues if issue.rule == "in"}
+    assert "B2" not in title_category_issues
