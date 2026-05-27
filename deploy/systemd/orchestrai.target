@@ -1,0 +1,17 @@
+[Unit]
+Description=OrchestrAI Service Suite
+Requires=orchestrai-validator.service \
+         orchestrai-title-lookup.service \
+         orchestrai-calendar.service \
+         orchestrai-imdb.service \
+         orchestrai-instagram-filter.service \
+         orchestrai-instagram-analyzer.service
+After=orchestrai-validator.service \
+      orchestrai-title-lookup.service \
+      orchestrai-calendar.service \
+      orchestrai-imdb.service \
+      orchestrai-instagram-filter.service \
+      orchestrai-instagram-analyzer.service
+
+[Install]
+WantedBy=multi-user.target

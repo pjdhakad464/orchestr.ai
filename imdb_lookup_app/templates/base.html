@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}IMDb Bulk Lookup{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}?v={{ asset_version | default('1') }}" />
+  </head>
+  <body>
+    <style>
+      .suite-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ffffff;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 12px 24px;
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      }
+      .suite-navbar-brand {
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: #0f172a;
+        letter-spacing: -0.02em;
+      }
+      .suite-navbar-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .suite-navbar-link {
+        color: #475569;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 6px;
+        transition: all 150ms ease;
+      }
+      .suite-navbar-link:hover {
+        color: #0f172a;
+        background: #f1f5f9;
+      }
+      .suite-navbar-link.active {
+        color: #4f46e5;
+        background: #e0e7ff;
+      }
+    </style>
+    <nav class="suite-navbar">
+      <div class="suite-navbar-brand">OrchestrAI</div>
+      <div class="suite-navbar-links">
+        <a href="http://127.0.0.1:8000/" class="suite-navbar-link">Data Ops Validator</a>
+        <a href="http://127.0.0.1:8002/" class="suite-navbar-link">Release Calendar</a>
+        <a href="http://127.0.0.1:8003/" class="suite-navbar-link active">IMDb Lookup</a>
+      </div>
+    </nav>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">IMDb Dataset Utility</p>
+          <h1>Bulk `nm` / `tt` to Name Lookup</h1>
+          <p class="hero-text">
+            Convert IMDb ids into titles or people, reverse-match exact normalized titles and person names back to
+            IMDb ids, and export the result as CSV or Excel.
+          </p>
+        </div>
+        <aside class="hero-card">
+          <p class="card-label">Modes</p>
+          <ul>
+            <li>`auto` tries id, title, and person matching</li>
+            <li>`id_to_name` resolves `tt...` and `nm...` directly</li>
+            <li>`title_to_id` finds matching title ids</li>
+            <li>`person_to_id` finds matching person ids</li>
+          </ul>
+        </aside>
+      </header>
+      <main>{% block content %}{% endblock %}</main>
+    </div>
+  </body>
+</html>

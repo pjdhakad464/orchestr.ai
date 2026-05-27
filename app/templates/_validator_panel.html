@@ -1,0 +1,90 @@
+<section class="panel validator-panel">
+  <div class="validator-heading-row">
+    <div class="validator-heading-copy">
+      <p class="eyebrow">Workbook Sheet Validator</p>
+      <h2 class="validator-heading validator-heading-banner">Data Ops Larger Project Validation</h2>
+    </div>
+  </div>
+  <p class="meta">
+    Need setup help? Open the
+    <a href="/excel-validator/guide">validator how-to guide</a>.
+  </p>
+  <form
+    class="validator-form"
+    id="validator-form"
+    hx-post="/validate-excel"
+    hx-target="#validation-workspace"
+    hx-indicator="#validator-indicator"
+    hx-encoding="multipart/form-data"
+    enctype="multipart/form-data"
+  >
+    <div class="validator-source-grid">
+      <label class="file-picker">
+        <span>Workbook source file (.xlsx or .csv)</span>
+        <input
+          type="file"
+          name="workbook"
+          accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        />
+      </label>
+      <label class="file-picker">
+        <span>Google Sheet URL</span>
+        <input
+          type="url"
+          name="google_sheet_url"
+          placeholder="https://docs.google.com/spreadsheets/d/..."
+        />
+      </label>
+    </div>
+    <p class="meta validator-description">
+      Upload your task workbook or CSV, or paste a Google Sheets link, then download the reviewed Excel file with failed cells highlighted in red plus a Validation Summary sheet.
+    </p>
+    <textarea name="rules_json" style="display:none;">{{ validator_rules_example }}</textarea>
+    <div class="validator-rules-simplified">
+      <div class="validator-sidecar">
+        <label class="file-picker">
+          <span>Run by</span>
+          <input type="text" name="run_by" placeholder="Enter your name or team name" required />
+        </label>
+        <p class="meta">
+          This field is required so every validation run has a clear owner in History.
+        </p>
+        <button type="submit">Validate Workbook</button>
+      </div>
+    </div>
+  </form>
+  <div
+    id="validator-indicator"
+    class="validator-progress indicator htmx-indicator"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-progress="0"
+  >
+    <div class="validator-progress-head">
+      <p class="validator-progress-label">Validation progress</p>
+      <span class="validator-progress-value" data-progress-value>0%</span>
+    </div>
+    <div
+      class="validator-progress-track"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      aria-label="Workbook validation progress"
+      data-progressbar
+    >
+      <span class="validator-progress-fill"></span>
+    </div>
+    <p class="validator-progress-copy" data-progress-copy>Checking workbook rules and preparing the verified file...</p>
+  </div>
+</section>
+
+<section id="validation-workspace" class="workspace">
+  <div class="empty-state">
+    <h2>Ready to validate</h2>
+    <p>
+      Start with one Excel file, CSV file, or Google Sheet and one rules set. The output file keeps your data, marks failed cells, and adds a summary tab you can review with your team.
+    </p>
+  </div>
+</section>

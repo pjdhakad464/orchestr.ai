@@ -1,0 +1,32 @@
+<section class="panel result-panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Disambiguation</p>
+      <h2>Choose the entity you meant</h2>
+    </div>
+    <p class="meta">{{ response.notes[0] if response.notes else "" }}</p>
+  </div>
+
+  <form hx-post="{{ resolve_path or '/resolve-entity' }}" hx-target="#workspace" class="candidate-list">
+    {% for candidate in response.entity_candidates %}
+    <label class="candidate-card">
+      <input type="radio" name="candidate_id" value="{{ candidate.candidate_id }}" {% if loop.first %}checked{% endif %} />
+      <div>
+        <div class="candidate-header">
+          <h3>{{ candidate.label }}</h3>
+          <span class="score">{{ candidate.score }}</span>
+        </div>
+        <p>{{ candidate.description }}</p>
+        <p class="meta">{{ candidate.source_domain }}</p>
+        <ul class="evidence-list">
+          {% for evidence in candidate.evidence[:3] %}
+          <li>{{ evidence.summary }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </label>
+    {% endfor %}
+    <input type="hidden" name="session_id" value="{{ response.session_id or '' }}" />
+    <button type="submit">Check profiles for selected entity</button>
+  </form>
+</section>

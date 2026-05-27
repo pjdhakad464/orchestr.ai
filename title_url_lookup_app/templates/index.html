@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% block title %}Title URL Finder{% endblock %}
+{% block content %}
+  <section class="panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Search</p>
+        <h2>Single Title Lookup</h2>
+      </div>
+      <p class="section-note">The app returns one best URL per site and keeps a few alternates when the match is close.</p>
+    </div>
+    <form class="tool-form" action="/lookup" method="post">
+      <label class="field field-wide">
+        <span>Title</span>
+        <input type="text" name="title" value="{{ title }}" placeholder="Faces of Death" required />
+      </label>
+      <label class="field">
+        <span>Year (optional)</span>
+        <input type="text" name="year" value="{{ year }}" placeholder="2026" inputmode="numeric" />
+      </label>
+      <label class="field">
+        <span>Title type</span>
+        <select name="title_type">
+          {% for value, label in title_type_options %}
+          <option value="{{ value }}" {% if value == selected_title_type %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit">Find URLs</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Bulk Lookup</p>
+        <h2>Multiple Titles In One Run</h2>
+      </div>
+      <p class="section-note">Use one title per line. Optional format: <code>title | year | movie|tv</code>.</p>
+    </div>
+    <form class="tool-form bulk-form" action="/bulk-lookup" method="post">
+      <label class="field field-wide">
+        <span>Bulk entries</span>
+        <textarea name="entries" rows="8" placeholder="Faces of Death | 2026 | movie&#10;The Office | 2005 | tv&#10;Inception">{{ bulk_entries }}</textarea>
+      </label>
+      <label class="field">
+        <span>Default title type</span>
+        <select name="title_type">
+          {% for value, label in title_type_options %}
+          <option value="{{ value }}" {% if value == selected_title_type %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit">Run Bulk Lookup</button>
+    </form>
+  </section>
+
+  <section class="panel api-panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">JSON API</p>
+        <h2>Programmatic Lookup</h2>
+      </div>
+    </div>
+    <pre>{
+  "title": "Faces of Death",
+  "year": "2026",
+  "title_type": "movie"
+}</pre>
+    <p class="api-note">POST this payload to <code>/api/lookup</code>.</p>
+    <pre>{
+  "entries": [
+    {"title": "Faces of Death", "year": "2026", "title_type": "movie"},
+    {"title": "The Office", "year": "2005", "title_type": "tv"}
+  ]
+}</pre>
+    <p class="api-note">POST this payload to <code>/api/bulk-lookup</code> for batch runs.</p>
+  </section>
+
+  {% if error_message %}
+  <section class="panel error-panel">
+    <p class="error-copy">{{ error_message }}</p>
+  </section>
+  {% endif %}
+
+  {% if bulk_result %}
+  <section class="panel results-panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Bulk Result</p>
+        <h2>{{ bulk_result.entries | length }} Titles Processed</h2>
+      </div>
+      {% if bulk_result.export_id %}
+      <div class="export-actions">
+        <a class="export-link" href="/download/{{ bulk_result.export_id }}/csv">Download CSV</a>
+        <a class="export-link" href="/download/{{ bulk_result.export_id }}/xlsx">Download Excel</a>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if bulk_result.notes %}
+    <div class="summary-strip">
+      {% for item in bulk_result.notes %}
+      <span class="summary-chip">{{ item }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="table-shell">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Type</th>
+            <th>IMDb</th>
+            <th>Wikipedia</th>
+            <th>Rotten Tomatoes</th>
+            <th>Metacritic</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in bulk_result.entries %}
+          <tr>
+            <td>{{ entry.query.title }}{% if entry.query.year %} ({{ entry.query.year }}){% endif %}</td>
+            <td>{{ entry.query.title_type }}</td>
+            {% for site_key in ["imdb", "wikipedia", "rottentomatoes", "metacritic"] %}
+              {% set site = (entry.results | selectattr("site_key", "equalto", site_key) | list | first) %}
+            <td>
+              {% if site and site.primary %}
+              <a href="{{ site.primary.url }}" target="_blank" rel="noreferrer">{{ site.primary.url }}</a>
+              {% elif site %}
+              <span class="status {{ site.status }}">{{ site.status.replace('_', ' ') }}</span>
+              {% else %}
+              -
+              {% endif %}
+            </td>
+            {% endfor %}
+            <td>{{ entry.notes | join(" ") or "-" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if result %}
+  <section class="panel results-panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Result</p>
+        <h2>{{ result.query.title }}</h2>
+      </div>
+    </div>
+
+    {% if result.notes %}
+    <div class="summary-strip">
+      {% for item in result.notes %}
+      <span class="summary-chip">{{ item }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="result-grid">
+      {% for site in result.results %}
+      <article class="result-card">
+        <div class="result-card-head">
+          <div>
+            <p class="site-label">{{ site.site_label }}</p>
+            <span class="status {{ site.status }}">{{ site.status.replace('_', ' ') }}</span>
+          </div>
+        </div>
+
+        {% if site.primary %}
+        <a class="primary-link" href="{{ site.primary.url }}" target="_blank" rel="noreferrer">{{ site.primary.url }}</a>
+        <p class="primary-title">{{ site.primary.result_title }}</p>
+        {% if site.primary.matched_on %}
+        <p class="match-copy">{{ site.primary.matched_on | join(", ") }}</p>
+        {% endif %}
+        {% else %}
+        <p class="muted-copy">No landing page match found.</p>
+        {% endif %}
+
+        {% if site.notes %}
+        <p class="match-copy">{{ site.notes | join(" ") }}</p>
+        {% endif %}
+
+        {% if site.alternates %}
+        <div class="alternate-block">
+          <p class="alternate-heading">Alternates</p>
+          <ul class="alternate-list">
+            {% for alternate in site.alternates %}
+            <li>
+              <a href="{{ alternate.url }}" target="_blank" rel="noreferrer">{{ alternate.url }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+{% endblock %}

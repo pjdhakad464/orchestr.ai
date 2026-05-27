@@ -1,0 +1,25 @@
+<div class="classification-card panel">
+  <div class="classification-header">
+    <div class="classification-title-area">
+      <span class="eyebrow">Taxonomy Classification Result</span>
+      <h3>{{ title }}</h3>
+    </div>
+    <div class="classification-badge">{{ category }}</div>
+  </div>
+  <div class="classification-body">
+    <div class="classification-meta">
+      <span class="meta-label">Title Category</span>
+      <div class="meta-value font-bold">{{ category }}</div>
+    </div>
+    <div class="classification-meta">
+      <span class="meta-label">Title Sub-Category</span>
+      <div class="meta-value sub-category-block">
+        {% if sub_category %}
+          <pre class="sub-category-pre">{{ sub_category }}</pre>
+        {% else %}
+          <span class="text-muted">None</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+# Environment & Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data (large SQLite DBs, IMDb datasets, runtime data — NOT tracked in Git)
+data/imdb_datasets/
+data/imdb_lookup_app/
+data/wikipedia_cache/
+data/validation_history.sqlite3
+data/raw/
+data/social_*
+data/*.csv
+data/*.txt
+data/*.json
+validated_runs/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Pytest
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Google credentials
+*.json
+!pyproject.toml

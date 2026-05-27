@@ -1,0 +1,505 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">USA Releases</p>
+      <h2>Fetch Box Office Mojo windows</h2>
+    </div>
+    <p class="meta">Use the domestic release schedule to pull either the latest 7 days or the next 12 months from today.</p>
+  </div>
+
+  <form class="search-form single-action-form" method="post" action="/box-office-mojo/search">
+    <div class="info-card">
+      <span>Date window</span>
+      <p>Uses yesterday as the end date at runtime and includes the 7-day window immediately before the current day.</p>
+    </div>
+    <div class="info-card">
+      <span>Available fields</span>
+      <p>Release date, title, release notes, genres, cast, runtime, distributor, scale, and title URL.</p>
+    </div>
+    <button type="submit">Fetch Last 7 Days</button>
+  </form>
+
+  <form class="search-form single-action-form stacked-box-office-form" method="post" action="/box-office-mojo/upcoming-12-months/search">
+    <div class="info-card">
+      <span>Date window</span>
+      <p>Starts on the current day at runtime and looks ahead through the same calendar day 12 months later.</p>
+    </div>
+    <div class="info-card">
+      <span>Use case</span>
+      <p>Best for pipeline planning, future release monitoring, and building a longer-range U.S. movie schedule export.</p>
+    </div>
+    <button type="submit">Fetch Upcoming 12 Months</button>
+  </form>
+
+  <div class="api-strip">
+    <p>Programmatic endpoints: <code>/api/box-office-mojo/last-7-days</code> and <code>/api/box-office-mojo/upcoming-12-months</code></p>
+  </div>
+
+  {% if box_office_error_message %}
+  <div class="error-panel">
+    <strong>Could not fetch Box Office Mojo data.</strong>
+    <p>{{ box_office_error_message }}</p>
+  </div>
+  {% endif %}
+</section>
+
+{% if box_office_snapshot %}
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Box Office Mojo Results</p>
+      <h2>{{ box_office_snapshot.items | length }} rows</h2>
+    </div>
+    <p class="meta">
+      Report: {{ box_office_snapshot.report_label }} |
+      Window {{ box_office_snapshot.window_start.isoformat() }} to {{ box_office_snapshot.window_end.isoformat() }} |
+      Generated {{ box_office_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
+    </p>
+  </div>
+
+  {% if box_office_snapshot.notes %}
+  <div class="note-strip">
+    {% for note in box_office_snapshot.notes %}
+    <p>{{ note }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if box_office_snapshot.export_id %}
+  <div class="export-bar">
+    <p class="meta">Exports include every visible release detail captured from Box Office Mojo's domestic schedule page for the selected report window.</p>
+    <div class="export-actions">
+      <a class="export-link" href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv">Download CSV</a>
+      <a class="export-link secondary" href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx">Download Excel</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="table-shell">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Release Date</th>
+          <th>Title</th>
+          <th>Release Notes</th>
+          <th>Genres</th>
+          <th>Cast</th>
+          <th>Runtime</th>
+          <th>Distributor</th>
+          <th>Scale</th>
+          <th>IMDb ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in box_office_snapshot.items %}
+        <tr>
+          <td>{{ item.release_date }}</td>
+          <td>
+            {% if item.url %}
+            <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+            {% else %}
+            {{ item.title }}
+            {% endif %}
+          </td>
+          <td>{{ item.release_notes or "-" }}</td>
+          <td>{{ item.genres or "-" }}</td>
+          <td>{{ item.cast or "-" }}</td>
+          <td>{{ item.runtime or "-" }}</td>
+          <td>{{ item.distributor or "-" }}</td>
+          <td>{{ item.scale or "-" }}</td>
+          <td>
+            {% if item.imdb_id %}
+            <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+            {% else %}
+            -
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">IMDb Episodes</p>
+      <h2>Count TV seasons and episodes</h2>
+    </div>
+    <p class="meta">Fetch the Metacritic TV premiere list, match each show to IMDb, and count available episode rows.</p>
+  </div>
+
+  <form class="search-form tv-imdb-search-form" method="post" action="/tv/imdb-episode-counts/search">
+    <label class="select-card">
+      <span>Date segment</span>
+      <select name="date_window">
+        {% for value, label in tv_imdb_date_window_options %}
+        <option value="{{ value }}" {% if value == selected_tv_imdb_date_window %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="date-range-card">
+      <span>Custom dates</span>
+      <div class="date-input-grid">
+        <label>
+          <span>Start</span>
+          <input type="date" name="custom_start_date" value="{{ selected_tv_imdb_start_date }}" />
+        </label>
+        <label>
+          <span>End</span>
+          <input type="date" name="custom_end_date" value="{{ selected_tv_imdb_end_date }}" />
+        </label>
+      </div>
+    </div>
+    <div class="info-card">
+      <span>Source and fields</span>
+      <p>Metacritic TV feed, IMDb ID, latest season number, latest-season episode count, start date, and end date.</p>
+    </div>
+    <button type="submit">Fetch TV IMDb Counts</button>
+  </form>
+
+  <div class="api-strip">
+    <p>Programmatic endpoint: <code>{{ tv_imdb_api_endpoint }}</code></p>
+  </div>
+
+  {% if tv_imdb_error_message %}
+  <div class="error-panel">
+    <strong>Could not fetch TV IMDb counts.</strong>
+    <p>{{ tv_imdb_error_message }}</p>
+  </div>
+  {% endif %}
+</section>
+
+{% if tv_imdb_snapshot %}
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">TV IMDb Results</p>
+      <h2>{{ tv_imdb_snapshot.items | length }} rows</h2>
+    </div>
+    <p class="meta">
+      Window {{ tv_imdb_snapshot.window_start.isoformat() if tv_imdb_snapshot.window_start else "-" }}
+      to {{ tv_imdb_snapshot.window_end.isoformat() if tv_imdb_snapshot.window_end else "-" }} |
+      Segment: {{ tv_imdb_snapshot.date_window_label }} |
+      Generated {{ tv_imdb_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
+    </p>
+  </div>
+
+  {% if tv_imdb_snapshot.notes %}
+  <div class="note-strip">
+    {% for note in tv_imdb_snapshot.notes %}
+    <p>{{ note }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if tv_imdb_snapshot.export_id %}
+  <div class="export-bar">
+    <p class="meta">CSV export includes only the selected TV season and episode count columns.</p>
+    <a class="export-link" href="/tv/imdb-episode-counts/export/{{ tv_imdb_snapshot.export_id }}/csv">Download CSV</a>
+  </div>
+  {% endif %}
+
+  <div class="table-shell">
+    <table class="results-table tv-imdb-table">
+      <thead>
+        <tr>
+          <th>release_date</th>
+          <th>title</th>
+          <th>network_distributor</th>
+          <th>imdb_id</th>
+          <th>latest_season_number</th>
+          <th>latest_season_episode_count</th>
+          <th>latest_season_start_date</th>
+          <th>latest_season_end_date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in tv_imdb_snapshot.items %}
+        <tr>
+          <td>{{ item.release_date or "-" }}</td>
+          <td>
+            {% if item.metacritic_url %}
+            <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+            {% else %}
+            {{ item.title }}
+            {% endif %}
+          </td>
+          <td>{{ item.network_distributor or "-" }}</td>
+          <td>
+            {% if item.imdb_url %}
+            <a href="{{ item.imdb_url }}" target="_blank" rel="noreferrer">{{ item.imdb_id or "-" }}</a>
+            {% else %}
+            {{ item.imdb_id or "-" }}
+            {% endif %}
+          </td>
+          <td>{{ item.latest_season_number if item.latest_season_number is not none else "-" }}</td>
+          <td>{{ item.latest_season_episode_count if item.latest_season_episode_count is not none else "-" }}</td>
+          <td>{{ item.latest_season_start_date or "-" }}</td>
+          <td>{{ item.latest_season_end_date or "-" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Metacritic TV</p>
+      <h2>Build TV classification report</h2>
+    </div>
+    <p class="meta">Fetch Metacritic movie, series, mini-series, and other program rows for the present day through the next three months.</p>
+  </div>
+
+  <form class="search-form single-action-form" method="post" action="/tv/classification-report/search">
+    <div class="info-card">
+      <span>Date window</span>
+      <p>Includes releases from today through the same calendar day three months later.</p>
+    </div>
+    <div class="info-card">
+      <span>Requested fields</span>
+      <p>Release date, title, IMDb ttcode, network, daypart, program type, language type, and three genre columns.</p>
+    </div>
+    <button type="submit">Fetch TV Classification Report</button>
+  </form>
+
+  <div class="api-strip">
+    <p>Programmatic endpoint: <code>/api/tv/classification-report</code></p>
+  </div>
+
+  {% if tv_classification_error_message %}
+  <div class="error-panel">
+    <strong>Could not fetch TV classification data.</strong>
+    <p>{{ tv_classification_error_message }}</p>
+  </div>
+  {% endif %}
+</section>
+
+{% if tv_classification_snapshot %}
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">TV Classification Results</p>
+      <h2>{{ tv_classification_snapshot.items | length }} rows</h2>
+    </div>
+    <p class="meta">
+      Window
+      {{ tv_classification_snapshot.window_start.isoformat() if tv_classification_snapshot.window_start else "-" }}
+      to {{ tv_classification_snapshot.window_end.isoformat() if tv_classification_snapshot.window_end else "-" }} |
+      Generated {{ tv_classification_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
+    </p>
+  </div>
+
+  {% if tv_classification_snapshot.notes %}
+  <div class="note-strip">
+    {% for note in tv_classification_snapshot.notes %}
+    <p>{{ note }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if tv_classification_snapshot.export_id %}
+  <div class="export-bar">
+    <p class="meta">Exports use YYYY-MM-DD release dates and include movies, series, mini-series, and other rows.</p>
+    <div class="export-actions">
+      <a class="export-link" href="/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/csv">Download CSV</a>
+      <a class="export-link secondary" href="/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/xlsx">Download Excel</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="table-shell">
+    <table class="results-table tv-classification-table">
+      <thead>
+        <tr>
+          <th>Release Date</th>
+          <th>Title</th>
+          <th>IMDb ttcode</th>
+          <th>Network</th>
+          <th>Daypart</th>
+          <th>Program Type</th>
+          <th>Language Type</th>
+          <th>Genre 1</th>
+          <th>Genre 2</th>
+          <th>Genre 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in tv_classification_snapshot.items %}
+        <tr>
+          <td>{{ item.release_date or "-" }}</td>
+          <td>
+            {% if item.metacritic_url %}
+            <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+            {% else %}
+            {{ item.title }}
+            {% endif %}
+          </td>
+          <td>{{ item.imdb_ttcode or "-" }}</td>
+          <td>{{ item.network or "-" }}</td>
+          <td>{{ item.daypart or "-" }}</td>
+          <td>{{ item.program_type or "-" }}</td>
+          <td>{{ item.language_type or "-" }}</td>
+          <td>{{ item.genre_1 or "-" }}</td>
+          <td>{{ item.genre_2 or "-" }}</td>
+          <td>{{ item.genre_3 or "-" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Source Selection</p>
+      <h2>Scrape Metacritic calendars</h2>
+    </div>
+    <p class="meta">This standalone app uses Metacritic's article-backed calendar feeds, not IMDb bulk TSV files.</p>
+  </div>
+
+  <form class="search-form calendar-search-form" method="post" action="/calendar/search">
+    <div class="select-card calendar-select-card">
+      <span>Calendar section</span>
+      <details class="multi-select-dropdown">
+        <summary>
+          {% set selected_labels = [] %}
+          {% for value, label in calendar_multiselect_options %}
+            {% if value in selected_calendar_types %}
+              {% set _ = selected_labels.append(label) %}
+            {% endif %}
+          {% endfor %}
+          {{ selected_labels | join(", ") if selected_labels else "Choose sections" }}
+        </summary>
+        <div class="multi-select-menu">
+          {% for value, label in calendar_multiselect_options %}
+          <label class="multi-select-option">
+            <input type="checkbox" name="calendar_type" value="{{ value }}" {% if value in selected_calendar_types %}checked{% endif %} />
+            <span>{{ label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </details>
+    </div>
+    <div class="date-range-card">
+      <span>Custom date range</span>
+      <div class="date-input-grid">
+        <label>
+          <span>Start</span>
+          <input type="date" name="custom_start_date" value="{{ selected_calendar_start_date }}" />
+        </label>
+        <label>
+          <span>End</span>
+          <input type="date" name="custom_end_date" value="{{ selected_calendar_end_date }}" />
+        </label>
+      </div>
+    </div>
+    <div class="info-card">
+      <span>Available feeds</span>
+      <p>Games article calendar, movie release calendar, and TV premiere calendar.</p>
+    </div>
+    <button type="submit">Fetch Latest Calendar</button>
+  </form>
+
+  <div class="api-strip">
+    <p>Programmatic endpoint: <code>{{ calendar_api_endpoint }}</code></p>
+  </div>
+
+  {% if error_message %}
+  <div class="error-panel">
+    <strong>Could not fetch data.</strong>
+    <p>{{ error_message }}</p>
+  </div>
+  {% endif %}
+</section>
+
+{% if snapshot %}
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Results</p>
+      <h2>{{ snapshot.items | length }} rows</h2>
+    </div>
+    <p class="meta">
+      Calendar: {{ snapshot.calendar_type.replace('_', ' ').title() }} |
+      Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}
+    </p>
+  </div>
+
+  {% if snapshot.notes %}
+  <div class="note-strip">
+    {% for note in snapshot.notes %}
+    <p>{{ note }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if snapshot.export_id %}
+  <div class="export-bar">
+    <p class="meta">CSV export includes section, group label, release date, provider/platforms, availability, details, Metascore, and IMDb ID.</p>
+    <a class="export-link" href="/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+  </div>
+  {% endif %}
+
+  <div class="table-shell">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Section</th>
+          <th>Group</th>
+          <th>Release Date</th>
+          <th>Title</th>
+          <th>Provider / Platform</th>
+          <th>Availability</th>
+          <th>Details</th>
+          <th>Metascore</th>
+          <th>IMDb ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in snapshot.items %}
+        <tr>
+          <td>{{ item.section_label }}</td>
+          <td>{{ item.group_label }}</td>
+          <td>{{ item.release_date or "-" }}</td>
+          <td>
+            {% if item.url %}
+            <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+            {% else %}
+            {{ item.title }}
+            {% endif %}
+          </td>
+          <td>{{ item.provider or "-" }}</td>
+          <td>{{ item.availability or "-" }}</td>
+          <td>{{ item.details or "-" }}</td>
+          <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
+          <td>
+            {% if item.imdb_id %}
+            <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+            {% else %}
+            -
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% elif not box_office_snapshot and not tv_imdb_snapshot and not tv_classification_snapshot %}
+<section class="panel empty-state">
+  <h2>Choose a source and fetch fresh release data.</h2>
+  <p>Use the Box Office Mojo, TV IMDb, TV classification, or Metacritic calendar actions to fetch fresh release data.</p>
+</section>
+{% endif %}
+{% endblock %}

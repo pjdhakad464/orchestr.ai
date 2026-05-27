@@ -1,0 +1,62 @@
+<section class="panel validation-history">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">History</p>
+      <h2>Recent validator runs</h2>
+    </div>
+    {% if latest_history %}
+    <span class="status resolved">Latest saved</span>
+    {% endif %}
+  </div>
+
+  {% if latest_history %}
+  <div class="note-strip">
+    <p>
+      Latest run: <strong>{{ latest_history.validated_filename }}</strong> on {{ latest_history.created_at_display }}
+      by {{ latest_history.runner_label }}.
+    </p>
+  </div>
+  {% endif %}
+
+  {% if history_runs is defined %}
+  {% set runs = history_runs %}
+  {% else %}
+  {% set runs = validation_history %}
+  {% endif %}
+
+  {% if runs %}
+  <div class="table-shell">
+    <table class="results-table history-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Run by</th>
+          <th>IP</th>
+          <th>Source file</th>
+          <th>Validated file</th>
+          <th>Issues</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for run in runs %}
+        <tr>
+          <td>{{ run.created_at_display }}</td>
+          <td>{{ run.run_by or "-" }}</td>
+          <td>{{ run.client_ip or "-" }}</td>
+          <td>{{ run.original_filename }}</td>
+          <td>{{ run.validated_filename }}</td>
+          <td>{{ run.issue_count }}</td>
+          <td><a href="{{ run.download_path }}">Download</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state history-empty">
+    <h2>No validator history yet</h2>
+    <p>Your saved workbook runs will appear here with date, runner details, and a download link.</p>
+  </div>
+  {% endif %}
+</section>

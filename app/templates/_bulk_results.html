@@ -1,0 +1,28 @@
+<section class="panel result-panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Bulk Results</p>
+      <h2>{{ response.results|length }} requested lookups</h2>
+    </div>
+    <p class="meta">Bulk requests auto-skip ambiguous matches and accept up to 500 lines.</p>
+  </div>
+
+  {% if response.notes %}
+  <div class="note-strip">
+    {% for note in response.notes %}
+    <p>{{ note }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="export-bar">
+    <p class="meta">Use exports for the full dataset if the browser table feels crowded.</p>
+    <div class="export-actions">
+      <a class="export-link" href="/export/{{ response.export_id }}/csv" target="_blank" rel="noreferrer">Export CSV</a>
+      <a class="export-link" href="/export/{{ response.export_id }}/xlsx" target="_blank" rel="noreferrer">Export Excel</a>
+      <a class="export-link" href="/export/{{ response.export_id }}/google-sheets" target="_blank" rel="noreferrer">Export Google Sheets</a>
+    </div>
+  </div>
+
+  {% include "_results_table.html" %}
+</section>

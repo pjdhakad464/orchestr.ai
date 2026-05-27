@@ -1,0 +1,50 @@
+<div class="table-shell">
+  <table class="results-table results-matrix">
+    <thead>
+      <tr>
+        <th>Entity Query</th>
+        <th>Matched Entity</th>
+        <th>Metadata Source</th>
+        <th>Official Website</th>
+        <th>Release Type</th>
+        <th>Studio Type</th>
+        <th>Genre</th>
+        <th>Release Date</th>
+        <th>Network / Studio</th>
+        <th>Status</th>
+        <th>Facebook</th>
+        <th>Instagram</th>
+        <th>YouTube</th>
+        <th>X/Twitter</th>
+        <th>TikTok</th>
+        <th>Wikipedia</th>
+        <th>IMDb</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in table_rows %}
+      <tr>
+        <td>{{ row.entity_query }}</td>
+        <td>{{ row.matched_entity or "-" }}</td>
+        <td>{{ row.metadata_source }}</td>
+        <td>{{ row.official_website }}</td>
+        <td>{{ row.release_type }}</td>
+        <td>{{ row.studio_type }}</td>
+        <td>{{ row.genre }}</td>
+        <td>{{ row.release_date }}</td>
+        <td>{{ row.network }}</td>
+        <td><span class="status {{ row.status }}">{{ row.status.replace('_', ' ') if row.status else 'n/a' }}</span></td>
+        <td class="platform-cell">{{ row.platforms["Facebook"] }}</td>
+        <td class="platform-cell">{{ row.platforms["Instagram"] }}</td>
+        <td class="platform-cell">{{ row.platforms["YouTube"] }}</td>
+        <td class="platform-cell">{{ row.platforms["X/Twitter"] }}</td>
+        <td class="platform-cell">{{ row.platforms["TikTok"] }}</td>
+        <td class="platform-cell">{{ row.platforms["Wikipedia"] }}</td>
+        <td class="platform-cell">{{ row.platforms["IMDb"] }}</td>
+        <td>{{ row.notes }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

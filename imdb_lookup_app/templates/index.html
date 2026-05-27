@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}IMDb Bulk Lookup{% endblock %}
+{% block content %}
+  <section class="panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Paste Values</p>
+        <h2>Quick Bulk Lookup</h2>
+      </div>
+      <p class="section-note">One value per line works best, but commas and semicolons are accepted too.</p>
+    </div>
+    <form class="tool-form" action="/lookup/text" method="post">
+      <label class="field field-wide">
+        <span>IMDb ids, titles, or person names</span>
+        <textarea name="values" placeholder="tt0133093&#10;nm0000206&#10;The Matrix&#10;Keanu Reeves">{{ raw_values }}</textarea>
+      </label>
+      <label class="field">
+        <span>Lookup mode</span>
+        <select name="mode">
+          {% for value, label in mode_options %}
+          <option value="{{ value }}" {% if value == selected_mode %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit">Run Lookup</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Upload File</p>
+        <h2>CSV Or Excel Input</h2>
+      </div>
+      <p class="section-note">XLSX uses the active sheet by default. You can optionally target a sheet and column.</p>
+    </div>
+    <form class="tool-form upload-form" action="/lookup/file" method="post" enctype="multipart/form-data">
+      <label class="field field-wide">
+        <span>Source file (.csv or .xlsx)</span>
+        <input type="file" name="dataset_file" accept=".csv,.xlsx" />
+      </label>
+      <label class="field">
+        <span>Lookup mode</span>
+        <select name="mode">
+          {% for value, label in mode_options %}
+          <option value="{{ value }}" {% if value == selected_mode %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span>Sheet name (optional)</span>
+        <input type="text" name="sheet_name" value="{{ selected_sheet }}" placeholder="Sheet1" />
+      </label>
+      <label class="field">
+        <span>Input column (optional)</span>
+        <input type="text" name="input_column" value="{{ selected_column }}" placeholder="input" />
+      </label>
+      <button type="submit">Upload And Convert</button>
+    </form>
+  </section>
+
+  <section class="panel api-panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">JSON API</p>
+        <h2>Programmatic Access</h2>
+      </div>
+    </div>
+    <pre>{
+  "mode": "auto",
+  "values": ["tt0133093", "nm0000206", "The Matrix", "Keanu Reeves"]
+}</pre>
+    <p class="api-note">POST this payload to <code>/api/lookup</code>.</p>
+  </section>
+
+  {% if error_message %}
+  <section class="panel error-panel">
+    <p class="error-copy">{{ error_message }}</p>
+  </section>
+  {% endif %}
+
+  {% if result %}
+  <section class="panel results-panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Lookup Result</p>
+        <h2>{{ result.rows | length }} Output Rows</h2>
+      </div>
+      {% if result.export_id %}
+      <div class="export-actions">
+        <a class="export-link" href="/download/{{ result.export_id }}/csv">Download CSV</a>
+        <a class="export-link" href="/download/{{ result.export_id }}/xlsx">Download Excel</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="summary-strip">
+      {% for item in result.summary %}
+      <span class="summary-chip">{{ item }}</span>
+      {% endfor %}
+    </div>
+
+    <div class="table-shell">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Status</th>
+            <th>IMDb ID</th>
+            <th>Entity</th>
+            <th>Name / Title</th>
+            <th>Original Title</th>
+            <th>Title Type</th>
+            <th>Years</th>
+            <th>Profession</th>
+            <th>Known For</th>
+            <th>Matched On</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in result.rows %}
+          <tr>
+            <td>{{ row.input_value }}</td>
+            <td><span class="status {{ row.status }}">{{ row.status.replace('_', ' ') }}</span></td>
+            <td>
+              {% if row.source_url %}
+              <a href="{{ row.source_url }}" target="_blank" rel="noreferrer">{{ row.imdb_id or "Open" }}</a>
+              {% else %}
+              {{ row.imdb_id }}
+              {% endif %}
+            </td>
+            <td>{{ row.entity_kind }}</td>
+            <td>{{ row.display_name }}</td>
+            <td>{{ row.original_title }}</td>
+            <td>{{ row.title_type }}</td>
+            <td>
+              {% if row.start_year or row.end_year %}
+              {{ row.start_year }}{% if row.end_year %} - {{ row.end_year }}{% endif %}
+              {% elif row.birth_year or row.death_year %}
+              {{ row.birth_year }}{% if row.death_year %} - {{ row.death_year }}{% endif %}
+              {% endif %}
+            </td>
+            <td>{{ row.primary_profession }}</td>
+            <td>{{ row.known_for_titles }}</td>
+            <td>{{ row.matched_on }}</td>
+            <td>{{ row.notes }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+{% endblock %}

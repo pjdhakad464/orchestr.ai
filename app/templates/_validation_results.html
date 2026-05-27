@@ -1,0 +1,59 @@
+<section class="panel validation-results">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Validation Complete</p>
+      <h2 class="validation-title">{{ artifact.filename }}</h2>
+    </div>
+    <span class="status {{ 'found' if artifact.issue_count == 0 else 'uncertain' }}">
+      {{ artifact.issue_count }} issue{{ '' if artifact.issue_count == 1 else 's' }}
+    </span>
+  </div>
+
+  <div class="note-strip">
+    {% if artifact.issue_count == 0 %}
+    <p>No issues were found. The workbook still includes a `Validation Summary` sheet confirming it passed.</p>
+    {% else %}
+    <p>Failed cells were highlighted in red and annotated with comments in the workbook. Review the summary below, then download the verified file.</p>
+    {% endif %}
+  </div>
+
+  <div class="export-bar">
+    <div>
+      <strong>Download the verified workbook</strong>
+      <p class="meta">The file includes all original sheets plus a `Validation Summary` tab.</p>
+    </div>
+    <div class="export-actions">
+      <a class="export-link" href="/validate-excel/download/{{ validation_id }}">Download Validated File</a>
+    </div>
+  </div>
+
+  {% if artifact.issues %}
+  <div class="table-shell">
+    <table class="results-table validation-table">
+      <thead>
+        <tr>
+          <th>Sheet</th>
+          <th>Cell</th>
+          <th>Rule</th>
+          <th>Message</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for issue in artifact.issues[:25] %}
+        <tr>
+          <td>{{ issue.sheet }}</td>
+          <td>{{ issue.cell }}</td>
+          <td>{{ issue.rule }}</td>
+          <td>{{ issue.message }}</td>
+          <td>{{ issue.value or '-' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if artifact.issue_count > 25 %}
+  <p class="meta">Showing the first 25 issues here. The workbook summary sheet contains the full list.</p>
+  {% endif %}
+  {% endif %}
+</section>
