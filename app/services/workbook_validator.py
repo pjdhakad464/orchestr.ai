@@ -329,6 +329,7 @@ def build_sample_rules_json() -> str:
         "IT",
         "Internet",
         "Computing",
+        "IT, Internet, Computing",
         "Legal",
         "Government Entities",
         "Marketing",
@@ -1965,7 +1966,6 @@ def _matches_social_reference_format(platform: str, raw_value: str) -> tuple[boo
             valid_channel_paths = [
                 path.startswith("/@"),
                 path.startswith("/channel/"),
-                path.startswith("/c/"),
                 path.startswith("/user/"),
             ]
             return (any(valid_channel_paths), "URL must point to a YouTube channel")

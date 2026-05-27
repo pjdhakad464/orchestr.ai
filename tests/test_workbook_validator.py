@@ -111,6 +111,7 @@ def test_social_reference_format_rejects_wrong_resource_types():
     assert _matches_social_reference_format("twitter", "https://x.com/openai/status/123")[0] is False
     assert _matches_social_reference_format("instagram", "https://www.instagram.com/p/abc123/")[0] is False
     assert _matches_social_reference_format("youtube", "https://www.youtube.com/watch?v=123")[0] is False
+    assert _matches_social_reference_format("youtube", "https://www.youtube.com/c/OpenAI")[0] is False
     assert _matches_social_reference_format("tiktok", "https://www.tiktok.com/@creator/video/123")[0] is False
     assert _matches_social_reference_format("wikidata", "https://www.wikidata.org/wiki/Q42")[0] is True
     assert _matches_social_reference_format("wikidata", "https://www.wikidata.org/wiki/Taylor_Swift")[0] is False
@@ -2549,3 +2550,11 @@ def test_validate_workbook_allows_blank_talent_genre():
 
     assert talent["D2"].fill.fill_type != "solid"
     assert not any(issue.cell == "D2" and issue.rule == "not_blank_and_not_in" for issue in artifact.issues)
+
+
+def test_new_title_category_it_internet_computing():
+    from app.services.workbook_validator import build_sample_rules_json, parse_validation_rules
+    rules = parse_validation_rules(build_sample_rules_json())
+    category_rule = next(rule for rule in rules if rule.column == "title_category" and rule.check == "in")
+    assert "IT, Internet, Computing" in category_rule.values
+
