@@ -635,10 +635,10 @@ textarea {
 
 .validator-heading-banner {
   max-width: none;
-  font-size: clamp(2.4rem, 4.6vw, 4.25rem) !important;
-  line-height: 0.96;
-  letter-spacing: -0.04em;
-  white-space: nowrap;
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem) !important;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  white-space: normal;
 }
 
 .validator-description {
