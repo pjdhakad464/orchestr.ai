@@ -696,6 +696,21 @@ async def export_tv_imdb_episode_counts_csv(export_id: str):
     )
 
 
+@router.get("/tv/imdb-episode-counts/export/{export_id}/xlsx")
+async def export_tv_imdb_episode_counts_xlsx(export_id: str):
+    snapshot = cache.get(f"tv-imdb:{export_id}")
+    if not isinstance(snapshot, TvImdbEpisodeCountSnapshot):
+        return HTMLResponse("Export expired. Run the TV IMDb episode count fetch again.", status_code=404)
+
+    data = tv_imdb_episode_count_service.snapshot_to_xlsx_bytes(snapshot)
+    filename = f"tv_imdb_episode_counts_{snapshot.date_window_key}.xlsx"
+    return StreamingResponse(
+        io.BytesIO(data),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
 @router.get("/box-office-mojo/export/{export_id}/{fmt}")
 async def export_box_office_mojo_data(export_id: str, fmt: str):
     snapshot = cache.get(f"bom:{export_id}")

@@ -413,6 +413,7 @@
     <div class="task-panel-content" id="billboard-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Every Monday</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.billboard.com/charts/artist-100/" target="_blank" rel="noreferrer">https://www.billboard.com/charts/artist-100/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -568,6 +569,7 @@
     <div class="task-panel-content" id="review_release-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Every Monday</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.boxofficemojo.com/calendar/" target="_blank" rel="noreferrer">https://www.boxofficemojo.com/calendar/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -789,6 +791,7 @@
     <div class="task-panel-content" id="box_office-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Daily</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.boxofficemojo.com/calendar/" target="_blank" rel="noreferrer">https://www.boxofficemojo.com/calendar/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -1010,6 +1013,7 @@
     <div class="task-panel-content" id="tv_metadata-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Daily (On Monday, exports Sat, Sun, Mon)</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/tv-premiere-dates/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/tv-premiere-dates/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -1025,7 +1029,7 @@
           <label for="date-window">Date Window Segment</label>
           <select name="date_window" id="date-window">
             {% for value, label in tv_imdb_date_window_options %}
-            <option value="{{ value }}" {% if value == selected_tv_imdb_date_window %}selected{% endif %}>{{ label }}</option>
+            <option value="{{ value }}" {% if (selected_tv_imdb_date_window is not none and value == selected_tv_imdb_date_window) or (selected_tv_imdb_date_window is none and value == "daily_segment") %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
           </select>
         </div>
@@ -1125,6 +1129,7 @@
             <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('tv_metadata', 'tv_imdb_counts')">Export CSV</button>
             {% if tv_imdb_snapshot.export_id %}
             <a href="/tv/imdb-episode-counts/export/{{ tv_imdb_snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            <a href="/tv/imdb-episode-counts/export/{{ tv_imdb_snapshot.export_id }}/xlsx" class="btn-filter-secondary" style="display: flex; align-items: center; justify-content: center; text-decoration: none; margin-left: 8px;">Download Excel</a>
             {% endif %}
           </div>
         </div>
@@ -1151,7 +1156,7 @@
                   data-network="{{ item.network_distributor | lower if item.network_distributor else '' }}"
                   data-date="{{ item.release_date }}">
                 <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
-                  {{ item.release_date or "-" }}
+                  {{ item.release_date.split('-')|reverse|join('-') if (item.release_date and '-' in item.release_date) else (item.release_date or "-") }}
                 </td>
                 <td style="padding: 12px;">
                   <div class="movie-title-cell">
@@ -1181,8 +1186,8 @@
                 </td>
                 <td style="padding: 12px; font-size: 0.8rem; color: #475569;">
                   {% if item.latest_season_start_date or item.latest_season_end_date %}
-                  <div style="white-space: nowrap;">Start: {{ item.latest_season_start_date or "?" }}</div>
-                  <div style="white-space: nowrap;">End: {{ item.latest_season_end_date or "?" }}</div>
+                  <div style="white-space: nowrap;">Start: {{ item.latest_season_start_date.split('-')|reverse|join('-') if (item.latest_season_start_date and '-' in item.latest_season_start_date) else (item.latest_season_start_date or "?") }}</div>
+                  <div style="white-space: nowrap;">End: {{ item.latest_season_end_date.split('-')|reverse|join('-') if (item.latest_season_end_date and '-' in item.latest_season_end_date) else (item.latest_season_end_date or "?") }}</div>
                   {% else %}
                   -
                   {% endif %}
@@ -1229,6 +1234,7 @@
     <div class="task-panel-content" id="film_adding-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Every Monday</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/upcoming-movie-release-dates-schedule/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/upcoming-movie-release-dates-schedule/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -1361,7 +1367,7 @@
                   data-group="{{ item.group_label | lower if item.group_label else '' }}"
                   data-date="{{ item.release_date }}">
                 <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
-                  {{ item.release_date or "-" }}
+                  {{ item.release_date.split('-')|reverse|join('-') if (item.release_date and '-' in item.release_date) else (item.release_date or "-") }}
                 </td>
                 <td style="padding: 12px;">
                   <div class="movie-title-cell">
@@ -1425,6 +1431,7 @@
     <div class="task-panel-content" id="calendar_scrape-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Every Monday</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/tv-premiere-dates/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/tv-premiere-dates/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -1557,7 +1564,7 @@
                   data-group="{{ item.group_label | lower if item.group_label else '' }}"
                   data-date="{{ item.release_date }}">
                 <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
-                  {{ item.release_date or "-" }}
+                  {{ item.release_date.split('-')|reverse|join('-') if (item.release_date and '-' in item.release_date) else (item.release_date or "-") }}
                 </td>
                 <td style="padding: 12px;">
                   <div class="movie-title-cell">
@@ -1621,6 +1628,7 @@
     <div class="task-panel-content" id="tv_adding-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Every Monday</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/tv-premiere-dates/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/tv-premiere-dates/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -1746,7 +1754,7 @@
                   data-network="{{ item.network | lower if item.network else '' }}"
                   data-date="{{ item.release_date }}">
                 <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
-                  {{ item.release_date or "-" }}
+                  {{ item.release_date.split('-')|reverse|join('-') if (item.release_date and '-' in item.release_date) else (item.release_date or "-") }}
                 </td>
                 <td style="padding: 12px;">
                   <div class="movie-title-cell">
@@ -1808,6 +1816,7 @@
     <div class="task-panel-content" id="brand_review-content" style="display: none;">
       <div class="task-info-box">
         <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> Every Monday</p>
         <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/major-new-and-upcoming-video-games-ps5-xbox-switch-pc/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/major-new-and-upcoming-video-games-ps5-xbox-switch-pc/</a></p>
         <p><strong>Steps Followed:</strong></p>
         <ul>
@@ -1939,7 +1948,7 @@
                   data-group="{{ item.group_label | lower if item.group_label else '' }}"
                   data-date="{{ item.release_date }}">
                 <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
-                  {{ item.release_date or "-" }}
+                  {{ item.release_date.split('-')|reverse|join('-') if (item.release_date and '-' in item.release_date) else (item.release_date or "-") }}
                 </td>
                 <td style="padding: 12px; font-weight: 700; color: #0f172a;">{{ item.title }}</td>
                 <td style="padding: 12px; font-size: 0.85rem; color: #334155;">{{ item.provider or "-" }}</td>

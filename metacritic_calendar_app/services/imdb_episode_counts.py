@@ -24,6 +24,7 @@ from metacritic_calendar_app.services.text import contains_rent_buy
 from title_url_lookup_app.config import BASE_DIR, settings as title_lookup_settings
 from title_url_lookup_app.models import TitleLookupQuery
 from title_url_lookup_app.services.imdb_dataset import ImdbDatasetLookupError, ImdbDatasetLookupService
+from openpyxl import Workbook
 
 
 IMDB_TITLE_EPISODE_FILENAME = "title.episode.tsv.gz"
@@ -116,6 +117,7 @@ class ResolvedTvImdbDateWindow:
 
 
 TV_IMDB_DATE_WINDOWS = (
+    TvImdbDateWindow("daily_segment", "Daily (Today, or Sat-Mon on Monday)", 0, 0),
     TvImdbDateWindow("today", "Today (Present Day)", 0, 0),
     TvImdbDateWindow("last_7_days", "Last 7 Days", -6, 0),
     TvImdbDateWindow("week", "Upcoming Week (7 days)", 0, 7),
@@ -125,17 +127,32 @@ TV_IMDB_DATE_WINDOWS = (
 TV_IMDB_DATE_WINDOW_MAP = {window.key: window for window in TV_IMDB_DATE_WINDOWS}
 TV_IMDB_CUSTOM_DATE_WINDOW_KEY = "custom"
 TV_IMDB_CUSTOM_DATE_WINDOW_LABEL = "Custom Date Range"
-DEFAULT_TV_IMDB_DATE_WINDOW_KEY = "year"
+DEFAULT_TV_IMDB_DATE_WINDOW_KEY = "daily_segment"
 TV_IMDB_OUTPUT_COLUMNS = [
     "release_date",
     "title",
     "network_distributor",
     "imdb_id",
+    "metacritic_url",
     "latest_season_number",
     "latest_season_episode_count",
     "latest_season_start_date",
     "latest_season_end_date",
 ]
+
+
+
+def format_date_dd_mm_yyyy(date_str: str) -> str:
+    if not date_str or date_str == "-":
+        return ""
+    try:
+        # Check if already in DD-MM-YYYY format
+        if re.match(r"^\d{2}-\d{2}-\d{4}$", date_str):
+            return date_str
+        dt = date.fromisoformat(date_str)
+        return dt.strftime("%d-%m-%Y")
+    except ValueError:
+        return date_str
 
 
 class ImdbEpisodeCountService:
@@ -557,21 +574,46 @@ class TvImdbEpisodeCountService:
         for item in snapshot.items:
             writer.writerow(
                 {
-                    "release_date": item.release_date,
+                    "release_date": format_date_dd_mm_yyyy(item.release_date),
                     "title": item.title,
                     "network_distributor": item.network_distributor,
                     "imdb_id": item.imdb_id,
+                    "metacritic_url": item.metacritic_url,
                     "latest_season_number": (
                         item.latest_season_number if item.latest_season_number is not None else ""
                     ),
                     "latest_season_episode_count": (
                         item.latest_season_episode_count if item.latest_season_episode_count is not None else ""
                     ),
-                    "latest_season_start_date": item.latest_season_start_date,
-                    "latest_season_end_date": item.latest_season_end_date,
+                    "latest_season_start_date": format_date_dd_mm_yyyy(item.latest_season_start_date),
+                    "latest_season_end_date": format_date_dd_mm_yyyy(item.latest_season_end_date),
                 }
             )
         return output.getvalue().encode("utf-8-sig")
+
+    def snapshot_to_xlsx_bytes(self, snapshot: TvImdbEpisodeCountSnapshot) -> bytes:
+        workbook = Workbook()
+        releases_sheet = workbook.active
+        releases_sheet.title = "Export"
+        releases_sheet.append(TV_IMDB_OUTPUT_COLUMNS)
+        for item in snapshot.items:
+            releases_sheet.append(
+                [
+                    format_date_dd_mm_yyyy(item.release_date),
+                    item.title,
+                    item.network_distributor,
+                    item.imdb_id,
+                    item.metacritic_url,
+                    item.latest_season_number if item.latest_season_number is not None else "",
+                    item.latest_season_episode_count if item.latest_season_episode_count is not None else "",
+                    format_date_dd_mm_yyyy(item.latest_season_start_date),
+                    format_date_dd_mm_yyyy(item.latest_season_end_date),
+                ]
+            )
+
+        output = io.BytesIO()
+        workbook.save(output)
+        return output.getvalue()
 
     def _build_item(self, tv_item, lookup: ImdbEpisodeCountLookup) -> TvImdbEpisodeCountItem:
         return TvImdbEpisodeCountItem(
@@ -679,12 +721,29 @@ def resolve_tv_imdb_date_window(
             window_end=window_end,
         )
 
+    anchor_date = today or datetime.now().astimezone().date()
+    if key == "daily_segment":
+        # Monday is 0
+        if anchor_date.weekday() == 0:
+            window_start = anchor_date - timedelta(days=2)
+            window_end = anchor_date
+            label = "Saturday, Sunday, Monday (Weekend + Monday)"
+        else:
+            window_start = anchor_date
+            window_end = anchor_date
+            label = f"Daily - {anchor_date.strftime('%A')}"
+        return ResolvedTvImdbDateWindow(
+            key="daily_segment",
+            label=label,
+            window_start=window_start,
+            window_end=window_end,
+        )
+
     window = TV_IMDB_DATE_WINDOW_MAP.get(key)
     if window is None:
         valid_keys = ", ".join([item.key for item in TV_IMDB_DATE_WINDOWS] + [TV_IMDB_CUSTOM_DATE_WINDOW_KEY])
         raise ValueError(f"Choose a valid TV IMDb date window: {valid_keys}.")
 
-    anchor_date = today or datetime.now().astimezone().date()
     return ResolvedTvImdbDateWindow(
         key=window.key,
         label=window.label,

@@ -914,7 +914,7 @@ def test_tv_imdb_episode_count_route_api_and_downloads(monkeypatch):
     assert '<option value="last_7_days"' in page_response.text
     assert '<option value="week"' in page_response.text
     assert '<option value="month"' in page_response.text
-    assert '<option value="year" selected' in page_response.text
+    assert '<option value="daily_segment" selected' in page_response.text
     assert '<option value="custom"' in page_response.text
     assert 'type="date" name="custom_start_date"' in page_response.text
     assert 'type="date" name="custom_end_date"' in page_response.text
@@ -956,19 +956,48 @@ def test_tv_imdb_episode_count_route_api_and_downloads(monkeypatch):
         "title",
         "network_distributor",
         "imdb_id",
+        "metacritic_url",
         "latest_season_number",
         "latest_season_episode_count",
         "latest_season_start_date",
         "latest_season_end_date",
     ]
-    assert csv_rows[0]["release_date"] == "2026-05-01"
+    assert csv_rows[0]["release_date"] == "01-05-2026"
     assert csv_rows[0]["title"] == "Example Show"
     assert csv_rows[0]["network_distributor"] == "Netflix"
     assert csv_rows[0]["imdb_id"] == "tt1234567"
+    assert csv_rows[0]["metacritic_url"] == "https://www.metacritic.com/tv/example-show/"
     assert csv_rows[0]["latest_season_number"] == "2"
     assert csv_rows[0]["latest_season_episode_count"] == "4"
-    assert csv_rows[0]["latest_season_start_date"] == "2026-05-01"
-    assert csv_rows[0]["latest_season_end_date"] == "2026-05-22"
+    assert csv_rows[0]["latest_season_start_date"] == "01-05-2026"
+    assert csv_rows[0]["latest_season_end_date"] == "22-05-2026"
+
+    xlsx_response = client.get(f"/tv/imdb-episode-counts/export/{export_id}/xlsx")
+    assert xlsx_response.status_code == 200
+    assert 'filename="tv_imdb_episode_counts_month.xlsx"' in xlsx_response.headers["content-disposition"]
+    workbook = load_workbook(io.BytesIO(xlsx_response.content))
+    assert workbook.sheetnames == ["Export"]
+    sheet = workbook["Export"]
+    assert [cell.value for cell in sheet[1]] == [
+        "release_date",
+        "title",
+        "network_distributor",
+        "imdb_id",
+        "metacritic_url",
+        "latest_season_number",
+        "latest_season_episode_count",
+        "latest_season_start_date",
+        "latest_season_end_date",
+    ]
+    assert sheet["A2"].value == "01-05-2026"
+    assert sheet["B2"].value == "Example Show"
+    assert sheet["C2"].value == "Netflix"
+    assert sheet["D2"].value == "tt1234567"
+    assert sheet["E2"].value == "https://www.metacritic.com/tv/example-show/"
+    assert sheet["F2"].value == 2
+    assert sheet["G2"].value == 4
+    assert sheet["H2"].value == "01-05-2026"
+    assert sheet["I2"].value == "22-05-2026"
 
     api_response = client.get("/api/tv/imdb-episode-counts?date_window=week")
     assert api_response.status_code == 200
@@ -980,6 +1009,7 @@ def test_tv_imdb_episode_count_route_api_and_downloads(monkeypatch):
         "title",
         "network_distributor",
         "imdb_id",
+        "metacritic_url",
         "latest_season_number",
         "latest_season_episode_count",
         "latest_season_start_date",
@@ -989,6 +1019,7 @@ def test_tv_imdb_episode_count_route_api_and_downloads(monkeypatch):
     assert api_payload["items"][0]["latest_season_episode_count"] == 4
     assert api_payload["items"][0]["network_distributor"] == "Netflix"
     assert api_payload["items"][0]["latest_season_end_date"] == "2026-05-22"
+
 
     custom_api_response = client.get(
         "/api/tv/imdb-episode-counts?date_window=custom&start_date=2026-04-01&end_date=2026-04-07"
