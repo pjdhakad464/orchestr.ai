@@ -8,7 +8,7 @@ from typing import Annotated
 from urllib.parse import urlencode
 
 from fastapi import APIRouter, Form, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from starlette.concurrency import run_in_threadpool
 
@@ -718,3 +718,56 @@ async def export_box_office_mojo_data(export_id: str, fmt: str):
             headers={"Content-Disposition": f'attachment; filename="{filename_base}.xlsx"'},
         )
     return HTMLResponse("Unsupported export format.", status_code=400)
+
+
+@router.get("/api/poster/{imdb_id}")
+@router.get("/calendar/api/poster/{imdb_id}")
+async def get_poster_redirect(imdb_id: str):
+    import re
+    import httpx
+    
+    fallback_url = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 34' width='48' height='72'><rect width='100%' height='100%' fill='%23f1f5f9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='14' fill='%2394a3b8'>🎬</text></svg>"
+    
+    if not re.match(r"^tt\d+$", imdb_id):
+        return RedirectResponse(url=fallback_url)
+
+    cache_key = f"poster:{imdb_id}"
+    cached_url = cache.get(cache_key)
+    if isinstance(cached_url, str) and cached_url:
+        return RedirectResponse(url=cached_url)
+
+    # 1. Try OMDB
+    if settings.omdb_api_key:
+        try:
+            url = f"https://www.omdbapi.com/?apikey={settings.omdb_api_key}&i={imdb_id}"
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, timeout=5.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    poster_url = data.get("Poster")
+                    if poster_url and poster_url != "N/A":
+                        cache.set(cache_key, poster_url)
+                        return RedirectResponse(url=poster_url)
+        except Exception:
+            pass
+
+    # 2. Try TMDB
+    if settings.tmdb_api_key:
+        try:
+            url = f"https://api.themoviedb.org/3/find/{imdb_id}?api_key={settings.tmdb_api_key}&external_source=imdb_id"
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, timeout=5.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    results = data.get("movie_results") or data.get("tv_results") or []
+                    if results:
+                        poster_path = results[0].get("poster_path")
+                        if poster_path:
+                            poster_url = f"https://image.tmdb.org/t/p/w185{poster_path}"
+                            cache.set(cache_key, poster_url)
+                            return RedirectResponse(url=poster_url)
+        except Exception:
+            pass
+
+    return RedirectResponse(url=fallback_url)
+

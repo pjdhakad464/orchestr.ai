@@ -129,6 +129,275 @@
     border-top: 1px dashed #cbd5e1;
     padding-top: 24px;
   }
+
+  /* KPI Cards Styling */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+    margin-top: 16px;
+  }
+  .kpi-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .kpi-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .kpi-val {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 8px;
+    line-height: 1;
+  }
+  .kpi-sub {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Filters row styling */
+  .filters-row {
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .filter-group.search {
+    flex: 2;
+    min-width: 200px;
+  }
+  .filter-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+  }
+  .filter-group input, .filter-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #334155;
+    background-color: #ffffff;
+    height: 38px;
+    box-sizing: border-box;
+  }
+  .filter-group input:focus, .filter-group select:focus {
+    border-color: #6366f1;
+    outline: none;
+  }
+  .filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .btn-filter-secondary {
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    height: 38px;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+  }
+  .btn-filter-secondary:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #94a3b8;
+  }
+  .btn-filter-primary {
+    background: #4f46e5;
+    color: #ffffff;
+    border: 1px solid #4f46e5;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    height: 38px;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn-filter-primary:hover {
+    background: #4338ca;
+    border-color: #4338ca;
+  }
+  .multi-select-dropdown summary {
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #334155;
+    background: #ffffff;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  /* Results Table Upgraded Styling */
+  .movie-poster-thumb {
+    width: 48px;
+    height: 72px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #f1f5f9;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .movie-title-cell {
+    display: flex;
+    align-items: center;
+  }
+  .movie-title-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .movie-title-bold {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 0.95rem;
+  }
+  .movie-imdb-id-link {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.1s ease;
+  }
+  .movie-imdb-id-link:hover {
+    color: #4f46e5;
+  }
+  .badge-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .badge-scale-wide {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  .badge-scale-limited {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  .badge-scale-other {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+  .genre-tag {
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .distributor-bold {
+    font-weight: 600;
+    color: #334155;
+  }
+  .distributor-subtext {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 2px;
+  }
+  .links-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .links-stack a {
+    text-decoration: none;
+    transition: color 0.1s ease;
+  }
+  .task-info-box {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid #4f46e5;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 0.85rem;
+    color: #475569;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  .task-info-box h4 {
+    margin: 0 0 6px 0;
+    color: #0f172a;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .task-info-box p {
+    margin: 0 0 8px 0;
+    line-height: 1.5;
+  }
+  .task-info-box p:last-child {
+    margin-bottom: 0;
+  }
+  .task-info-box ul {
+    margin: 4px 0 0 0;
+    padding-left: 20px;
+  }
+  .task-info-box li {
+    margin-bottom: 4px;
+    line-height: 1.5;
+  }
+  .task-info-box a {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .task-info-box a:hover {
+    text-decoration: underline;
+  }
 </style>
 
 <div class="task-accordion">
@@ -142,6 +411,16 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="billboard-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.billboard.com/charts/artist-100/" target="_blank" rel="noreferrer">https://www.billboard.com/charts/artist-100/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Scrape the top 100 raw artist profiles currently listed on the Billboard Artist 100 chart.</li>
+          <li>Query the Wikidata search API in parallel using semaphores to resolve matching QIDs.</li>
+          <li>Fetch Wikidata claims to extract artist gender (P21), primary professions (P106), IMDb ID (P345), and English Wikipedia article URLs.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="billboard" />
         <button type="submit" class="submit-btn">Run Billboard Scraper</button>
@@ -164,52 +443,105 @@
           <p class="meta">Generated {{ billboard_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
         
-        {% if billboard_snapshot.export_id %}
-        <div class="export-bar">
-          <p class="meta">Download the resolved list of Billboard artists with resolved metadata details.</p>
-          <a class="export-link" href="/calendar/billboard/export/{{ billboard_snapshot.export_id }}/csv">Download CSV</a>
+        {% if billboard_snapshot.notes %}
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
+          {% for note in billboard_snapshot.notes %}
+          <p style="margin: 4px 0;">{{ note }}</p>
+          {% endfor %}
         </div>
         {% endif %}
+        
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">TOTAL ARTISTS</span>
+            <span class="kpi-val" id="billboard-kpi-total">{{ billboard_snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">MALE ARTISTS</span>
+            <span class="kpi-val" id="billboard-kpi-male">{{ billboard_snapshot.items | selectattr("gender", "equalto", "male") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">FEMALE ARTISTS</span>
+            <span class="kpi-val" id="billboard-kpi-female">{{ billboard_snapshot.items | selectattr("gender", "equalto", "female") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">GROUP / NEUTRAL</span>
+            <span class="kpi-val" id="billboard-kpi-limited">{{ billboard_snapshot.items | selectattr("gender", "ne", "male") | selectattr("gender", "ne", "female") | list | length }}</span>
+          </div>
+        </div>
 
-        <div class="table-shell">
-          <table class="results-table">
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter Artist Name</label>
+            <input type="text" id="billboard-search-input" placeholder="Filter artists..." oninput="applyBillboardFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>Gender</label>
+            <details class="multi-select-dropdown" id="billboard-gender-dropdown" data-default-label="All Genders">
+              <summary>All Genders</summary>
+              <div class="multi-select-menu" id="billboard-gender-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Profession</label>
+            <details class="multi-select-dropdown" id="billboard-profession-dropdown" data-default-label="All Professions">
+              <summary>All Professions</summary>
+              <div class="multi-select-menu" id="billboard-profession-menu"></div>
+            </details>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetBillboardFilters()">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('billboard', 'billboard_artists')">Export CSV</button>
+            {% if billboard_snapshot.export_id %}
+            <a href="/billboard/export/{{ billboard_snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table" id="billboard-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Artist Name</th>
-                <th>Gender</th>
-                <th>Profession(s)</th>
-                <th>IMDb ID</th>
-                <th>Wikipedia Link</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Rank</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Artist Name</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Gender</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Profession(s)</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">IMDb ID</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Wikipedia</th>
               </tr>
             </thead>
             <tbody>
               {% for item in billboard_snapshot.items %}
-              <tr>
-                <td>{{ item.rank }}</td>
-                <td>
+              <tr class="billboard-row"
+                  data-title="{{ item.name | lower }}"
+                  data-gender="{{ item.gender | lower if item.gender else 'unknown' }}"
+                  data-profession="{{ item.profession | lower if item.profession else '' }}">
+                <td style="padding: 12px; font-size: 0.9rem; font-weight: 700; color: #64748b;">#{{ item.rank }}</td>
+                <td style="padding: 12px; font-weight: 600; color: #0f172a;">
                   {% if item.slug %}
-                  <a href="https://www.billboard.com/artist/{{ item.slug }}/" target="_blank" rel="noreferrer">{{ item.name }}</a>
+                  <a href="https://www.billboard.com/artist/{{ item.slug }}/" target="_blank" rel="noreferrer" style="color: #4f46e5; text-decoration: none;">{{ item.name }}</a>
                   {% else %}
                   {{ item.name }}
                   {% endif %}
                 </td>
-                <td>
+                <td style="padding: 12px;">
                   <span class="badge {% if item.gender.lower() == 'male' %}badge-male{% elif item.gender.lower() == 'female' %}badge-female{% else %}badge-neutral{% endif %}">
                     {{ item.gender | title if item.gender else "Unknown" }}
                   </span>
                 </td>
-                <td>{{ item.profession or "-" }}</td>
-                <td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569;">{{ item.profession or "-" }}</td>
+                <td style="padding: 12px;">
                   {% if item.imdb_id %}
-                  <a href="https://www.imdb.com/name/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                  <a href="https://www.imdb.com/name/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" class="movie-imdb-id-link" style="font-weight: 600;">{{ item.imdb_id }}</a>
                   {% else %}
                   -
                   {% endif %}
                 </td>
-                <td>
+                <td style="padding: 12px;">
                   {% if item.wikipedia_url %}
-                  <a href="{{ item.wikipedia_url }}" target="_blank" rel="noreferrer">Wikipedia Page</a>
+                  <a href="{{ item.wikipedia_url }}" target="_blank" rel="noreferrer" style="color: #4f46e5; font-size: 0.85rem; font-weight: 600; text-decoration: none;">Wikipedia</a>
                   {% else %}
                   -
                   {% endif %}
@@ -234,6 +566,16 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="review_release-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.boxofficemojo.com/calendar/" target="_blank" rel="noreferrer">https://www.boxofficemojo.com/calendar/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Fetch the upcoming 12 months domestic movie releases calendar from Box Office Mojo.</li>
+          <li>Parse theatrical release dates, movie titles, studios/distributors, release scales (Wide, Limited, etc.), runtimes, and cast details.</li>
+          <li>Match the scraped titles against a local IMDb dataset to resolve corresponding IMDb ID keys.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="review_release" />
         <button type="submit" class="submit-btn">Run Upcoming 12m Fetch</button>
@@ -255,62 +597,175 @@
           </div>
           <p class="meta">Generated: {{ box_office_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
+        
         {% if box_office_snapshot.notes %}
-        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
           {% for note in box_office_snapshot.notes %}
-          <p>{{ note }}</p>
+          <p style="margin: 4px 0;">{{ note }}</p>
           {% endfor %}
         </div>
         {% endif %}
-
-        {% if box_office_snapshot.export_id %}
-        <div class="export-bar">
-          <p class="meta">Export full visible release details captured for the selected report window.</p>
-          <div class="export-actions">
-            <a class="export-link" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv">Download CSV</a>
-            <a class="export-link secondary" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx">Download Excel</a>
+        
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">IN REGION MOJO</span>
+            <span class="kpi-val" id="review_release-kpi-total">{{ box_office_snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">WIDE RELEASES</span>
+            <span class="kpi-val" id="review_release-kpi-wide">{{ box_office_snapshot.items | selectattr("scale", "equalto", "Wide") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">LIMITED RELEASES</span>
+            <span class="kpi-val" id="review_release-kpi-limited">{{ box_office_snapshot.items | selectattr("scale", "ne", "Wide") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">DATE RANGE</span>
+            <span class="kpi-sub" id="review_release-kpi-range" title="{{ box_office_snapshot.window_start.isoformat() }} to {{ box_office_snapshot.window_end.isoformat() }}">
+              {{ box_office_snapshot.window_start.strftime("%Y-%m-%d") }} to {{ box_office_snapshot.window_end.strftime("%Y-%m-%d") }}
+            </span>
           </div>
         </div>
-        {% endif %}
 
-        <div class="table-shell">
-          <table class="results-table">
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter Movie Title</label>
+            <input type="text" id="review_release-search-input" placeholder="Filter titles..." oninput="applyFilters('review_release')" />
+          </div>
+          <div class="filter-group">
+            <label>Genre</label>
+            <details class="multi-select-dropdown" id="review_release-genres-dropdown" data-default-label="All Genres">
+              <summary>All Genres</summary>
+              <div class="multi-select-menu" id="review_release-genres-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Release Scale</label>
+            <details class="multi-select-dropdown" id="review_release-scale-dropdown" data-default-label="All Scales">
+              <summary>All Scales</summary>
+              <div class="multi-select-menu" id="review_release-scale-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Release Type</label>
+            <details class="multi-select-dropdown" id="review_release-type-dropdown" data-default-label="All Types">
+              <summary>All Types</summary>
+              <div class="multi-select-menu" id="review_release-type-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Distributor</label>
+            <details class="multi-select-dropdown" id="review_release-distributor-dropdown" data-default-label="All Distributors">
+              <summary>All Distributors</summary>
+              <div class="multi-select-menu" id="review_release-distributor-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Start Date</label>
+            <input type="date" id="review_release-start-date" onchange="applyFilters('review_release')" />
+          </div>
+          <div class="filter-group">
+            <label>End Date</label>
+            <input type="date" id="review_release-end-date" onchange="applyFilters('review_release')" />
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetMojoFilters('review_release')">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('review_release', 'upcoming_domestic_releases')">Export CSV</button>
+            {% if box_office_snapshot.export_id %}
+            <a href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            <a href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx" class="btn-filter-secondary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download Excel</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table" id="review_release-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>Release Date</th>
-                <th>Title</th>
-                <th>Release Notes</th>
-                <th>Genres</th>
-                <th>Cast</th>
-                <th>Runtime</th>
-                <th>Distributor</th>
-                <th>Scale</th>
-                <th>IMDb ID</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Release Date</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Title / IMDb ID</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Distributor</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Genre</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Scale</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Cast</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Runtime</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">BOM / IMDb / IMDbPro</th>
               </tr>
             </thead>
             <tbody>
               {% for item in box_office_snapshot.items %}
-              <tr>
-                <td>{{ item.release_date }}</td>
-                <td>
-                  {% if item.url %}
-                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-                  {% else %}
-                  {{ item.title }}
-                  {% endif %}
+              <tr class="review_release-row" 
+                  data-title="{{ item.title | lower }}" 
+                  data-scale="{{ item.scale | lower if item.scale else 'limited' }}"
+                  data-genres="{{ item.genres | lower }}"
+                  data-type="{{ item.release_notes | lower if item.release_notes else '' }}"
+                  data-distributor="{{ item.distributor | lower if item.distributor else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
+                  {{ item.release_date }}
                 </td>
-                <td>{{ item.release_notes or "-" }}</td>
-                <td>{{ item.genres or "-" }}</td>
-                <td>{{ item.cast or "-" }}</td>
-                <td>{{ item.runtime or "-" }}</td>
-                <td>{{ item.distributor or "-" }}</td>
-                <td>{{ item.scale or "-" }}</td>
-                <td>
-                  {% if item.imdb_id %}
-                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                <td style="padding: 12px;">
+                  <div class="movie-title-cell">
+                    {% if item.imdb_id %}
+                    <img class="movie-poster-thumb" src="/calendar/api/poster/{{ item.imdb_id }}" alt="Poster" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 34\' width=\'48\' height=\'72\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'14\' fill=\'%2394a3b8\'>🎬</text></svg>'" />
+                    {% else %}
+                    <div class="movie-poster-thumb" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #94a3b8; font-size: 1.2rem;">🎬</div>
+                    {% endif %}
+                    <div class="movie-title-info">
+                      <span class="movie-title-bold">{{ item.title }}</span>
+                      {% if item.imdb_id %}
+                      <a class="movie-imdb-id-link" href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">
+                        imdb: {{ item.imdb_id }}
+                      </a>
+                      {% else %}
+                      <span style="font-size: 0.75rem; color: #94a3b8;">no imdb resolved</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155;">
+                  <div class="distributor-bold">{{ item.distributor or "-" }}</div>
+                </td>
+                <td style="padding: 12px;">
+                  <div style="display: flex; flex-wrap: wrap; gap: 4px; max-width: 180px;">
+                    {% if item.genres %}
+                      {% for g in item.genres.split(",") %}
+                      <span class="genre-tag">{{ g.strip() }}</span>
+                      {% endfor %}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </div>
+                </td>
+                <td style="padding: 12px;">
+                  {% if item.scale == "Wide" %}
+                  <span class="badge-pill badge-scale-wide">Wide</span>
+                  {% elif item.scale == "Limited" %}
+                  <span class="badge-pill badge-scale-limited">Limited</span>
+                  {% elif item.scale %}
+                  <span class="badge-pill badge-scale-other">{{ item.scale }}</span>
                   {% else %}
                   -
                   {% endif %}
+                </td>
+                <td style="padding: 12px; font-size: 0.8rem; color: #475569; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ item.cast }}">
+                  {{ item.cast or "-" }}
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569; white-space: nowrap;">
+                  {{ item.runtime or "-" }}
+                </td>
+                <td style="padding: 12px;">
+                  <div class="links-stack">
+                    {% if item.url %}
+                    <a href="{{ item.url }}" target="_blank" rel="noreferrer" style="color: #4f46e5;">BOM</a>
+                    {% endif %}
+                    {% if item.imdb_id %}
+                    <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #eab308;">IMDb</a>
+                    <a href="https://pro.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #06b6d4;">IMDbPro</a>
+                    {% endif %}
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -332,6 +787,16 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="box_office-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.boxofficemojo.com/calendar/" target="_blank" rel="noreferrer">https://www.boxofficemojo.com/calendar/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Fetch the recent domestic theatrical releases from Box Office Mojo for the past 7 days.</li>
+          <li>Parse theatrical release dates, movie titles, studios/distributors, release scales, runtimes, and cast details.</li>
+          <li>Match the scraped titles against a local IMDb dataset to resolve corresponding IMDb ID keys.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="box_office" />
         <button type="submit" class="submit-btn">Run Last 7 Days Fetch</button>
@@ -353,61 +818,175 @@
           </div>
           <p class="meta">Generated: {{ box_office_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
+        
         {% if box_office_snapshot.notes %}
-        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
           {% for note in box_office_snapshot.notes %}
-          <p>{{ note }}</p>
+          <p style="margin: 4px 0;">{{ note }}</p>
           {% endfor %}
         </div>
         {% endif %}
-
-        {% if box_office_snapshot.export_id %}
-        <div class="export-bar">
-          <div class="export-actions">
-            <a class="export-link" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv">Download CSV</a>
-            <a class="export-link secondary" href="/calendar/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx">Download Excel</a>
+        
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">IN REGION MOJO</span>
+            <span class="kpi-val" id="box_office-kpi-total">{{ box_office_snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">WIDE RELEASES</span>
+            <span class="kpi-val" id="box_office-kpi-wide">{{ box_office_snapshot.items | selectattr("scale", "equalto", "Wide") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">LIMITED RELEASES</span>
+            <span class="kpi-val" id="box_office-kpi-limited">{{ box_office_snapshot.items | selectattr("scale", "ne", "Wide") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">DATE RANGE</span>
+            <span class="kpi-sub" id="box_office-kpi-range" title="{{ box_office_snapshot.window_start.isoformat() }} to {{ box_office_snapshot.window_end.isoformat() }}">
+              {{ box_office_snapshot.window_start.strftime("%Y-%m-%d") }} to {{ box_office_snapshot.window_end.strftime("%Y-%m-%d") }}
+            </span>
           </div>
         </div>
-        {% endif %}
 
-        <div class="table-shell">
-          <table class="results-table">
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter Movie Title</label>
+            <input type="text" id="box_office-search-input" placeholder="Filter titles..." oninput="applyFilters('box_office')" />
+          </div>
+          <div class="filter-group">
+            <label>Genre</label>
+            <details class="multi-select-dropdown" id="box_office-genres-dropdown" data-default-label="All Genres">
+              <summary>All Genres</summary>
+              <div class="multi-select-menu" id="box_office-genres-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Release Scale</label>
+            <details class="multi-select-dropdown" id="box_office-scale-dropdown" data-default-label="All Scales">
+              <summary>All Scales</summary>
+              <div class="multi-select-menu" id="box_office-scale-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Release Type</label>
+            <details class="multi-select-dropdown" id="box_office-type-dropdown" data-default-label="All Types">
+              <summary>All Types</summary>
+              <div class="multi-select-menu" id="box_office-type-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Distributor</label>
+            <details class="multi-select-dropdown" id="box_office-distributor-dropdown" data-default-label="All Distributors">
+              <summary>All Distributors</summary>
+              <div class="multi-select-menu" id="box_office-distributor-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Start Date</label>
+            <input type="date" id="box_office-start-date" onchange="applyFilters('box_office')" />
+          </div>
+          <div class="filter-group">
+            <label>End Date</label>
+            <input type="date" id="box_office-end-date" onchange="applyFilters('box_office')" />
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetMojoFilters('box_office')">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('box_office', 'recent_domestic_releases')">Export CSV</button>
+            {% if box_office_snapshot.export_id %}
+            <a href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            <a href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx" class="btn-filter-secondary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download Excel</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table" id="box_office-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>Release Date</th>
-                <th>Title</th>
-                <th>Release Notes</th>
-                <th>Genres</th>
-                <th>Cast</th>
-                <th>Runtime</th>
-                <th>Distributor</th>
-                <th>Scale</th>
-                <th>IMDb ID</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Release Date</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Title / IMDb ID</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Distributor</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Genre</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Scale</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Cast</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Runtime</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">BOM / IMDb / IMDbPro</th>
               </tr>
             </thead>
             <tbody>
               {% for item in box_office_snapshot.items %}
-              <tr>
-                <td>{{ item.release_date }}</td>
-                <td>
-                  {% if item.url %}
-                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-                  {% else %}
-                  {{ item.title }}
-                  {% endif %}
+              <tr class="box_office-row" 
+                  data-title="{{ item.title | lower }}" 
+                  data-scale="{{ item.scale | lower if item.scale else 'limited' }}"
+                  data-genres="{{ item.genres | lower }}"
+                  data-type="{{ item.release_notes | lower if item.release_notes else '' }}"
+                  data-distributor="{{ item.distributor | lower if item.distributor else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
+                  {{ item.release_date }}
                 </td>
-                <td>{{ item.release_notes or "-" }}</td>
-                <td>{{ item.genres or "-" }}</td>
-                <td>{{ item.cast or "-" }}</td>
-                <td>{{ item.runtime or "-" }}</td>
-                <td>{{ item.distributor or "-" }}</td>
-                <td>{{ item.scale or "-" }}</td>
-                <td>
-                  {% if item.imdb_id %}
-                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                <td style="padding: 12px;">
+                  <div class="movie-title-cell">
+                    {% if item.imdb_id %}
+                    <img class="movie-poster-thumb" src="/calendar/api/poster/{{ item.imdb_id }}" alt="Poster" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 34\' width=\'48\' height=\'72\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'14\' fill=\'%2394a3b8\'>🎬</text></svg>'" />
+                    {% else %}
+                    <div class="movie-poster-thumb" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #94a3b8; font-size: 1.2rem;">🎬</div>
+                    {% endif %}
+                    <div class="movie-title-info">
+                      <span class="movie-title-bold">{{ item.title }}</span>
+                      {% if item.imdb_id %}
+                      <a class="movie-imdb-id-link" href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">
+                        imdb: {{ item.imdb_id }}
+                      </a>
+                      {% else %}
+                      <span style="font-size: 0.75rem; color: #94a3b8;">no imdb resolved</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155;">
+                  <div class="distributor-bold">{{ item.distributor or "-" }}</div>
+                </td>
+                <td style="padding: 12px;">
+                  <div style="display: flex; flex-wrap: wrap; gap: 4px; max-width: 180px;">
+                    {% if item.genres %}
+                      {% for g in item.genres.split(",") %}
+                      <span class="genre-tag">{{ g.strip() }}</span>
+                      {% endfor %}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </div>
+                </td>
+                <td style="padding: 12px;">
+                  {% if item.scale == "Wide" %}
+                  <span class="badge-pill badge-scale-wide">Wide</span>
+                  {% elif item.scale == "Limited" %}
+                  <span class="badge-pill badge-scale-limited">Limited</span>
+                  {% elif item.scale %}
+                  <span class="badge-pill badge-scale-other">{{ item.scale }}</span>
                   {% else %}
                   -
                   {% endif %}
+                </td>
+                <td style="padding: 12px; font-size: 0.8rem; color: #475569; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ item.cast }}">
+                  {{ item.cast or "-" }}
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569; white-space: nowrap;">
+                  {{ item.runtime or "-" }}
+                </td>
+                <td style="padding: 12px;">
+                  <div class="links-stack">
+                    {% if item.url %}
+                    <a href="{{ item.url }}" target="_blank" rel="noreferrer" style="color: #4f46e5;">BOM</a>
+                    {% endif %}
+                    {% if item.imdb_id %}
+                    <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #eab308;">IMDb</a>
+                    <a href="https://pro.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #06b6d4;">IMDbPro</a>
+                    {% endif %}
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -429,6 +1008,16 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="tv_metadata-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/tv-premiere-dates/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/tv-premiere-dates/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Scrape the upcoming TV Premiere dates calendar from Metacritic.</li>
+          <li>Query a local IMDb title matching service to link resolved IMDb IDs for each show.</li>
+          <li>For each matched show, parse the IMDb episode TSV dataset or scrape the IMDb episode pages to extract the total number of seasons, episodes in the latest season, and air dates.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="tv_metadata" />
         
@@ -474,50 +1063,150 @@
           </div>
           <p class="meta">Segment: {{ tv_imdb_snapshot.date_window_label }} | Generated: {{ tv_imdb_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
-
-        {% if tv_imdb_snapshot.export_id %}
-        <div class="export-bar">
-          <a class="export-link" href="/calendar/tv/imdb-episode-counts/export/{{ tv_imdb_snapshot.export_id }}/csv">Download CSV</a>
+        
+        {% if tv_imdb_snapshot.notes %}
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
+          {% for note in tv_imdb_snapshot.notes %}
+          <p style="margin: 4px 0;">{{ note }}</p>
+          {% endfor %}
         </div>
         {% endif %}
 
-        <div class="table-shell">
-          <table class="results-table tv-imdb-table">
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">TOTAL SHOWS</span>
+            <span class="kpi-val" id="tv_metadata-kpi-total">{{ tv_imdb_snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">IMDB FOUND</span>
+            <span class="kpi-val" id="tv_metadata-kpi-found">{{ tv_imdb_snapshot.items | selectattr("imdb_match_status", "equalto", "found") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">IMDB UNCERTAIN</span>
+            <span class="kpi-val" id="tv_metadata-kpi-uncertain">{{ tv_imdb_snapshot.items | selectattr("imdb_match_status", "equalto", "uncertain") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">IMDB NOT FOUND</span>
+            <span class="kpi-val" id="tv_metadata-kpi-notfound">{{ tv_imdb_snapshot.items | selectattr("imdb_match_status", "equalto", "not_found") | list | length }}</span>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter TV Show Title</label>
+            <input type="text" id="tv_metadata-search-input" placeholder="Filter TV shows..." oninput="applyTvMetadataFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>Match Status</label>
+            <details class="multi-select-dropdown" id="tv_metadata-status-dropdown" data-default-label="All Statuses">
+              <summary>All Statuses</summary>
+              <div class="multi-select-menu" id="tv_metadata-status-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Network</label>
+            <details class="multi-select-dropdown" id="tv_metadata-network-dropdown" data-default-label="All Networks">
+              <summary>All Networks</summary>
+              <div class="multi-select-menu" id="tv_metadata-network-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Start Date</label>
+            <input type="date" id="tv_metadata-start-date" onchange="applyTvMetadataFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>End Date</label>
+            <input type="date" id="tv_metadata-end-date" onchange="applyTvMetadataFilters()" />
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetTvMetadataFilters()">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('tv_metadata', 'tv_imdb_counts')">Export CSV</button>
+            {% if tv_imdb_snapshot.export_id %}
+            <a href="/tv/imdb-episode-counts/export/{{ tv_imdb_snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table tv-imdb-table" id="tv_metadata-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>release_date</th>
-                <th>title</th>
-                <th>network_distributor</th>
-                <th>imdb_id</th>
-                <th>latest_season_number</th>
-                <th>latest_season_episode_count</th>
-                <th>latest_season_start_date</th>
-                <th>latest_season_end_date</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Release Date</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Title / IMDb ID</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Network / Distributor <span style="display:none;">network_distributor</span></th>
+                <th style="padding: 12px; font-weight: 700; text-align: center; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Latest Season</th>
+                <th style="padding: 12px; font-weight: 700; text-align: center; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Episodes In Season <span style="display:none;">latest_season_episode_count</span></th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Air Dates</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Status</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Links</th>
               </tr>
             </thead>
             <tbody>
               {% for item in tv_imdb_snapshot.items %}
-              <tr>
-                <td>{{ item.release_date or "-" }}</td>
-                <td>
-                  {% if item.metacritic_url %}
-                  <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+              <tr class="tv_metadata-row"
+                  data-title="{{ item.title | lower }}"
+                  data-status="{{ item.imdb_match_status }}"
+                  data-network="{{ item.network_distributor | lower if item.network_distributor else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
+                  {{ item.release_date or "-" }}
+                </td>
+                <td style="padding: 12px;">
+                  <div class="movie-title-cell">
+                    {% if item.imdb_id %}
+                    <img class="movie-poster-thumb" src="/calendar/api/poster/{{ item.imdb_id }}" alt="Poster" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 34\' width=\'48\' height=\'72\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'14\' fill=\'%2394a3b8\'>🎬</text></svg>'" />
+                    {% else %}
+                    <div class="movie-poster-thumb" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #94a3b8; font-size: 1.2rem;">🎬</div>
+                    {% endif %}
+                    <div class="movie-title-info">
+                      <span class="movie-title-bold">{{ item.title }}</span>
+                      {% if item.imdb_id %}
+                      <a class="movie-imdb-id-link" href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">
+                        imdb: {{ item.imdb_id }}
+                      </a>
+                      {% else %}
+                      <span style="font-size: 0.75rem; color: #94a3b8;">no imdb resolved</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155;">{{ item.network_distributor or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; font-weight: bold; color: #0f172a; text-align: center;">
+                  {{ item.latest_season_number if item.latest_season_number is not none else "-" }}
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; font-weight: bold; color: #0f172a; text-align: center;">
+                  {{ item.latest_season_episode_count if item.latest_season_episode_count is not none else "-" }}
+                </td>
+                <td style="padding: 12px; font-size: 0.8rem; color: #475569;">
+                  {% if item.latest_season_start_date or item.latest_season_end_date %}
+                  <div style="white-space: nowrap;">Start: {{ item.latest_season_start_date or "?" }}</div>
+                  <div style="white-space: nowrap;">End: {{ item.latest_season_end_date or "?" }}</div>
                   {% else %}
-                  {{ item.title }}
+                  -
                   {% endif %}
                 </td>
-                <td>{{ item.network_distributor or "-" }}</td>
-                <td>
-                  {% if item.imdb_url %}
-                  <a href="{{ item.imdb_url }}" target="_blank" rel="noreferrer">{{ item.imdb_id or "-" }}</a>
+                <td style="padding: 12px;">
+                  {% if item.imdb_match_status == "found" %}
+                  <span class="badge-pill badge-scale-wide" style="font-size: 0.65rem;">Found</span>
+                  {% elif item.imdb_match_status == "uncertain" %}
+                  <span class="badge-pill badge-scale-limited" style="font-size: 0.65rem;">Uncertain</span>
                   {% else %}
-                  {{ item.imdb_id or "-" }}
+                  <span class="badge-pill badge-scale-other" style="font-size: 0.65rem; background: #fee2e2; color: #991b1b;">Not Found</span>
                   {% endif %}
                 </td>
-                <td>{{ item.latest_season_number if item.latest_season_number is not none else "-" }}</td>
-                <td>{{ item.latest_season_episode_count if item.latest_season_episode_count is not none else "-" }}</td>
-                <td>{{ item.latest_season_start_date or "-" }}</td>
-                <td>{{ item.latest_season_end_date or "-" }}</td>
+                <td style="padding: 12px;">
+                  <div class="links-stack">
+                    {% if item.metacritic_url %}
+                    <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer" style="color: #4f46e5;">Metacritic</a>
+                    {% endif %}
+                    {% if item.imdb_id %}
+                    <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #eab308;">IMDb</a>
+                    <a href="https://pro.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #06b6d4;">IMDbPro</a>
+                    {% endif %}
+                  </div>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -538,6 +1227,16 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="film_adding-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/upcoming-movie-release-dates-schedule/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/upcoming-movie-release-dates-schedule/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Scrape the upcoming movie release calendar page from Metacritic.</li>
+          <li>Parse titles, release dates, distributors/studios, availability (Rent/Buy, Streaming), platforms, and metascores.</li>
+          <li>Query a local IMDb title matching service to link resolved IMDb IDs for each movie.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="film_adding" />
         
@@ -574,58 +1273,135 @@
           </div>
           <p class="meta">Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
+        
         {% if snapshot.notes %}
-        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
           {% for note in snapshot.notes %}
-          <p>{{ note }}</p>
+          <p style="margin: 4px 0;">{{ note }}</p>
           {% endfor %}
         </div>
         {% endif %}
 
-        {% if snapshot.export_id %}
-        <div class="export-bar">
-          <a class="export-link" href="/calendar/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">TOTAL ITEMS</span>
+            <span class="kpi-val" id="film_adding-kpi-total">{{ snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">SCORED MOVIES</span>
+            <span class="kpi-val" id="film_adding-kpi-scored">{{ snapshot.items | selectattr("metascore", "ne", none) | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">HAS IMDB ID</span>
+            <span class="kpi-val" id="film_adding-kpi-imdb">{{ snapshot.items | selectattr("imdb_id", "ne", "") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Date Range</span>
+            <span class="kpi-sub" id="film_adding-kpi-range">-</span>
+          </div>
         </div>
-        {% endif %}
 
-        <div class="table-shell">
-          <table class="results-table">
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter Title</label>
+            <input type="text" id="film_adding-search-input" placeholder="Filter movies..." oninput="applyFilmAddingFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>Platform / Provider</label>
+            <details class="multi-select-dropdown" id="film_adding-provider-dropdown" data-default-label="All Platforms">
+              <summary>All Platforms</summary>
+              <div class="multi-select-menu" id="film_adding-provider-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Availability</label>
+            <details class="multi-select-dropdown" id="film_adding-availability-dropdown" data-default-label="All Availability">
+              <summary>All Availability</summary>
+              <div class="multi-select-menu" id="film_adding-availability-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Start Date</label>
+            <input type="date" id="film_adding-start-date" onchange="applyFilmAddingFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>End Date</label>
+            <input type="date" id="film_adding-end-date" onchange="applyFilmAddingFilters()" />
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetFilmAddingFilters()">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('film_adding', 'metacritic_movies')">Export CSV</button>
+            {% if snapshot.export_id %}
+            <a href="/export/{{ snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table" id="film_adding-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>Section</th>
-                <th>Group</th>
-                <th>Release Date</th>
-                <th>Title</th>
-                <th>Provider / Platform</th>
-                <th>Availability</th>
-                <th>Details</th>
-                <th>Metascore</th>
-                <th>IMDb ID</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Release Date</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Title / IMDb ID</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Provider / Platform</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Availability</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Group / Category</th>
+                <th style="padding: 12px; font-weight: 700; text-align: center; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Metascore</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Links</th>
               </tr>
             </thead>
             <tbody>
               {% for item in snapshot.items %}
-              <tr>
-                <td>{{ item.section_label }}</td>
-                <td>{{ item.group_label }}</td>
-                <td>{{ item.release_date or "-" }}</td>
-                <td>
-                  {% if item.url %}
-                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-                  {% else %}
-                  {{ item.title }}
-                  {% endif %}
+              <tr class="film_adding-row"
+                  data-title="{{ item.title | lower }}"
+                  data-provider="{{ item.provider | lower if item.provider else '' }}"
+                  data-availability="{{ item.availability | lower if item.availability else '' }}"
+                  data-group="{{ item.group_label | lower if item.group_label else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
+                  {{ item.release_date or "-" }}
                 </td>
-                <td>{{ item.provider or "-" }}</td>
-                <td>{{ item.availability or "-" }}</td>
-                <td>{{ item.details or "-" }}</td>
-                <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
-                <td>
-                  {% if item.imdb_id %}
-                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                <td style="padding: 12px;">
+                  <div class="movie-title-cell">
+                    {% if item.imdb_id %}
+                    <img class="movie-poster-thumb" src="/calendar/api/poster/{{ item.imdb_id }}" alt="Poster" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 34\' width=\'48\' height=\'72\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'14\' fill=\'%2394a3b8\'>🎬</text></svg>'" />
+                    {% else %}
+                    <div class="movie-poster-thumb" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #94a3b8; font-size: 1.2rem;">🎬</div>
+                    {% endif %}
+                    <div class="movie-title-info">
+                      <span class="movie-title-bold">{{ item.title }}</span>
+                      {% if item.imdb_id %}
+                      <a class="movie-imdb-id-link" href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">
+                        imdb: {{ item.imdb_id }}
+                      </a>
+                      {% else %}
+                      <span style="font-size: 0.75rem; color: #94a3b8;">no imdb resolved</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155;">{{ item.provider or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569;">{{ item.availability or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #64748b;">{{ item.group_label }}</td>
+                <td style="padding: 12px; text-align: center;">
+                  {% if item.metascore is not none %}
+                  <span class="badge-pill badge-scale-wide" style="background: rgba(99, 102, 241, 0.15); color: #4f46e5; font-weight: 700;">{{ item.metascore }}</span>
                   {% else %}
                   -
                   {% endif %}
+                </td>
+                <td style="padding: 12px;">
+                  <div class="links-stack">
+                    {% if item.url %}
+                    <a href="{{ item.url }}" target="_blank" rel="noreferrer" style="color: #4f46e5;">Metacritic</a>
+                    {% endif %}
+                    {% if item.imdb_id %}
+                    <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #eab308;">IMDb</a>
+                    <a href="https://pro.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #06b6d4;">IMDbPro</a>
+                    {% endif %}
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -647,6 +1423,16 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="calendar_scrape-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/tv-premiere-dates/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/tv-premiere-dates/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Scrape the upcoming TV premiere dates calendar from Metacritic.</li>
+          <li>Parse titles, release dates, network/platforms, availability, and metascores.</li>
+          <li>Query a local IMDb title matching service to link resolved IMDb IDs for each show.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="calendar_scrape" />
         
@@ -683,58 +1469,135 @@
           </div>
           <p class="meta">Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
+        
         {% if snapshot.notes %}
-        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
           {% for note in snapshot.notes %}
-          <p>{{ note }}</p>
+          <p style="margin: 4px 0;">{{ note }}</p>
           {% endfor %}
         </div>
         {% endif %}
 
-        {% if snapshot.export_id %}
-        <div class="export-bar">
-          <a class="export-link" href="/calendar/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">TOTAL ITEMS</span>
+            <span class="kpi-val" id="calendar_scrape-kpi-total">{{ snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">SCORED SHOWS</span>
+            <span class="kpi-val" id="calendar_scrape-kpi-scored">{{ snapshot.items | selectattr("metascore", "ne", none) | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">HAS IMDB ID</span>
+            <span class="kpi-val" id="calendar_scrape-kpi-imdb">{{ snapshot.items | selectattr("imdb_id", "ne", "") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Date Range</span>
+            <span class="kpi-sub" id="calendar_scrape-kpi-range">-</span>
+          </div>
         </div>
-        {% endif %}
 
-        <div class="table-shell">
-          <table class="results-table">
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter Title</label>
+            <input type="text" id="calendar_scrape-search-input" placeholder="Filter TV shows..." oninput="applyCalendarScrapeFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>Platform / Provider</label>
+            <details class="multi-select-dropdown" id="calendar_scrape-provider-dropdown" data-default-label="All Platforms">
+              <summary>All Platforms</summary>
+              <div class="multi-select-menu" id="calendar_scrape-provider-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Availability</label>
+            <details class="multi-select-dropdown" id="calendar_scrape-availability-dropdown" data-default-label="All Availability">
+              <summary>All Availability</summary>
+              <div class="multi-select-menu" id="calendar_scrape-availability-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Start Date</label>
+            <input type="date" id="calendar_scrape-start-date" onchange="applyCalendarScrapeFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>End Date</label>
+            <input type="date" id="calendar_scrape-end-date" onchange="applyCalendarScrapeFilters()" />
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetCalendarScrapeFilters()">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('calendar_scrape', 'metacritic_tv')">Export CSV</button>
+            {% if snapshot.export_id %}
+            <a href="/export/{{ snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table" id="calendar_scrape-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>Section</th>
-                <th>Group</th>
-                <th>Release Date</th>
-                <th>Title</th>
-                <th>Provider / Platform</th>
-                <th>Availability</th>
-                <th>Details</th>
-                <th>Metascore</th>
-                <th>IMDb ID</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Release Date</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Title / IMDb ID</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Provider / Platform</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Availability</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Group / Category</th>
+                <th style="padding: 12px; font-weight: 700; text-align: center; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Metascore</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Links</th>
               </tr>
             </thead>
             <tbody>
               {% for item in snapshot.items %}
-              <tr>
-                <td>{{ item.section_label }}</td>
-                <td>{{ item.group_label }}</td>
-                <td>{{ item.release_date or "-" }}</td>
-                <td>
-                  {% if item.url %}
-                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-                  {% else %}
-                  {{ item.title }}
-                  {% endif %}
+              <tr class="calendar_scrape-row"
+                  data-title="{{ item.title | lower }}"
+                  data-provider="{{ item.provider | lower if item.provider else '' }}"
+                  data-availability="{{ item.availability | lower if item.availability else '' }}"
+                  data-group="{{ item.group_label | lower if item.group_label else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
+                  {{ item.release_date or "-" }}
                 </td>
-                <td>{{ item.provider or "-" }}</td>
-                <td>{{ item.availability or "-" }}</td>
-                <td>{{ item.details or "-" }}</td>
-                <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
-                <td>
-                  {% if item.imdb_id %}
-                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                <td style="padding: 12px;">
+                  <div class="movie-title-cell">
+                    {% if item.imdb_id %}
+                    <img class="movie-poster-thumb" src="/calendar/api/poster/{{ item.imdb_id }}" alt="Poster" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 34\' width=\'48\' height=\'72\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'14\' fill=\'%2394a3b8\'>🎬</text></svg>'" />
+                    {% else %}
+                    <div class="movie-poster-thumb" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #94a3b8; font-size: 1.2rem;">🎬</div>
+                    {% endif %}
+                    <div class="movie-title-info">
+                      <span class="movie-title-bold">{{ item.title }}</span>
+                      {% if item.imdb_id %}
+                      <a class="movie-imdb-id-link" href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">
+                        imdb: {{ item.imdb_id }}
+                      </a>
+                      {% else %}
+                      <span style="font-size: 0.75rem; color: #94a3b8;">no imdb resolved</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155;">{{ item.provider or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569;">{{ item.availability or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #64748b;">{{ item.group_label }}</td>
+                <td style="padding: 12px; text-align: center;">
+                  {% if item.metascore is not none %}
+                  <span class="badge-pill badge-scale-wide" style="background: rgba(99, 102, 241, 0.15); color: #4f46e5; font-weight: 700;">{{ item.metascore }}</span>
                   {% else %}
                   -
                   {% endif %}
+                </td>
+                <td style="padding: 12px;">
+                  <div class="links-stack">
+                    {% if item.url %}
+                    <a href="{{ item.url }}" target="_blank" rel="noreferrer" style="color: #4f46e5;">Metacritic</a>
+                    {% endif %}
+                    {% if item.imdb_id %}
+                    <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #eab308;">IMDb</a>
+                    <a href="https://pro.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #06b6d4;">IMDbPro</a>
+                    {% endif %}
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -756,6 +1619,16 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="tv_adding-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/tv-premiere-dates/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/tv-premiere-dates/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Scrape the upcoming TV premiere dates calendar from Metacritic.</li>
+          <li>For each premiere, automatically classify attributes: Daypart (Prime Time vs. Other), Program Type (Series, Mini-Series, Movie, or Other), Language Type (English vs. Other), and up to 3 genres.</li>
+          <li>Format and export structured TV classification columns as CSV or Excel.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="tv_adding" />
         <button type="submit" class="submit-btn">Run TV Classification</button>
@@ -777,59 +1650,142 @@
           </div>
           <p class="meta">Window: {{ tv_classification_snapshot.window_start.isoformat() }} to {{ tv_classification_snapshot.window_end.isoformat() }} | Generated {{ tv_classification_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
+        
         {% if tv_classification_snapshot.notes %}
-        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
           {% for note in tv_classification_snapshot.notes %}
-          <p>{{ note }}</p>
+          <p style="margin: 4px 0;">{{ note }}</p>
           {% endfor %}
         </div>
         {% endif %}
 
-        {% if tv_classification_snapshot.export_id %}
-        <div class="export-bar">
-          <p class="meta">Exports include movies, series, mini-series, and other rows classified in the window.</p>
-          <div class="export-actions">
-            <a class="export-link" href="/calendar/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/csv">Download CSV</a>
-            <a class="export-link secondary" href="/calendar/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/xlsx">Download Excel</a>
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">TOTAL CLASSIFIED</span>
+            <span class="kpi-val" id="tv_adding-kpi-total">{{ tv_classification_snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">SERIES</span>
+            <span class="kpi-val" id="tv_adding-kpi-series">{{ tv_classification_snapshot.items | selectattr("program_type", "equalto", "Program Type - Series") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">MINI-SERIES</span>
+            <span class="kpi-val" id="tv_adding-kpi-mini">{{ tv_classification_snapshot.items | selectattr("program_type", "equalto", "Program Type - Mini-Series") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">MOVIES</span>
+            <span class="kpi-val" id="tv_adding-kpi-movie">{{ tv_classification_snapshot.items | selectattr("program_type", "equalto", "Program Type - Movie") | list | length }}</span>
           </div>
         </div>
-        {% endif %}
 
-        <div class="table-shell">
-          <table class="results-table tv-classification-table">
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter Show Title</label>
+            <input type="text" id="tv_adding-search-input" placeholder="Filter classification..." oninput="applyTvAddingFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>Program Type</label>
+            <details class="multi-select-dropdown" id="tv_adding-type-dropdown" data-default-label="All Types">
+              <summary>All Types</summary>
+              <div class="multi-select-menu" id="tv_adding-type-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Language Type</label>
+            <details class="multi-select-dropdown" id="tv_adding-lang-dropdown" data-default-label="All Languages">
+              <summary>All Languages</summary>
+              <div class="multi-select-menu" id="tv_adding-lang-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Network</label>
+            <details class="multi-select-dropdown" id="tv_adding-network-dropdown" data-default-label="All Networks">
+              <summary>All Networks</summary>
+              <div class="multi-select-menu" id="tv_adding-network-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Start Date</label>
+            <input type="date" id="tv_adding-start-date" onchange="applyTvAddingFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>End Date</label>
+            <input type="date" id="tv_adding-end-date" onchange="applyTvAddingFilters()" />
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetTvAddingFilters()">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('tv_adding', 'tv_classification')">Export CSV</button>
+            {% if tv_classification_snapshot.export_id %}
+            <a href="/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            <a href="/tv/classification-report/export/{{ tv_classification_snapshot.export_id }}/xlsx" class="btn-filter-secondary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download Excel</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table tv-classification-table" id="tv_adding-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>Release Date</th>
-                <th>Title</th>
-                <th>IMDb ttcode</th>
-                <th>Network</th>
-                <th>Daypart</th>
-                <th>Program Type</th>
-                <th>Language Type</th>
-                <th>Genre 1</th>
-                <th>Genre 2</th>
-                <th>Genre 3</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Release Date</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Title / IMDb ID</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Network</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Daypart</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Program Type</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Language Type</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Genres</th>
               </tr>
             </thead>
             <tbody>
               {% for item in tv_classification_snapshot.items %}
-              <tr>
-                <td>{{ item.release_date or "-" }}</td>
-                <td>
-                  {% if item.metacritic_url %}
-                  <a href="{{ item.metacritic_url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
+              <tr class="tv_adding-row"
+                  data-title="{{ item.title | lower }}"
+                  data-type="{{ item.program_type | lower }}"
+                  data-lang="{{ item.language_type | lower }}"
+                  data-network="{{ item.network | lower if item.network else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
+                  {{ item.release_date or "-" }}
+                </td>
+                <td style="padding: 12px;">
+                  <div class="movie-title-cell">
+                    {% if item.imdb_ttcode %}
+                    <img class="movie-poster-thumb" src="/calendar/api/poster/{{ item.imdb_ttcode }}" alt="Poster" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 34\' width=\'48\' height=\'72\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'14\' fill=\'%2394a3b8\'>🎬</text></svg>'" />
+                    {% else %}
+                    <div class="movie-poster-thumb" style="display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #94a3b8; font-size: 1.2rem;">🎬</div>
+                    {% endif %}
+                    <div class="movie-title-info">
+                      <span class="movie-title-bold">{{ item.title }}</span>
+                      {% if item.imdb_ttcode %}
+                      <a class="movie-imdb-id-link" href="https://www.imdb.com/title/{{ item.imdb_ttcode }}/" target="_blank" rel="noreferrer">
+                        imdb: {{ item.imdb_ttcode }}
+                      </a>
+                      {% else %}
+                      <span style="font-size: 0.75rem; color: #94a3b8;">no imdb resolved</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155;">{{ item.network or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569;">{{ item.daypart or "-" }}</td>
+                <td style="padding: 12px;">
+                  {% if 'series' in item.program_type.lower() and 'mini' not in item.program_type.lower() %}
+                  <span class="badge-pill badge-scale-wide" style="font-size: 0.65rem;">Series</span>
+                  {% elif 'mini' in item.program_type.lower() %}
+                  <span class="badge-pill badge-scale-limited" style="font-size: 0.65rem;">Mini-Series</span>
                   {% else %}
-                  {{ item.title }}
+                  <span class="badge-pill badge-scale-other" style="font-size: 0.65rem;">{{ item.program_type.replace('Program Type - ', '') }}</span>
                   {% endif %}
                 </td>
-                <td>{{ item.imdb_ttcode or "-" }}</td>
-                <td>{{ item.network or "-" }}</td>
-                <td>{{ item.daypart or "-" }}</td>
-                <td>{{ item.program_type or "-" }}</td>
-                <td>{{ item.language_type or "-" }}</td>
-                <td>{{ item.genre_1 or "-" }}</td>
-                <td>{{ item.genre_2 or "-" }}</td>
-                <td>{{ item.genre_3 or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569;">{{ item.language_type.replace('Language Type - ', '') or "-" }}</td>
+                <td style="padding: 12px;">
+                  <div style="display: flex; flex-wrap: wrap; gap: 4px; max-width: 180px;">
+                    {% if item.genre_1 %}<span class="genre-tag">{{ item.genre_1 }}</span>{% endif %}
+                    {% if item.genre_2 %}<span class="genre-tag">{{ item.genre_2 }}</span>{% endif %}
+                    {% if item.genre_3 %}<span class="genre-tag">{{ item.genre_3 }}</span>{% endif %}
+                  </div>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -850,6 +1806,15 @@
       <span class="toggle-icon">▼</span>
     </div>
     <div class="task-panel-content" id="brand_review-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Scraping URL:</strong> <a href="https://www.metacritic.com/news/major-new-and-upcoming-video-games-ps5-xbox-switch-pc/" target="_blank" rel="noreferrer">https://www.metacritic.com/news/major-new-and-upcoming-video-games-ps5-xbox-switch-pc/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Scrape the notable video game releases schedule from Metacritic.</li>
+          <li>Parse game titles, release dates, gaming platforms, and metascores.</li>
+        </ul>
+      </div>
       <form method="post" action="/calendar/run-task">
         <input type="hidden" name="task" value="brand_review" />
         
@@ -886,58 +1851,113 @@
           </div>
           <p class="meta">Generated {{ snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
         </div>
+        
         {% if snapshot.notes %}
-        <div class="snapshot-notes" style="margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
           {% for note in snapshot.notes %}
-          <p>{{ note }}</p>
+          <p style="margin: 4px 0;">{{ note }}</p>
           {% endfor %}
         </div>
         {% endif %}
 
-        {% if snapshot.export_id %}
-        <div class="export-bar">
-          <a class="export-link" href="/calendar/export/{{ snapshot.export_id }}/csv">Download CSV</a>
+        <!-- KPI SUMMARY CARDS -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">TOTAL GAMES</span>
+            <span class="kpi-val" id="brand_review-kpi-total">{{ snapshot.items | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">SCORED GAMES</span>
+            <span class="kpi-val" id="brand_review-kpi-scored">{{ snapshot.items | selectattr("metascore", "ne", none) | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">HAS PLATFORMS</span>
+            <span class="kpi-val" id="brand_review-kpi-provider">{{ snapshot.items | selectattr("provider", "ne", "") | list | length }}</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Date Range</span>
+            <span class="kpi-sub" id="brand_review-kpi-range">-</span>
+          </div>
         </div>
-        {% endif %}
 
-        <div class="table-shell">
-          <table class="results-table">
+        <!-- Filter bar -->
+        <div class="filters-row">
+          <div class="filter-group search">
+            <label>Filter Title</label>
+            <input type="text" id="brand_review-search-input" placeholder="Filter games..." oninput="applyBrandReviewFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>Platform</label>
+            <details class="multi-select-dropdown" id="brand_review-provider-dropdown" data-default-label="All Platforms">
+              <summary>All Platforms</summary>
+              <div class="multi-select-menu" id="brand_review-provider-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Availability</label>
+            <details class="multi-select-dropdown" id="brand_review-availability-dropdown" data-default-label="All Availability">
+              <summary>All Availability</summary>
+              <div class="multi-select-menu" id="brand_review-availability-menu"></div>
+            </details>
+          </div>
+          <div class="filter-group">
+            <label>Start Date</label>
+            <input type="date" id="brand_review-start-date" onchange="applyBrandReviewFilters()" />
+          </div>
+          <div class="filter-group">
+            <label>End Date</label>
+            <input type="date" id="brand_review-end-date" onchange="applyBrandReviewFilters()" />
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetBrandReviewFilters()">Reset</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('brand_review', 'metacritic_games')">Export CSV</button>
+            {% if snapshot.export_id %}
+            <a href="/export/{{ snapshot.export_id }}/csv" class="btn-filter-primary" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Download CSV</a>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table" id="brand_review-results-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th>Section</th>
-                <th>Group</th>
-                <th>Release Date</th>
-                <th>Title</th>
-                <th>Provider / Platform</th>
-                <th>Availability</th>
-                <th>Details</th>
-                <th>Metascore</th>
-                <th>IMDb ID</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Release Date</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Title</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Platform</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Availability</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Group / Category</th>
+                <th style="padding: 12px; font-weight: 700; text-align: center; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Metascore</th>
+                <th style="padding: 12px; font-weight: 700; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #475569;">Links</th>
               </tr>
             </thead>
             <tbody>
               {% for item in snapshot.items %}
-              <tr>
-                <td>{{ item.section_label }}</td>
-                <td>{{ item.group_label }}</td>
-                <td>{{ item.release_date or "-" }}</td>
-                <td>
-                  {% if item.url %}
-                  <a href="{{ item.url }}" target="_blank" rel="noreferrer">{{ item.title }}</a>
-                  {% else %}
-                  {{ item.title }}
-                  {% endif %}
+              <tr class="brand_review-row"
+                  data-title="{{ item.title | lower }}"
+                  data-provider="{{ item.provider | lower if item.provider else '' }}"
+                  data-availability="{{ item.availability | lower if item.availability else '' }}"
+                  data-group="{{ item.group_label | lower if item.group_label else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155; font-weight: 500; white-space: nowrap;">
+                  {{ item.release_date or "-" }}
                 </td>
-                <td>{{ item.provider or "-" }}</td>
-                <td>{{ item.availability or "-" }}</td>
-                <td>{{ item.details or "-" }}</td>
-                <td>{{ item.metascore if item.metascore is not none else "-" }}</td>
-                <td>
-                  {% if item.imdb_id %}
-                  <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">{{ item.imdb_id }}</a>
+                <td style="padding: 12px; font-weight: 700; color: #0f172a;">{{ item.title }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #334155;">{{ item.provider or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #475569;">{{ item.availability or "-" }}</td>
+                <td style="padding: 12px; font-size: 0.85rem; color: #64748b;">{{ item.group_label }}</td>
+                <td style="padding: 12px; text-align: center;">
+                  {% if item.metascore is not none %}
+                  <span class="badge-pill badge-scale-wide" style="background: rgba(99, 102, 241, 0.15); color: #4f46e5; font-weight: 700;">{{ item.metascore }}</span>
                   {% else %}
                   -
                   {% endif %}
+                </td>
+                <td style="padding: 12px;">
+                  <div class="links-stack">
+                    {% if item.url %}
+                    <a href="{{ item.url }}" target="_blank" rel="noreferrer" style="color: #4f46e5;">Metacritic</a>
+                    {% endif %}
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -958,10 +1978,11 @@
         const isHidden = p.style.display === 'none';
         p.style.display = isHidden ? 'block' : 'none';
         
-        // Toggle active styling class on header
         const header = document.getElementById(panelId + '-header');
         if (isHidden) {
           header.classList.add('panel-header-active');
+          populateDropdownOptions(panelId);
+          applyFilters(panelId);
         } else {
           header.classList.remove('panel-header-active');
         }
@@ -976,8 +1997,364 @@
     });
   }
 
+  function updateDropdownSummary(menu) {
+    const dropdown = menu.closest('.multi-select-dropdown');
+    if (!dropdown) return;
+    const summary = dropdown.querySelector('summary');
+    if (!summary) return;
+    
+    const checkedBoxes = menu.querySelectorAll('input[type="checkbox"]:checked');
+    if (checkedBoxes.length === 0) {
+      const defaultLabel = dropdown.getAttribute('data-default-label') || 'Select';
+      summary.textContent = defaultLabel;
+    } else if (checkedBoxes.length === 1) {
+      summary.textContent = checkedBoxes[0].nextElementSibling.textContent;
+    } else {
+      summary.textContent = checkedBoxes.length + ' selected';
+    }
+  }
+
+  function populateDropdownOptions(taskId) {
+    const menus = document.querySelectorAll('[id^="' + taskId + '-"][id$="-menu"]');
+    const rows = document.querySelectorAll('.' + taskId + '-row');
+    
+    menus.forEach(menu => {
+      const key = menu.id.replace(taskId + '-', '').replace('-menu', '');
+      const uniqueValues = new Set();
+      
+      if (key === 'gender') {
+        uniqueValues.add('male');
+        uniqueValues.add('female');
+        uniqueValues.add('unknown');
+      } else if (key === 'scale') {
+        uniqueValues.add('wide');
+        uniqueValues.add('limited');
+        uniqueValues.add('moderate');
+      } else if (key === 'status') {
+        uniqueValues.add('found');
+        uniqueValues.add('uncertain');
+        uniqueValues.add('not_found');
+      } else {
+        rows.forEach(row => {
+          const rowVal = row.getAttribute('data-' + key) || '';
+          if (!rowVal || rowVal === '-') return;
+          
+          if (key === 'genres') {
+            rowVal.split(',').forEach(v => {
+              const clean = v.trim();
+              if (clean) uniqueValues.add(clean);
+            });
+          } else {
+            uniqueValues.add(rowVal.trim());
+          }
+        });
+      }
+
+      const checkedSet = new Set(
+        Array.from(menu.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value)
+      );
+
+      menu.innerHTML = '';
+
+      const sortedVals = Array.from(uniqueValues).sort();
+      sortedVals.forEach(val => {
+        if (!val) return;
+        const label = document.createElement('label');
+        label.className = 'multi-select-option';
+        
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = val;
+        if (checkedSet.has(val)) {
+          input.checked = true;
+        }
+        input.addEventListener('change', () => {
+          updateDropdownSummary(menu);
+          applyFilters(taskId);
+        });
+        
+        const span = document.createElement('span');
+        let displayVal = val;
+        if (val === 'not_found') displayVal = 'not found';
+        span.textContent = displayVal.charAt(0).toUpperCase() + displayVal.slice(1);
+        
+        label.appendChild(input);
+        label.appendChild(span);
+        menu.appendChild(label);
+      });
+      
+      updateDropdownSummary(menu);
+    });
+  }
+
+  function applyFilters(taskId) {
+    const searchInput = document.getElementById(taskId + '-search-input');
+    const searchVal = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    
+    const filters = {};
+    const menus = document.querySelectorAll('[id^="' + taskId + '-"][id$="-menu"]');
+    menus.forEach(menu => {
+      const key = menu.id.replace(taskId + '-', '').replace('-menu', '');
+      const checkedVals = Array.from(menu.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value.toLowerCase().trim());
+      filters[key] = checkedVals;
+    });
+
+    const startEl = document.getElementById(taskId + '-start-date');
+    const endEl = document.getElementById(taskId + '-end-date');
+    const filterStart = startEl && startEl.value ? new Date(startEl.value) : null;
+    const filterEnd = endEl && endEl.value ? new Date(endEl.value) : null;
+
+    const rows = document.querySelectorAll('.' + taskId + '-row');
+    let visibleCount = 0;
+    
+    let wideCount = 0;
+    let limitedCount = 0;
+    
+    let foundCount = 0;
+    let uncertainCount = 0;
+    let notFoundCount = 0;
+
+    let maleCount = 0;
+    let femaleCount = 0;
+    let groupCount = 0;
+
+    let seriesCount = 0;
+    let miniCount = 0;
+    let movieCount = 0;
+
+    let scoredCount = 0;
+    let imdbCount = 0;
+    let providerCount = 0;
+
+    let minDate = null;
+    let maxDate = null;
+
+    rows.forEach(row => {
+      let show = true;
+      
+      const title = row.getAttribute('data-title') || '';
+      if (searchVal && !title.includes(searchVal)) {
+        show = false;
+      }
+      
+      for (const [key, filterVals] of Object.entries(filters)) {
+        if (filterVals.length === 0) continue;
+        
+        const rowVal = (row.getAttribute('data-' + key) || '').toLowerCase().trim();
+        
+        if (key === 'genres') {
+          const genresList = rowVal.split(',').map(g => g.trim());
+          const hasMatch = filterVals.some(fv => genresList.includes(fv));
+          if (!hasMatch) show = false;
+        } else if (key === 'scale') {
+          let matched = false;
+          for (const fv of filterVals) {
+            if (fv === 'wide' && rowVal === 'wide') matched = true;
+            else if (fv === 'limited' && (rowVal !== 'wide')) matched = true;
+            else if (fv === 'moderate' && rowVal === 'moderate') matched = true;
+            else if (rowVal === fv) matched = true;
+          }
+          if (!matched) show = false;
+        } else {
+          if (!filterVals.includes(rowVal)) {
+            show = false;
+          }
+        }
+      }
+
+      if (show && (filterStart || filterEnd)) {
+        const dateStr = row.getAttribute('data-date') || '';
+        if (dateStr && dateStr !== '-') {
+          const cleanDateStr = dateStr.split(' ')[0];
+          const d = new Date(cleanDateStr);
+          if (!isNaN(d.getTime())) {
+            if (filterStart && d < filterStart) show = false;
+            if (filterEnd && d > filterEnd) show = false;
+          } else {
+            show = false;
+          }
+        } else {
+          show = false;
+        }
+      }
+
+      if (show) {
+        row.style.display = '';
+        visibleCount++;
+
+        const dateStr = row.getAttribute('data-date') || '';
+        if (dateStr && dateStr !== '-') {
+          const cleanDateStr = dateStr.split(' ')[0];
+          const d = new Date(cleanDateStr);
+          if (!isNaN(d.getTime())) {
+            if (!minDate || d < minDate) minDate = d;
+            if (!maxDate || d > maxDate) maxDate = d;
+          }
+        }
+
+        const scale = row.getAttribute('data-scale') || '';
+        if (scale.toLowerCase() === 'wide') wideCount++;
+        else if (scale) limitedCount++;
+
+        const status = row.getAttribute('data-status') || '';
+        if (status === 'found') foundCount++;
+        else if (status === 'uncertain') uncertainCount++;
+        else if (status === 'not_found') notFoundCount++;
+
+        const gender = row.getAttribute('data-gender') || '';
+        if (gender === 'male') maleCount++;
+        else if (gender === 'female') femaleCount++;
+        else if (gender) groupCount++;
+
+        const type = row.getAttribute('data-type') || '';
+        if (type.includes('series') && !type.includes('mini')) seriesCount++;
+        else if (type.includes('mini-series')) miniCount++;
+        else if (type.includes('movie')) movieCount++;
+
+        const group = row.getAttribute('data-group') || '';
+        const provider = row.getAttribute('data-provider') || '';
+        if (row.querySelector('.badge-scale-wide') && row.querySelector('.badge-scale-wide').textContent.trim() !== '-') scoredCount++;
+        if (row.querySelector('.movie-imdb-id-link')) imdbCount++;
+        if (provider) providerCount++;
+
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    const totalEl = document.getElementById(taskId + '-kpi-total');
+    if (totalEl) totalEl.textContent = visibleCount;
+
+    const wideEl = document.getElementById(taskId + '-kpi-wide');
+    if (wideEl) wideEl.textContent = wideCount;
+    const ltdEl = document.getElementById(taskId + '-kpi-limited');
+    if (ltdEl) ltdEl.textContent = limitedCount;
+
+    const foundEl = document.getElementById(taskId + '-kpi-found');
+    if (foundEl) foundEl.textContent = foundCount;
+    const uncertainEl = document.getElementById(taskId + '-kpi-uncertain');
+    if (uncertainEl) uncertainEl.textContent = uncertainCount;
+    const notfoundEl = document.getElementById(taskId + '-kpi-notfound');
+    if (notfoundEl) notfoundEl.textContent = notFoundCount;
+
+    const maleEl = document.getElementById(taskId + '-kpi-male');
+    if (maleEl) maleEl.textContent = maleCount;
+    const femaleEl = document.getElementById(taskId + '-kpi-female');
+    if (femaleEl) femaleEl.textContent = femaleCount;
+
+    const seriesEl = document.getElementById(taskId + '-kpi-series');
+    if (seriesEl) seriesEl.textContent = seriesCount;
+    const miniEl = document.getElementById(taskId + '-kpi-mini');
+    if (miniEl) miniEl.textContent = miniCount;
+    const movieEl = document.getElementById(taskId + '-kpi-movie');
+    if (movieEl) movieEl.textContent = movieCount;
+
+    const scoredEl = document.getElementById(taskId + '-kpi-scored');
+    if (scoredEl) scoredEl.textContent = scoredCount;
+    const imdbEl = document.getElementById(taskId + '-kpi-imdb');
+    if (imdbEl) imdbEl.textContent = imdbCount;
+    const providerEl = document.getElementById(taskId + '-kpi-provider');
+    if (providerEl) providerEl.textContent = providerCount;
+
+    const rangeEl = document.getElementById(taskId + '-kpi-range');
+    if (rangeEl) {
+      if (minDate && maxDate) {
+        const fmt = (d) => d.toISOString().split('T')[0];
+        rangeEl.textContent = fmt(minDate) + ' to ' + fmt(maxDate);
+      } else {
+        rangeEl.textContent = '-';
+      }
+    }
+  }
+
+  function resetMojoFilters(taskId) {
+    const search = document.getElementById(taskId + '-search-input');
+    if (search) search.value = '';
+    
+    const checkboxes = document.querySelectorAll('[id^="' + taskId + '-"][id$="-menu"] input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.checked = false);
+    
+    const menus = document.querySelectorAll('[id^="' + taskId + '-"][id$="-menu"]');
+    menus.forEach(menu => updateDropdownSummary(menu));
+
+    const startEl = document.getElementById(taskId + '-start-date');
+    if (startEl) startEl.value = '';
+    const endEl = document.getElementById(taskId + '-end-date');
+    if (endEl) endEl.value = '';
+    
+    applyFilters(taskId);
+  }
+
+  function applyBillboardFilters() { applyFilters('billboard'); }
+  function resetBillboardFilters() { resetMojoFilters('billboard'); }
+
+  function applyTvMetadataFilters() { applyFilters('tv_metadata'); }
+  function resetTvMetadataFilters() { resetMojoFilters('tv_metadata'); }
+
+  function applyFilmAddingFilters() { applyFilters('film_adding'); }
+  function resetFilmAddingFilters() { resetMojoFilters('film_adding'); }
+
+  // Fixed Reset filters call in functions
+  function applyCalendarScrapeFilters() { applyFilters('calendar_scrape'); }
+  function resetCalendarScrapeFilters() { resetMojoFilters('calendar_scrape'); }
+
+  function applyTvAddingFilters() { applyFilters('tv_adding'); }
+  function resetTvAddingFilters() { resetMojoFilters('tv_adding'); }
+
+  function applyBrandReviewFilters() { applyFilters('brand_review'); }
+  function resetBrandReviewFilters() { resetMojoFilters('brand_review'); }
+
+  function exportFilteredCSV(taskId, tableName) {
+    const table = document.getElementById(taskId + '-results-table');
+    if (!table) return;
+
+    const rows = table.querySelectorAll('tbody tr');
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+    
+    let csvContent = '\uFEFF'; 
+    csvContent += headers.map(h => '"' + h.replace(/"/g, '""') + '"').join(',') + '\r\n';
+
+    let hasData = false;
+    rows.forEach(row => {
+      if (row.style.display !== 'none') {
+        hasData = true;
+        const cells = Array.from(row.querySelectorAll('td'));
+        const rowData = cells.map(cell => {
+          let text = cell.textContent.trim();
+          text = text.replace(/\s+/g, ' ');
+          return '"' + text.replace(/"/g, '""') + '"';
+        });
+        csvContent += rowData.join(',') + '\r\n';
+      }
+    });
+
+    if (!hasData) {
+      alert('No visible rows to export!');
+      return;
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', tableName + '_filtered_' + new Date().toISOString().split('T')[0] + '.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  document.addEventListener('click', function(e) {
+    const dropdowns = document.querySelectorAll('.multi-select-dropdown');
+    dropdowns.forEach(dropdown => {
+      if (!dropdown.contains(e.target)) {
+        dropdown.removeAttribute('open');
+      }
+    });
+  });
+
   document.addEventListener('DOMContentLoaded', () => {
-    // If a task was just run, expand it, otherwise default to billboard
     const activeTask = "{{ selected_task | default('billboard') }}";
     if (activeTask) {
       togglePanel(activeTask);
