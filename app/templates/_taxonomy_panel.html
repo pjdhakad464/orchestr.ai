@@ -1,11 +1,17 @@
-<section class="panel validator-panel">
+<section class="panel validator-panel" style="position: relative; overflow: hidden;">
+  <!-- Subtle glow effect -->
+  <div style="position: absolute; top: -40px; left: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(242,209,0,0.05); filter: blur(40px); pointer-events: none;"></div>
+
   <div class="validator-heading-row">
     <div class="validator-heading-copy">
-      <p class="eyebrow">Taxonomy Bulk Identifier</p>
-      <h2 class="validator-heading validator-heading-banner">Data Ops Taxonomy Identification</h2>
+      <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">category</span>
+        Taxonomy Bulk Identifier
+      </span>
+      <h2 class="validator-heading validator-heading-banner">Taxonomy Identification</h2>
     </div>
   </div>
-  <p class="meta">
+  <p class="meta" style="margin-bottom: 16px;">
     Identify categories and subcategories in bulk using Wikipedia, Wikidata, IMDb, TMDb, and Instagram profiles.
   </p>
   <form
@@ -32,12 +38,62 @@
         <input type="text" name="run_by" placeholder="Enter your name or team name" required />
       </label>
     </div>
+
     <p class="meta validator-description">
       Upload your names sheet (with optional Instagram columns). The tool will output a fully populated Excel sheet matching the official taxonomy guide.
     </p>
+
+    <!-- Expected Output Columns -->
+    <div style="margin-top: 4px;">
+      <p style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">view_column</span>
+        Expected Output Columns
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <span class="output-chip"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Entity Name</span>
+        <span class="output-chip"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l-5.5 9h11z M17.5 13h-11l5.5 9z"/></svg>Title Category</span>
+        <span class="output-chip"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M19 15l-6 6-1.42-1.42L15.17 16H4V4h2v10h9.17l-3.59-3.58L13 9l6 6z"/></svg>Title Sub-category</span>
+        <span class="output-chip"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2"/></svg>Instagram</span>
+        <span class="output-chip"><svg width="14" height="14" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>Confidence</span>
+      </div>
+    </div>
+
+    <!-- Pipeline Logic Steps -->
+    <div style="margin-top: 12px;">
+      <p style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin: 0 0 10px 0; display: flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">account_tree</span>
+        Pipeline Logic
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="pipeline-step">
+          <span class="pipeline-step-number">01</span>
+          <p>Read Excel/CSV and detect name & Instagram columns.</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-step-number">02</span>
+          <p>Query Wikipedia, Wikidata, IMDb, TMDb for each entity.</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-step-number">03</span>
+          <p>Resolve Instagram profiles for additional classification signals.</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-step-number">04</span>
+          <p>Match against official taxonomy guide for category & sub-category.</p>
+        </div>
+        <div class="pipeline-step">
+          <span class="pipeline-step-number">05</span>
+          <p>Export styled XLSX with confidence-highlighted results.</p>
+        </div>
+      </div>
+    </div>
+
     <div class="validator-rules-simplified">
       <div class="validator-sidecar">
-        <button type="submit">Identify Taxonomy</button>
+        <button type="submit" style="display: inline-flex; align-items: center; gap: 8px;">
+          <span class="material-symbols-outlined" style="font-size: 18px;">rocket_launch</span>
+          Identify Taxonomy
+        </button>
       </div>
     </div>
   </form>
@@ -70,6 +126,7 @@
 
 <section id="taxonomy-workspace" class="workspace">
   <div class="empty-state">
+    <span class="material-symbols-outlined" style="font-size: 40px; color: #64748b; margin-bottom: 12px;">category</span>
     <h2>Ready to classify</h2>
     <p>
       Upload an Excel or CSV file to classify names. The resulting workbook will add the correct Category and Sub-category columns to your dataset.

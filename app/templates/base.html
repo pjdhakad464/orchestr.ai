@@ -3,72 +3,423 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Official Profile Finder{% endblock %}</title>
+    <title>{% block title %}OrchestrAI — Data Ops Intelligence{% endblock %}</title>
+    <meta name="description" content="OrchestrAI intelligently coordinates workflows, metadata, automation, and operations for data ops teams." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" />
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}?v={{ asset_version | default('1') }}" />
     <script defer src="https://unpkg.com/htmx.org@1.9.12"></script>
     <script defer src="{{ url_for('static', path='/htmx-fallback.js') }}?v={{ asset_version | default('1') }}"></script>
-  </head>
-  <body>
     <style>
-      .suite-navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #ffffff;
-        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-        padding: 12px 24px;
-        position: sticky;
+      /* ─── Sidebar ─── */
+      .sidebar {
+        position: fixed;
+        left: 0;
         top: 0;
-        z-index: 9999;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-      }
-      .suite-navbar-brand {
-        font-weight: 700;
-        font-size: 1.15rem;
-        color: #0f172a;
-        letter-spacing: -0.02em;
-      }
-      .suite-navbar-links {
+        z-index: 40;
+        height: 100vh;
+        width: 240px;
         display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 4px;
+        border-right: 1px solid rgba(255,255,255,0.05);
+        background: rgba(15,20,37,0.96);
+        padding: 24px 16px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
       }
-      .suite-navbar-link {
-        color: #475569;
+
+      .sidebar-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px;
+        padding: 4px 8px;
+        border-radius: 12px;
         text-decoration: none;
+        font-size: 1.35rem;
+        font-weight: 900;
+        color: #f2d100;
+        letter-spacing: -0.03em;
+        transition: background 150ms ease;
+      }
+
+      .sidebar-brand:hover {
+        background: rgba(242,209,0,0.06);
+      }
+
+      .sidebar-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #f2d100;
+        box-shadow: 0 0 14px rgba(242,209,0,0.75);
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #94a3b8;
         font-size: 0.875rem;
         font-weight: 500;
-        padding: 6px 12px;
-        border-radius: 6px;
         transition: all 150ms ease;
       }
-      .suite-navbar-link:hover {
-        color: #0f172a;
-        background: #f1f5f9;
+
+      .sidebar-link:hover {
+        background: rgba(255,255,255,0.05);
+        color: #e2e8f0;
       }
-      .suite-navbar-link.active {
-        color: #4f46e5;
-        background: #e0e7ff;
+
+      .sidebar-link .material-symbols-outlined {
+        font-size: 22px;
+        transition: transform 150ms ease;
+      }
+
+      .sidebar-link:hover .material-symbols-outlined {
+        transform: scale(1.1);
+      }
+
+      .sidebar-link.active {
+        background: rgba(242,209,0,0.1);
+        color: #f2d100;
+        box-shadow: 0 2px 8px rgba(242,209,0,0.08);
+        border: 1px solid rgba(242,209,0,0.15);
+      }
+
+      .sidebar-link.active .sidebar-active-dot {
+        display: block;
+      }
+
+      .sidebar-active-dot {
+        display: none;
+        margin-left: auto;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #f2d100;
+        box-shadow: 0 0 8px rgba(242,209,0,0.9);
+      }
+
+      /* Pipeline widget */
+      .sidebar-pipeline {
+        margin-top: auto;
+        padding-top: 20px;
+      }
+
+      .sidebar-pipeline-card {
+        border-radius: 14px;
+        padding: 16px;
+        background: rgba(15,23,42,0.5);
+        border: 1px solid rgba(255,255,255,0.06);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar-pipeline-card::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: inherit;
+        background: linear-gradient(135deg, rgba(242,209,0,0.06), transparent 50%, rgba(129,140,248,0.05));
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .sidebar-pipeline-label {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #f2d100;
+        margin-bottom: 10px;
+      }
+
+      .sidebar-pipeline-bar {
+        position: relative;
+        z-index: 1;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.06);
+        overflow: hidden;
+      }
+
+      .sidebar-pipeline-fill {
+        height: 100%;
+        width: 66%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #c4a900, #f2d100);
+        animation: shimmer 2s ease-in-out infinite;
+        background-size: 200% 100%;
+      }
+
+      .sidebar-pipeline-desc {
+        position: relative;
+        z-index: 1;
+        margin-top: 8px;
+        font-size: 0.68rem;
+        color: #64748b;
+        line-height: 1.5;
+      }
+
+      /* ─── Top Header ─── */
+      .top-header {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        background: rgba(10,14,26,0.88);
+        padding: 14px 24px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        animation: shellFadeIn 400ms ease-out both;
+      }
+
+      .top-header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .top-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: rgba(242,209,0,0.1);
+        border: 1px solid rgba(242,209,0,0.15);
+        box-shadow: 0 2px 8px rgba(242,209,0,0.08);
+        flex-shrink: 0;
+      }
+
+      .top-header-icon .material-symbols-outlined {
+        color: #f2d100;
+        font-size: 20px;
+      }
+
+      .top-header-eyebrow {
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: rgba(242,209,0,0.75);
+      }
+
+      .top-header-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 700;
+        color: #e2e8f0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .top-header-badge {
+        display: none;
+        padding: 5px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(242,209,0,0.2);
+        background: rgba(242,209,0,0.08);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #f2d100;
+      }
+
+      @media (min-width: 640px) {
+        .top-header-badge { display: inline-flex; }
+      }
+
+      /* ─── Main with sidebar offset ─── */
+      .main-content {
+        margin-left: 240px;
+        min-height: 100vh;
+        position: relative;
+        z-index: 10;
+      }
+
+      /* ─── Mobile bottom nav ─── */
+      .mobile-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 50;
+        width: 100%;
+        justify-content: space-around;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        background: rgba(15,20,37,0.96);
+        padding: 6px 4px 22px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      .mobile-nav-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        padding: 6px 8px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #64748b;
+        transition: all 150ms ease;
+      }
+
+      .mobile-nav-link:hover {
+        color: #e2e8f0;
+        background: rgba(255,255,255,0.04);
+      }
+
+      .mobile-nav-link.active {
+        color: #f2d100;
+        background: rgba(242,209,0,0.08);
+        position: relative;
+      }
+
+      .mobile-nav-link.active::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        width: 28px;
+        height: 2px;
+        border-radius: 999px;
+        background: #f2d100;
+        box-shadow: 0 0 8px rgba(242,209,0,0.8);
+      }
+
+      .mobile-nav-link span.nav-label {
+        margin-top: 3px;
+        font-size: 0.56rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      /* ─── Responsive ─── */
+      @media (max-width: 900px) {
+        .sidebar { display: none; }
+        .main-content { margin-left: 0; padding-bottom: 80px; }
+        .mobile-nav { display: flex; }
       }
     </style>
-    <nav class="suite-navbar">
-      <div class="suite-navbar-brand">OrchestrAI</div>
-      <div class="suite-navbar-links">
-        <a href="/" class="suite-navbar-link active">Data Ops Validator</a>
-        <a href="/calendar/" class="suite-navbar-link">Asana LF Automation Tasks</a>
-        <a href="/imdb/" class="suite-navbar-link">IMDb Lookup</a>
+  </head>
+  <body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <a href="/" class="sidebar-brand">
+        <span class="sidebar-dot"></span>
+        OrchestrAI
+      </a>
+      <a href="/" class="sidebar-link active" id="nav-validator">
+        <span class="material-symbols-outlined">shield</span>
+        <span>Data Ops Validator</span>
+        <span class="sidebar-active-dot"></span>
+      </a>
+      <a href="/calendar/" class="sidebar-link" id="nav-calendar">
+        <span class="material-symbols-outlined">event_note</span>
+        <span>Automation Tasks</span>
+        <span class="sidebar-active-dot"></span>
+      </a>
+      <a href="/imdb/" class="sidebar-link" id="nav-imdb">
+        <span class="material-symbols-outlined">movie</span>
+        <span>IMDb Lookup</span>
+        <span class="sidebar-active-dot"></span>
+      </a>
+
+      <!-- Pipeline Widget -->
+      <div class="sidebar-pipeline">
+        <div class="sidebar-pipeline-card">
+          <p class="sidebar-pipeline-label">
+            <span class="material-symbols-outlined" style="font-size: 14px;">route</span>
+            Pipeline
+          </p>
+          <div class="sidebar-pipeline-bar">
+            <div class="sidebar-pipeline-fill"></div>
+          </div>
+          <p class="sidebar-pipeline-desc">Upload → Classify → Validate → Export</p>
+        </div>
       </div>
     </nav>
-    <div class="page-shell">
-      <header class="welcome-header panel">
-        <h1>Welcome to OrchestrAI</h1>
-        <p class="subtitle">A system that intelligently coordinates workflows, metadata, automation, and operations.</p>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="top-header-left">
+          <div class="top-header-icon">
+            <span class="material-symbols-outlined">dashboard</span>
+          </div>
+          <div>
+            <p class="top-header-eyebrow">Intelligence workspace</p>
+            <h1 class="top-header-title">{% block page_title %}Data Ops{% endblock %}</h1>
+          </div>
+        </div>
+        <span class="top-header-badge">OrchestrAI Workspace</span>
       </header>
-      <main>{% block content %}{% endblock %}</main>
+
+      <div class="page-shell">
+        <header class="welcome-header panel">
+          <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(242,209,0,0.08); border: 1px solid rgba(242,209,0,0.15); margin-bottom: 16px;">
+            <span class="material-symbols-outlined" style="font-size: 14px; color: #f2d100;">auto_awesome</span>
+            AI-Powered Data Operations
+          </span>
+          <h1>Welcome to OrchestrAI</h1>
+          <p class="subtitle">A system that intelligently coordinates workflows, metadata, automation, and operations — all in one workspace.</p>
+        </header>
+        <main>{% block content %}{% endblock %}</main>
+      </div>
     </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-nav">
+      <a href="/" class="mobile-nav-link active">
+        <span class="material-symbols-outlined">shield</span>
+        <span class="nav-label">Validator</span>
+      </a>
+      <a href="/calendar/" class="mobile-nav-link">
+        <span class="material-symbols-outlined">event_note</span>
+        <span class="nav-label">Tasks</span>
+      </a>
+      <a href="/imdb/" class="mobile-nav-link">
+        <span class="material-symbols-outlined">movie</span>
+        <span class="nav-label">IMDb</span>
+      </a>
+    </nav>
+
+    <script>
+      // Highlight active sidebar link based on current path
+      (function() {
+        const path = window.location.pathname;
+        document.querySelectorAll('.sidebar-link, .mobile-nav-link').forEach(link => {
+          link.classList.remove('active');
+        });
+        if (path.startsWith('/calendar')) {
+          document.querySelectorAll('[id="nav-calendar"], .mobile-nav-link[href="/calendar/"]').forEach(el => el.classList.add('active'));
+        } else if (path.startsWith('/imdb')) {
+          document.querySelectorAll('[id="nav-imdb"], .mobile-nav-link[href="/imdb/"]').forEach(el => el.classList.add('active'));
+        } else {
+          document.querySelectorAll('[id="nav-validator"], .mobile-nav-link[href="/"]').forEach(el => el.classList.add('active'));
+        }
+      })();
+    </script>
   </body>
 </html>

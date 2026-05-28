@@ -1,45 +1,80 @@
 {% extends "base.html" %}
 
-{% block title %}Validator Guide{% endblock %}
+{% block title %}Validator Guide — OrchestrAI{% endblock %}
+{% block page_title %}Validator Guide{% endblock %}
 
 {% block content %}
 <section class="panel validator-panel">
-  <div class="section-heading">
+  <div class="section-heading" style="margin-bottom: 20px;">
     <div>
-      <p class="eyebrow">How To Guide</p>
-      <h2 class="validator-heading">Data Ops Validator Guide</h2>
+      <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-outlined" style="font-size: 14px; color: #f2d100;">menu_book</span>
+        How To Guide
+      </span>
+      <h2 class="validator-heading" style="margin-top: 8px;">Data Ops Validator Guide</h2>
     </div>
     <p class="meta">
       Use this page to set up, run, and share the workbook validator for Excel, CSV, and Google Sheets.
     </p>
   </div>
 
-  <div class="workspace">
-    <div class="result-card">
-      <h3>1. What This Engine Does</h3>
-      <p>Upload an Excel workbook or CSV, or connect a Google Sheet, validate the data, highlight failed cells in red, add comments with recommendations, and download the verified file with a Validation Summary sheet.</p>
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div class="pipeline-step" style="flex-direction: column; gap: 8px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="pipeline-step-number">01</span>
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #f1f5f9;">What This Engine Does</h3>
+      </div>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">Upload an Excel workbook or CSV, or connect a Google Sheet, validate the data, highlight failed cells in red, add comments with recommendations, and download the verified file with a Validation Summary sheet.</p>
+    </div>
 
-      <h3>2. Open The Validator</h3>
-      <p>Use <a href="/excel-validator">/excel-validator</a> on the same machine, or the LAN URL if the app is running in network mode.</p>
+    <div class="pipeline-step" style="flex-direction: column; gap: 8px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="pipeline-step-number">02</span>
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #f1f5f9;">Open The Validator</h3>
+      </div>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">Use <a href="/excel-validator" style="color: #f2d100; text-decoration: none; font-weight: 600;">/excel-validator</a> on the same machine, or the LAN URL if the app is running in network mode.</p>
+    </div>
 
-      <h3>3. Install And Run</h3>
-      <p>From <code>C:\Users\Lenovo\Documents\Playground</code>, install dependencies with <code>python -m pip install -e .[dev]</code>.</p>
-      <p>Run locally with <code>python -m uvicorn app.main:app --host 127.0.0.1 --port 8000</code>.</p>
-      <p>Run for other systems on the same network with <code>python -m uvicorn app.main:app --host 0.0.0.0 --port 8000</code>.</p>
+    <div class="pipeline-step" style="flex-direction: column; gap: 8px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="pipeline-step-number">03</span>
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #f1f5f9;">Install And Run</h3>
+      </div>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">Install dependencies with <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #f2d100;">python -m pip install -e .[dev]</code>.</p>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">Run locally with <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #f2d100;">python -m uvicorn app.main:app --host 127.0.0.1 --port 8000</code>.</p>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">Run for other systems with <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #f2d100;">--host 0.0.0.0</code>.</p>
+    </div>
 
-      <h3>4. Main Workflow</h3>
-      <p>Choose an Excel file, CSV file, or Google Sheet URL, keep or edit the rules JSON, run validation, review red-highlighted cells and comments, then download the validated workbook.</p>
+    <div class="pipeline-step" style="flex-direction: column; gap: 8px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="pipeline-step-number">04</span>
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #f1f5f9;">Main Workflow</h3>
+      </div>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">Choose an Excel file, CSV file, or Google Sheet URL, keep or edit the rules JSON, run validation, review red-highlighted cells and comments, then download the validated workbook.</p>
+    </div>
 
-      <h3>5. Current Rule Coverage</h3>
-      <p>The engine checks title metadata, DAR rules, talent formatting, movie release date and genre recommendations, Facebook URL patterns, and Wikidata and IMDb verification.</p>
+    <div class="pipeline-step" style="flex-direction: column; gap: 8px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="pipeline-step-number">05</span>
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #f1f5f9;">Current Rule Coverage</h3>
+      </div>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">The engine checks title metadata, DAR rules, talent formatting, movie release date and genre recommendations, Facebook URL patterns, and Wikidata and IMDb verification.</p>
+    </div>
 
-      <h3>6. Network URL</h3>
-      <p>If the app is started in LAN mode, other systems on the same network can open the validator using your machine IP, for example <code>http://172.16.16.46:8000/excel-validator</code>.</p>
+    <div class="pipeline-step" style="flex-direction: column; gap: 8px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="pipeline-step-number">06</span>
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #f1f5f9;">Network URL</h3>
+      </div>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">If the app is started in LAN mode, other systems on the same network can open the validator using your machine IP, for example <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #f2d100;">http://172.16.16.46:8000/excel-validator</code>.</p>
+    </div>
 
-      <h3>7. Troubleshooting</h3>
-      <p>If the app does not open, first confirm the server is running on port <code>8000</code>. If another system cannot reach it, check that the app is running with <code>--host 0.0.0.0</code> and that Windows Firewall is not blocking the connection.</p>
-
-      <p>The full written guide also exists at <code>C:\Users\Lenovo\Documents\Playground\VALIDATOR_ENGINE_GUIDE.md</code>.</p>
+    <div class="pipeline-step" style="flex-direction: column; gap: 8px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="pipeline-step-number">07</span>
+        <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #f1f5f9;">Troubleshooting</h3>
+      </div>
+      <p style="margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6;">If the app does not open, confirm the server is running on port <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #f2d100;">8000</code>. If another system cannot reach it, check that the app is running with <code style="background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #f2d100;">--host 0.0.0.0</code> and that Windows Firewall is not blocking the connection.</p>
     </div>
   </div>
 </section>

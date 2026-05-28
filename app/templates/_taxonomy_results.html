@@ -1,38 +1,43 @@
-<div class="validation-results panel animate-fade-in" style="margin-top: 24px;">
-  <div class="results-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(15,23,42,0.08); padding-bottom: 16px; margin-bottom: 16px;">
+<div class="panel" style="margin-top: 24px; position: relative; overflow: hidden; animation: panelRise 500ms ease-out both;">
+  <!-- Glow effect -->
+  <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; border-radius: 50%; background: rgba(34,197,94,0.06); filter: blur(40px); pointer-events: none;"></div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 16px;">
     <div>
-      <span class="eyebrow">Taxonomy Identification Completed</span>
-      <h3 style="margin: 4px 0 0 0; font-size: 1.25rem; font-weight: 700; color: #0f172a;">{{ filename }}</h3>
-      <p style="margin: 4px 0 0 0; font-size: 0.875rem; color: #64748b;">Processed {{ total_rows }} records in this batch.</p>
+      <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-outlined" style="font-size: 14px; color: #4ade80;">check_circle</span>
+        Taxonomy Identification Completed
+      </span>
+      <h3 style="margin: 6px 0 0; font-size: 1.15rem; font-weight: 700; color: #f1f5f9;">{{ filename }}</h3>
+      <p style="margin: 4px 0 0; font-size: 0.8rem; color: #64748b;">Processed {{ total_rows }} records in this batch.</p>
     </div>
-    <div>
-      <a href="/taxonomy/download/{{ job_id }}" class="download-btn" style="display: inline-flex; align-items: center; justify-content: center; padding: 10px 18px; background-color: #4f46e5; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 0.875rem; border-radius: 8px; transition: all 150ms ease;" onmouseover="this.style.backgroundColor='#4338ca'" onmouseout="this.style.backgroundColor='#4f46e5'">
-        Download Processed Workbook
-      </a>
-    </div>
+    <a href="/taxonomy/download/{{ job_id }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, #f2d100, #c4a900); color: #0a0e1a; text-decoration: none; font-weight: 700; font-size: 0.85rem; border-radius: 10px; transition: all 150ms ease; box-shadow: 0 4px 14px rgba(242,209,0,0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(242,209,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(242,209,0,0.2)'">
+      <span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+      Download Workbook
+    </a>
   </div>
 
-  <div class="results-table-container" style="overflow-x: auto;">
-    <table class="results-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+  <div style="overflow-x: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06);">
+    <table class="results-table" style="min-width: 700px;">
       <thead>
-        <tr style="border-bottom: 2px solid rgba(15,23,42,0.08); color: #475569; font-weight: 600;">
-          <th style="padding: 10px;">Row</th>
-          <th style="padding: 10px;">Entity/Title Name</th>
-          <th style="padding: 10px;">Instagram Handle</th>
-          <th style="padding: 10px;">Identified Category</th>
-          <th style="padding: 10px;">Identified Sub-category</th>
+        <tr>
+          <th style="padding: 12px 14px;">Row</th>
+          <th style="padding: 12px 14px;">Entity / Title Name</th>
+          <th style="padding: 12px 14px;">Instagram Handle</th>
+          <th style="padding: 12px 14px;">Identified Category</th>
+          <th style="padding: 12px 14px;">Identified Sub-category</th>
         </tr>
       </thead>
       <tbody>
         {% for row in preview_rows %}
-        <tr style="border-bottom: 1px solid rgba(15,23,42,0.04); color: #0f172a;">
-          <td style="padding: 10px; font-weight: 500; color: #64748b;">{{ row.row_num }}</td>
-          <td style="padding: 10px; font-weight: 600;">{{ row.title }}</td>
-          <td style="padding: 10px; color: #4f46e5;">{{ row.instagram or '-' }}</td>
-          <td style="padding: 10px;">
+        <tr>
+          <td style="padding: 10px 14px; font-weight: 500; color: #64748b; font-size: 0.85rem;">{{ row.row_num }}</td>
+          <td style="padding: 10px 14px; font-weight: 600; color: #f1f5f9;">{{ row.title }}</td>
+          <td style="padding: 10px 14px; color: #f2d100; font-weight: 500;">{{ row.instagram or '—' }}</td>
+          <td style="padding: 10px 14px;">
             <span class="badge finding-newly-found" style="font-weight: 600;">{{ row.category }}</span>
           </td>
-          <td style="padding: 10px; white-space: pre-line; font-size: 0.8125rem; line-height: 1.4; color: #475569;">{{ row.sub_category or '-' }}</td>
+          <td style="padding: 10px 14px; white-space: pre-line; font-size: 0.8rem; line-height: 1.45; color: #94a3b8;">{{ row.sub_category or '—' }}</td>
         </tr>
         {% endfor %}
       </tbody>
