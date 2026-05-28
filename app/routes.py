@@ -567,7 +567,7 @@ def process_taxonomy_bulk_file(
         bottom=Side(style="thin", color="E2E8F0")
     )
 
-    new_headers = headers + ["Identified Title Category", "Identified Title Sub-Category"]
+    new_headers = headers + ["title_category", "title_sub_category"]
     for col_idx, h in enumerate(new_headers, 1):
         cell = out_sheet.cell(row=1, column=col_idx)
         cell.value = h

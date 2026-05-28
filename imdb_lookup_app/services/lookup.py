@@ -17,7 +17,7 @@ from imdb_lookup_app.models import LookupBatchResult, LookupMode, LookupRow, Loo
 
 IMDB_TITLE_BASICS_FILENAME = "title.basics.tsv.gz"
 IMDB_NAME_BASICS_FILENAME = "name.basics.tsv.gz"
-IMDB_INDEX_FILENAME = "imdb_lookup.sqlite3"
+IMDB_INDEX_FILENAME = "imdb_title_lookup.sqlite3"
 IMDB_INDEX_LOCK = Lock()
 
 
@@ -326,6 +326,10 @@ class ImdbLookupService:
                 "Please run this task in a local environment."
             )
 
+        # Bypass rebuilds and file checks if database exists and has substantial size
+        if db_path.exists() and db_path.stat().st_size > 10 * 1024 * 1024:
+            return db_path
+
         dataset_dir.mkdir(parents=True, exist_ok=True)
 
         title_path = self._ensure_dataset_file(
@@ -340,6 +344,9 @@ class ImdbLookupService:
         with IMDB_INDEX_LOCK:
             if self._index_is_current(db_path, [title_path, name_path]):
                 return db_path
+            # Reusing existing database of substantial size to prevent slow builds during requests
+            if db_path.exists() and db_path.stat().st_size > 10 * 1024 * 1024:
+                return db_path
             self._build_index(db_path, title_path, name_path)
             return db_path
 
@@ -347,7 +354,7 @@ class ImdbLookupService:
         configured = _clean_dataset_value(settings.imdb_lookup_dataset_dir)
         if configured:
             return Path(configured)
-        return BASE_DIR / "data" / "imdb_lookup_app"
+        return BASE_DIR / "data" / "imdb_datasets"
 
     def _ensure_dataset_file(self, source: str, destination: Path) -> Path:
         cleaned_source = _clean_dataset_value(source)

@@ -9,7 +9,7 @@
       </div>
       <p class="section-note">The app returns one best URL per site and keeps a few alternates when the match is close.</p>
     </div>
-    <form class="tool-form" action="/lookup" method="post">
+    <form class="tool-form" action="{{ url_for('lookup_title') }}" method="post">
       <label class="field field-wide">
         <span>Title</span>
         <input type="text" name="title" value="{{ title }}" placeholder="Faces of Death" required />
@@ -38,7 +38,7 @@
       </div>
       <p class="section-note">Use one title per line. Optional format: <code>title | year | movie|tv</code>.</p>
     </div>
-    <form class="tool-form bulk-form" action="/bulk-lookup" method="post">
+    <form class="tool-form bulk-form" action="{{ url_for('bulk_lookup') }}" method="post">
       <label class="field field-wide">
         <span>Bulk entries</span>
         <textarea name="entries" rows="8" placeholder="Faces of Death | 2026 | movie&#10;The Office | 2005 | tv&#10;Inception">{{ bulk_entries }}</textarea>
@@ -92,8 +92,8 @@
       </div>
       {% if bulk_result.export_id %}
       <div class="export-actions">
-        <a class="export-link" href="/download/{{ bulk_result.export_id }}/csv">Download CSV</a>
-        <a class="export-link" href="/download/{{ bulk_result.export_id }}/xlsx">Download Excel</a>
+        <a class="export-link" href="{{ url_for('download_export', export_id=bulk_result.export_id, fmt='csv') }}">Download CSV</a>
+        <a class="export-link" href="{{ url_for('download_export', export_id=bulk_result.export_id, fmt='xlsx') }}">Download Excel</a>
       </div>
       {% endif %}
     </div>

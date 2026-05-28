@@ -57,7 +57,7 @@ IMDB_DATASET_INDEX_LOCK = Lock()
 WIKIPEDIA_CACHE_LOCK = Lock()
 IMDB_TITLE_BASICS_FILENAME = "title.basics.tsv.gz"
 IMDB_NAME_BASICS_FILENAME = "name.basics.tsv.gz"
-IMDB_INDEX_FILENAME = "imdb_basics.sqlite3"
+IMDB_INDEX_FILENAME = "imdb_title_lookup.sqlite3"
 WIKIPEDIA_CACHE_FILENAME = "wikipedia_cache.sqlite3"
 WIKIMEDIA_CACHE_TABLE = "wikimedia_cache"
 WIKIDATA_DISAMBIGUATION_IDS = {"Q4167410", "Q22808320"}
@@ -80,8 +80,10 @@ class WorksheetValidationContext:
     worksheet: Any
     header_row: int
     header_map: dict[str, int]
+    rows_values: list[tuple[Any, ...]]
     active_rows: list[int]
     row_context_cache: dict[int, dict[str, Any]] = field(default_factory=dict)
+
 
 
 class WorkbookValidationConfigError(ValueError):
@@ -939,10 +941,38 @@ def _select_worksheets(workbook: Workbook, sheet_name: str) -> list:
 
 def _build_header_map(worksheet, header_row: int) -> dict[str, int]:
     header_map: dict[str, int] = {}
+    aliases = {
+        "brand/property tracked": "title",
+        "brand/property or talent": "title_category",
+        "brand/talent": "title",
+        "facebook url": "facebook_page",
+        "facebook page url": "facebook_page",
+        "facebook page": "facebook_page",
+        "twitter/x url": "twitter_handle",
+        "twitter handle": "twitter_handle",
+        "twitter url": "twitter_handle",
+        "twitter/x handle": "twitter_handle",
+        "instagram url": "instagram_user",
+        "instagram user": "instagram_user",
+        "instagram handle": "instagram_user",
+        "youtube url": "youtube_channel_username",
+        "youtube channel": "youtube_channel_username",
+        "youtube channel username": "youtube_channel_username",
+        "tiktok url": "tiktok_user",
+        "tiktok user": "tiktok_user",
+        "tiktok handle": "tiktok_user",
+        "wikipedia url": "wikipedia_url",
+        "wikipedia page": "wikipedia_url",
+        "wikidata id": "wikidata_id",
+        "imdb id": "imdb_id",
+    }
     for cell in worksheet[header_row]:
         value = str(cell.value).strip() if cell.value is not None else ""
         if value:
-            header_map[value.casefold()] = cell.column
+            norm_val = value.casefold()
+            header_map[norm_val] = cell.column
+            if norm_val in aliases:
+                header_map[aliases[norm_val]] = cell.column
     return header_map
 
 
@@ -956,22 +986,34 @@ def _get_worksheet_validation_context(
     if cached is not None:
         return cached
 
+    rows_values = list(worksheet.iter_rows(values_only=True))
+
     context = WorksheetValidationContext(
         worksheet=worksheet,
         header_row=header_row,
         header_map=_build_header_map(worksheet, header_row),
-        active_rows=_build_active_rows(worksheet, header_row),
+        rows_values=rows_values,
+        active_rows=[],
     )
+    context.active_rows = _build_active_rows(context)
     cache[cache_key] = context
     return context
 
 
-def _build_active_rows(worksheet, header_row: int) -> list[int]:
+def _build_active_rows(context: WorksheetValidationContext) -> list[int]:
     active_rows: list[int] = []
-    for row_number in range(header_row + 1, worksheet.max_row + 1):
-        if not _row_is_empty(worksheet, row_number):
-            active_rows.append(row_number)
+    header_row = context.header_row
+    for idx in range(header_row, len(context.rows_values)):
+        row_values = context.rows_values[idx]
+        is_empty = True
+        for val in row_values:
+            if val is not None and not (isinstance(val, str) and not val.strip()):
+                is_empty = False
+                break
+        if not is_empty:
+            active_rows.append(idx + 1)
     return active_rows
+
 
 
 def _compile_conditions(
@@ -1975,11 +2017,17 @@ def _should_skip_tmdb_validation(detail: str) -> bool:
     return normalized_detail.startswith("tmdb lookup failed:") or normalized_detail == "tmdb is not configured"
 
 
-def _build_row_context(worksheet, row_number: int, header_map: dict[str, int]) -> dict[str, Any]:
-    context: dict[str, Any] = {}
-    for header_name, column_index in header_map.items():
-        context[header_name] = worksheet.cell(row=row_number, column=column_index).value
-    return context
+def _build_row_context(context: WorksheetValidationContext, row_number: int) -> dict[str, Any]:
+    row_idx = row_number - 1
+    row_values = context.rows_values[row_idx]
+    row_ctx: dict[str, Any] = {}
+    for header_name, column_index in context.header_map.items():
+        val_idx = column_index - 1
+        if val_idx < len(row_values):
+            row_ctx[header_name] = row_values[val_idx]
+        else:
+            row_ctx[header_name] = None
+    return row_ctx
 
 
 def _get_row_context(worksheet_context: WorksheetValidationContext, row_number: int) -> dict[str, Any]:
@@ -1987,9 +2035,10 @@ def _get_row_context(worksheet_context: WorksheetValidationContext, row_number: 
     if cached is not None:
         return cached
 
-    context = _build_row_context(worksheet_context.worksheet, row_number, worksheet_context.header_map)
+    context = _build_row_context(worksheet_context, row_number)
     worksheet_context.row_context_cache[row_number] = context
     return context
+
 
 
 def _as_number(value: Any) -> float | None:
@@ -2811,6 +2860,11 @@ def _lookup_imdb_dataset_record(imdb_id: str) -> tuple[bool, dict[str, Any] | No
 
 def _ensure_imdb_dataset_index() -> Path:
     dataset_dir = _imdb_dataset_dir()
+    db_path = dataset_dir / IMDB_INDEX_FILENAME
+
+    if db_path.exists() and not settings.imdb_rebuild_stale_index:
+        return db_path
+
     dataset_dir.mkdir(parents=True, exist_ok=True)
 
     title_path = _ensure_imdb_dataset_file(
@@ -2821,7 +2875,6 @@ def _ensure_imdb_dataset_index() -> Path:
         settings.imdb_name_basics_url,
         dataset_dir / IMDB_NAME_BASICS_FILENAME,
     )
-    db_path = dataset_dir / IMDB_INDEX_FILENAME
 
     with IMDB_DATASET_INDEX_LOCK:
         if _imdb_index_is_current(db_path, [title_path, name_path]):

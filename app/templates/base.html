@@ -12,96 +12,6 @@
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}?v={{ asset_version | default('1') }}" />
     <script defer src="https://unpkg.com/htmx.org@1.9.12"></script>
     <script defer src="{{ url_for('static', path='/htmx-fallback.js') }}?v={{ asset_version | default('1') }}"></script>
-    <style>
-      /* ─── Premium Top Navbar ─── */
-      .suite-navbar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
-        padding: 12px 32px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
-      }
-
-      .suite-navbar-brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 900;
-        font-size: 1.35rem;
-        color: #0f172a;
-        text-decoration: none;
-        letter-spacing: -0.03em;
-        transition: opacity 150ms ease;
-      }
-
-      .suite-navbar-brand:hover {
-        opacity: 0.85;
-      }
-
-      .suite-navbar-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #4f46e5;
-        box-shadow: 0 0 10px rgba(79, 70, 229, 0.6);
-      }
-
-      .suite-navbar-links {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-
-      .suite-navbar-link {
-        font-family: 'Inter', sans-serif;
-        color: #475569;
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 600;
-        padding: 8px 14px;
-        border-radius: 20px;
-        transition: all 150ms ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .suite-navbar-link:hover {
-        color: #0f172a;
-        background: rgba(15, 23, 42, 0.04);
-      }
-
-      .suite-navbar-link.active {
-        color: #4f46e5;
-        background: #e0e7ff;
-        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
-      }
-
-      .suite-navbar-link .material-symbols-outlined {
-        font-size: 18px;
-      }
-
-      @media (max-width: 768px) {
-        .suite-navbar {
-          flex-direction: column;
-          gap: 12px;
-          padding: 12px;
-        }
-        .suite-navbar-links {
-          width: 100%;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-      }
-    </style>
   </head>
   <body>
     <!-- Top Navigation Bar -->
@@ -111,7 +21,7 @@
         OrchestrAI
       </a>
       <div class="suite-navbar-links">
-        <a href="/" class="suite-navbar-link active">
+        <a href="/" class="suite-navbar-link">
           <span class="material-symbols-outlined">shield</span>
           Data Ops Validator
         </a>
@@ -123,24 +33,31 @@
           <span class="material-symbols-outlined">movie</span>
           IMDb Lookup
         </a>
+        <a href="/title-lookup/" class="suite-navbar-link">
+          <span class="material-symbols-outlined">link</span>
+          Title URL Finder
+        </a>
       </div>
     </nav>
 
     <!-- Page Content Wrapper -->
     <div class="page-shell">
-      <header class="welcome-header panel">
-        <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(79, 70, 229, 0.06); border: 1px solid rgba(79, 70, 229, 0.12); margin-bottom: 16px; font-weight: 700; color: #4f46e5; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif;">
-          <span class="material-symbols-outlined" style="font-size: 14px; color: #4f46e5;">auto_awesome</span>
-          AI-Powered Data Operations
-        </span>
-        <h1 style="font-family: 'Outfit', sans-serif; font-weight: 900; color: #0f172a; margin-top: 0;">Welcome to OrchestrAI</h1>
-        <p class="subtitle" style="font-family: 'Inter', sans-serif; color: #475569;">A system that intelligently coordinates workflows, metadata, automation, and operations — all in one workspace.</p>
+      <header class="hero-split-container">
+        <div class="hero-split-left">
+          <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(79, 70, 229, 0.06); border: 1px solid rgba(79, 70, 229, 0.12); margin-bottom: 16px; font-weight: 700; color: #4f46e5; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif;">
+            <span class="material-symbols-outlined" style="font-size: 14px; color: #4f46e5;">auto_awesome</span>
+            AI-Powered Data Operations
+          </span>
+          <h1 style="font-family: 'Outfit', sans-serif; font-weight: 900; color: #0f172a; margin-top: 0;">Welcome to OrchestrAI</h1>
+          <p class="hero-text" style="font-family: 'Inter', sans-serif; color: #475569;">A system that intelligently coordinates workflows, metadata, automation, and operations — all in one workspace.</p>
+        </div>
+        <div class="webgl-hero-container"></div>
       </header>
       <main>{% block content %}{% endblock %}</main>
     </div>
 
+    <!-- Active Navbar Highlight Script -->
     <script>
-      // Highlight active navbar link based on current path
       (function() {
         const path = window.location.pathname;
         document.querySelectorAll('.suite-navbar-link').forEach(link => {
@@ -150,10 +67,14 @@
           document.querySelectorAll('.suite-navbar-link[href="/calendar/"]').forEach(el => el.classList.add('active'));
         } else if (path.startsWith('/imdb')) {
           document.querySelectorAll('.suite-navbar-link[href="/imdb/"]').forEach(el => el.classList.add('active'));
+        } else if (path.startsWith('/title-lookup')) {
+          document.querySelectorAll('.suite-navbar-link[href="/title-lookup/"]').forEach(el => el.classList.add('active'));
         } else {
           document.querySelectorAll('.suite-navbar-link[href="/"]').forEach(el => el.classList.add('active'));
         }
       })();
     </script>
+    <!-- Three.js and WebGL Script -->
+    <script defer src="{{ url_for('static', path='/three-graphic.js') }}?v={{ asset_version | default('1') }}"></script>
   </body>
 </html>

@@ -9,7 +9,7 @@
       </div>
       <p class="section-note">One value per line works best, but commas and semicolons are accepted too.</p>
     </div>
-    <form class="tool-form" action="/lookup/text" method="post">
+    <form class="tool-form" action="{{ url_for('lookup_text') }}" method="post">
       <label class="field field-wide">
         <span>IMDb ids, titles, or person names</span>
         <textarea name="values" placeholder="tt0133093&#10;nm0000206&#10;The Matrix&#10;Keanu Reeves">{{ raw_values }}</textarea>
@@ -34,7 +34,7 @@
       </div>
       <p class="section-note">XLSX uses the active sheet by default. You can optionally target a sheet and column.</p>
     </div>
-    <form class="tool-form upload-form" action="/lookup/file" method="post" enctype="multipart/form-data">
+    <form class="tool-form upload-form" action="{{ url_for('lookup_file') }}" method="post" enctype="multipart/form-data">
       <label class="field field-wide">
         <span>Source file (.csv or .xlsx)</span>
         <input type="file" name="dataset_file" accept=".csv,.xlsx" />
@@ -88,8 +88,8 @@
       </div>
       {% if result.export_id %}
       <div class="export-actions">
-        <a class="export-link" href="/download/{{ result.export_id }}/csv">Download CSV</a>
-        <a class="export-link" href="/download/{{ result.export_id }}/xlsx">Download Excel</a>
+        <a class="export-link" href="{{ url_for('download_export', export_id=result.export_id, fmt='csv') }}">Download CSV</a>
+        <a class="export-link" href="{{ url_for('download_export', export_id=result.export_id, fmt='xlsx') }}">Download Excel</a>
       </div>
       {% endif %}
     </div>

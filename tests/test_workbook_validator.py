@@ -1973,7 +1973,7 @@ def test_validate_workbook_uses_imdb_dataset_for_reference_matching(tmp_path, mo
 def test_imdb_lookup_reuses_existing_stale_index_when_rebuild_is_disabled(tmp_path, monkeypatch):
     dataset_dir = tmp_path / "cache"
     dataset_dir.mkdir()
-    db_path = dataset_dir / "imdb_basics.sqlite3"
+    db_path = dataset_dir / "imdb_title_lookup.sqlite3"
     title_path = dataset_dir / "title.basics.tsv.gz"
     name_path = dataset_dir / "name.basics.tsv.gz"
 

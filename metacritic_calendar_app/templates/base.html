@@ -6,70 +6,72 @@
     <title>{% block title %}Asana LF Automation Tasks{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" />
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}?v={{ asset_version | default('1') }}" />
   </head>
   <body>
-    <style>
-      .suite-navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #ffffff;
-        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-        padding: 12px 24px;
-        position: sticky;
-        top: 0;
-        z-index: 9999;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-      }
-      .suite-navbar-brand {
-        font-weight: 700;
-        font-size: 1.15rem;
-        color: #0f172a;
-        letter-spacing: -0.02em;
-      }
-      .suite-navbar-links {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .suite-navbar-link {
-        color: #475569;
-        text-decoration: none;
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding: 6px 12px;
-        border-radius: 6px;
-        transition: all 150ms ease;
-      }
-      .suite-navbar-link:hover {
-        color: #0f172a;
-        background: #f1f5f9;
-      }
-      .suite-navbar-link.active {
-        color: #4f46e5;
-        background: #e0e7ff;
-      }
-    </style>
+    <!-- Top Navigation Bar -->
     <nav class="suite-navbar">
-      <div class="suite-navbar-brand">OrchestrAI</div>
+      <a href="/" class="suite-navbar-brand">
+        <span class="suite-navbar-dot"></span>
+        OrchestrAI
+      </a>
       <div class="suite-navbar-links">
-        <a href="/" class="suite-navbar-link">Data Ops Validator</a>
-        <a href="/calendar/" class="suite-navbar-link active">Asana LF Automation Tasks</a>
-        <a href="/imdb/" class="suite-navbar-link">IMDb Lookup</a>
+        <a href="/" class="suite-navbar-link">
+          <span class="material-symbols-outlined">shield</span>
+          Data Ops Validator
+        </a>
+        <a href="/calendar/" class="suite-navbar-link">
+          <span class="material-symbols-outlined">event_note</span>
+          Automation Tasks
+        </a>
+        <a href="/imdb/" class="suite-navbar-link">
+          <span class="material-symbols-outlined">movie</span>
+          IMDb Lookup
+        </a>
+        <a href="/title-lookup/" class="suite-navbar-link">
+          <span class="material-symbols-outlined">link</span>
+          Title URL Finder
+        </a>
       </div>
     </nav>
+
+    <!-- Page Content Wrapper -->
     <div class="page-shell">
-      <header class="hero">
-        <p class="eyebrow">Standalone App</p>
-        <h1>Asana LF Automation Tasks</h1>
-        <p class="hero-text">
-          Run scheduled automation tasks, fetch fresh releases, match IMDb IDs, and export reports.
-        </p>
+      <header class="hero-split-container">
+        <div class="hero-split-left">
+          <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(79, 70, 229, 0.06); border: 1px solid rgba(79, 70, 229, 0.12); margin-bottom: 16px; font-weight: 700; color: #4f46e5; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif;">
+            <span class="material-symbols-outlined" style="font-size: 14px; color: #4f46e5;">auto_awesome</span>
+            Workflow Orchestration
+          </span>
+          <h1 style="font-family: 'Outfit', sans-serif; font-weight: 900; color: #0f172a; margin-top: 0;">Asana LF Automation Tasks</h1>
+          <p class="hero-text" style="font-family: 'Inter', sans-serif; color: #475569;">Run scheduled automation tasks, fetch fresh releases, match IMDb IDs, and export reports.</p>
+        </div>
+        <div class="webgl-hero-container"></div>
       </header>
       <main>{% block content %}{% endblock %}</main>
     </div>
+
+    <!-- Active Navbar Highlight Script -->
+    <script>
+      (function() {
+        const path = window.location.pathname;
+        document.querySelectorAll('.suite-navbar-link').forEach(link => {
+          link.classList.remove('active');
+        });
+        if (path.startsWith('/calendar')) {
+          document.querySelectorAll('.suite-navbar-link[href="/calendar/"]').forEach(el => el.classList.add('active'));
+        } else if (path.startsWith('/imdb')) {
+          document.querySelectorAll('.suite-navbar-link[href="/imdb/"]').forEach(el => el.classList.add('active'));
+        } else if (path.startsWith('/title-lookup')) {
+          document.querySelectorAll('.suite-navbar-link[href="/title-lookup/"]').forEach(el => el.classList.add('active'));
+        } else {
+          document.querySelectorAll('.suite-navbar-link[href="/"]').forEach(el => el.classList.add('active'));
+        }
+      })();
+    </script>
+    <!-- Three.js and WebGL Script -->
+    <script defer src="{{ url_for('static', path='/three-graphic.js') }}?v={{ asset_version | default('1') }}"></script>
   </body>
 </html>
