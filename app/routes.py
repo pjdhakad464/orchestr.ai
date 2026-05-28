@@ -667,6 +667,63 @@ async def bulk_classify_taxonomy(
     )
 
 
+@router.get("/taxonomy/download-template")
+async def download_taxonomy_template():
+    import openpyxl
+    from openpyxl.styles import PatternFill, Font, Alignment
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Taxonomy Template"
+    
+    headers = [
+        "Entity Name", 
+        "Instagram Handle", 
+        "Facebook Page", 
+        "Twitter Handle", 
+        "TikTok User", 
+        "YouTube Channel", 
+        "Wikipedia URL", 
+        "Wikidata ID", 
+        "IMDb ID"
+    ]
+    
+    header_fill = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
+    header_font = Font(name="Segoe UI", size=11, bold=True, color="FFFFFF")
+    
+    for col_idx, h in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_idx)
+        cell.value = h
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+        
+    examples = [
+        ["Christopher Nolan", "christophernolanofficial", "", "", "", "", "https://en.wikipedia.org/wiki/Christopher_Nolan", "Q25130", "nm0634289"],
+        ["Stranger Things", "strangerthingstv", "", "", "", "", "https://en.wikipedia.org/wiki/Stranger_Things", "Q19798734", "tt5074352"],
+        ["Minecraft", "minecraft", "", "", "", "", "https://en.wikipedia.org/wiki/Minecraft", "Q49028", "tt3560702"],
+    ]
+    
+    for row_idx, row in enumerate(examples, 2):
+        for col_idx, val in enumerate(row, 1):
+            cell = ws.cell(row=row_idx, column=col_idx)
+            cell.value = val
+            cell.font = Font(name="Segoe UI", size=10)
+            
+    for col in ws.columns:
+        max_len = max(len(str(cell.value or "")) for cell in col)
+        col_letter = openpyxl.utils.get_column_letter(col[0].column)
+        ws.column_dimensions[col_letter].width = max(max_len + 3, 15)
+        
+    out_buf = io.BytesIO()
+    wb.save(out_buf)
+    
+    return StreamingResponse(
+        io.BytesIO(out_buf.getvalue()),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": 'attachment; filename="taxonomy_template.xlsx"'},
+    )
+
+
 @router.get("/taxonomy/download/{job_id}")
 async def download_taxonomy_file(job_id: str):
     cached = cache.get(f"taxonomy_export:{job_id}")

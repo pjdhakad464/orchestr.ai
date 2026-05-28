@@ -2,22 +2,22 @@
   <!-- Glow effect -->
   <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; border-radius: 50%; background: rgba(34,197,94,0.06); filter: blur(40px); pointer-events: none;"></div>
 
-  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 16px; margin-bottom: 16px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(15, 23, 42, 0.08); padding-bottom: 16px; margin-bottom: 16px;">
     <div>
       <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 14px; color: #4ade80;">check_circle</span>
+        <span class="material-symbols-outlined" style="font-size: 14px; color: #16a34a;">check_circle</span>
         Taxonomy Identification Completed
       </span>
-      <h3 style="margin: 6px 0 0; font-size: 1.15rem; font-weight: 700; color: #f1f5f9;">{{ filename }}</h3>
+      <h3 style="margin: 6px 0 0; font-size: 1.15rem; font-weight: 700; color: #0f172a;">{{ filename }}</h3>
       <p style="margin: 4px 0 0; font-size: 0.8rem; color: #64748b;">Processed {{ total_rows }} records in this batch.</p>
     </div>
-    <a href="/taxonomy/download/{{ job_id }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, #f2d100, #c4a900); color: #0a0e1a; text-decoration: none; font-weight: 700; font-size: 0.85rem; border-radius: 10px; transition: all 150ms ease; box-shadow: 0 4px 14px rgba(242,209,0,0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(242,209,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(242,209,0,0.2)'">
+    <a href="/taxonomy/download/{{ job_id }}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; text-decoration: none; font-weight: 700; font-size: 0.85rem; border-radius: 10px; transition: all 150ms ease; box-shadow: 0 4px 14px rgba(79,70,229,0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(79,70,229,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(79,70,229,0.2)'">
       <span class="material-symbols-outlined" style="font-size: 18px;">download</span>
       Download Workbook
     </a>
   </div>
 
-  <div style="overflow-x: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06);">
+  <div style="overflow-x: auto; border-radius: 14px; border: 1px solid rgba(15, 23, 42, 0.08);">
     <table class="results-table" style="min-width: 700px;">
       <thead>
         <tr>
@@ -32,12 +32,12 @@
         {% for row in preview_rows %}
         <tr>
           <td style="padding: 10px 14px; font-weight: 500; color: #64748b; font-size: 0.85rem;">{{ row.row_num }}</td>
-          <td style="padding: 10px 14px; font-weight: 600; color: #f1f5f9;">{{ row.title }}</td>
-          <td style="padding: 10px 14px; color: #f2d100; font-weight: 500;">{{ row.instagram or '—' }}</td>
+          <td style="padding: 10px 14px; font-weight: 600; color: #0f172a;">{{ row.title }}</td>
+          <td style="padding: 10px 14px; color: #4f46e5; font-weight: 600;">{{ row.instagram or '—' }}</td>
           <td style="padding: 10px 14px;">
             <span class="badge finding-newly-found" style="font-weight: 600;">{{ row.category }}</span>
           </td>
-          <td style="padding: 10px 14px; white-space: pre-line; font-size: 0.8rem; line-height: 1.45; color: #94a3b8;">{{ row.sub_category or '—' }}</td>
+          <td style="padding: 10px 14px; white-space: pre-line; font-size: 0.8rem; line-height: 1.45; color: #475569;">{{ row.sub_category or '—' }}</td>
         </tr>
         {% endfor %}
       </tbody>

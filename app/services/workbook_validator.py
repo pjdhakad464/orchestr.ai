@@ -139,7 +139,13 @@ def validate_loaded_workbook(
     rottentomatoes_cache: dict[str, tuple[bool, dict[str, Any] | None, str]] = {}
     worksheet_contexts: dict[tuple[str, int], WorksheetValidationContext] = {}
 
-    if review_mode == "duplicate_conflict":
+    # Split review_mode by comma to check for multiple modes
+    modes = [m.strip() for m in review_mode.split(",") if m.strip()]
+    if not modes:
+        modes = ["full"]
+
+    # Run duplicate conflict scan if requested
+    if "duplicate_conflict" in modes:
         for worksheet in workbook.worksheets:
             if worksheet.title == "Validation Summary":
                 continue
@@ -149,16 +155,17 @@ def validate_loaded_workbook(
                 continue
             _perform_duplicate_conflict_scan(worksheet_context, worksheet, issues)
             
-        _append_summary_sheet(workbook, issues)
-        output = io.BytesIO()
-        workbook.save(output)
-        safe_name = f"{Path(filename).stem}_validated.xlsx"
-        return WorkbookValidationArtifact(
-            validation_id=str(uuid.uuid4()),
-            filename=safe_name,
-            file_bytes=output.getvalue(),
-            issues=issues,
-        )
+        if len(modes) == 1:
+            _append_summary_sheet(workbook, issues)
+            output = io.BytesIO()
+            workbook.save(output)
+            safe_name = f"{Path(filename).stem}_validated.xlsx"
+            return WorkbookValidationArtifact(
+                validation_id=str(uuid.uuid4()),
+                filename=safe_name,
+                file_bytes=output.getvalue(),
+                issues=issues,
+            )
 
     with _social_http_client() as social_client:
         for rule in rules:
@@ -215,9 +222,9 @@ def validate_loaded_workbook(
                         continue
 
                     cell_value = row_context.get(column_key)
-                    if review_mode == "missing_only" and not _is_blank(cell_value):
+                    if "missing_only" in modes and not _is_blank(cell_value):
                         continue
-                    if review_mode == "existing_qa" and _is_blank(cell_value):
+                    if "existing_qa" in modes and _is_blank(cell_value):
                         continue
 
                     cell = worksheet.cell(row=row_number, column=column_index)
@@ -3726,51 +3733,83 @@ class _ReusableSocialClient:
 
 
 def _rule_matches_review_mode(rule: ValidationRule, review_mode: str, platform_filter: str | None) -> bool:
-    if review_mode == "full":
+    if not review_mode:
         return True
-    
+        
+    modes = [m.strip() for m in review_mode.split(",") if m.strip()]
+    if not modes or "full" in modes:
+        return True
+        
     col = (rule.column or "").strip().lower()
     
-    if review_mode == "social_only":
-        social_cols = {
-            "facebook_page", "twitter_handle", "instagram_user", "tiktok_user", 
-            "youtube_channel_username", "wikipedia_url", "wikidata_id", "imdb_id", 
-            "linkedin_page", "website", "official_website"
-        }
-        return col in social_cols
-        
-    if review_mode == "categorization":
-        cat_cols = {
-            "title_category", "title_sub_category", "talent_type", "talent_subtype", 
-            "genre", "primary_genre"
-        }
-        return col in cat_cols
-        
-    if review_mode == "platform_specific":
-        if not platform_filter:
-            return True
-        pf = platform_filter.lower()
-        if pf == "facebook":
-            return col in {"facebook_page"}
-        if pf == "instagram":
-            return col in {"instagram_user"}
-        if pf == "twitter":
-            return col in {"twitter_handle"}
-        if pf == "tiktok":
-            return col in {"tiktok_user"}
-        if pf == "youtube":
-            return col in {"youtube_channel_username"}
-        if pf == "wikipedia":
-            return col in {"wikipedia_url"}
-        if pf == "imdb":
-            return col in {"imdb_id"}
-        if pf == "linkedin":
-            return col in {"linkedin_page"}
-        if pf == "website":
-            return col in {"website", "official_website"}
+    target_modes = [m for m in modes if m in {"social_only", "categorization", "platform_specific"}]
+    if not target_modes:
         return True
         
-    return True
+    matched = False
+    for mode in target_modes:
+        if mode == "social_only":
+            social_cols = {
+                "facebook_page", "twitter_handle", "instagram_user", "tiktok_user", 
+                "youtube_channel_username", "wikipedia_url", "wikidata_id", "imdb_id", 
+                "linkedin_page", "website", "official_website"
+            }
+            if col in social_cols:
+                if platform_filter and platform_filter != "all":
+                    platforms = [p.strip().lower() for p in platform_filter.split(",") if p.strip()]
+                    if col == "facebook_page" and "facebook" in platforms:
+                        matched = True
+                    elif col == "instagram_user" and "instagram" in platforms:
+                        matched = True
+                    elif col == "twitter_handle" and "twitter" in platforms:
+                        matched = True
+                    elif col == "tiktok_user" and "tiktok" in platforms:
+                        matched = True
+                    elif col == "youtube_channel_username" and "youtube" in platforms:
+                        matched = True
+                    elif col == "wikipedia_url" and "wikipedia" in platforms:
+                        matched = True
+                    elif col == "imdb_id" and "imdb" in platforms:
+                        matched = True
+                    elif col == "linkedin_page" and "linkedin" in platforms:
+                        matched = True
+                    elif col in {"website", "official_website"} and "website" in platforms:
+                        matched = True
+                else:
+                    matched = True
+        elif mode == "categorization":
+            cat_cols = {
+                "title_category", "title_sub_category", "talent_type", "talent_subtype", 
+                "genre", "primary_genre"
+            }
+            if col in cat_cols:
+                matched = True
+        elif mode == "platform_specific":
+            if not platform_filter or platform_filter == "all":
+                matched = True
+            else:
+                platforms = [p.strip().lower() for p in platform_filter.split(",") if p.strip()]
+                for pf in platforms:
+                    if pf == "facebook" and col == "facebook_page":
+                        matched = True
+                    elif pf == "instagram" and col == "instagram_user":
+                        matched = True
+                    elif pf == "twitter" and col == "twitter_handle":
+                        matched = True
+                    elif pf == "tiktok" and col == "tiktok_user":
+                        matched = True
+                    elif pf == "youtube" and col == "youtube_channel_username":
+                        matched = True
+                    elif pf == "wikipedia" and col == "wikipedia_url":
+                        matched = True
+                    elif pf == "imdb" and col == "imdb_id":
+                        matched = True
+                    elif pf == "linkedin" and col == "linkedin_page":
+                        matched = True
+                    elif pf == "website" and col in {"website", "official_website"}:
+                        matched = True
+    return matched
+
 
 
 def _perform_duplicate_conflict_scan(worksheet_context, worksheet, issues):

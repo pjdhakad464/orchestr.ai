@@ -1,11 +1,11 @@
 <section class="panel validator-panel" style="position: relative; overflow: hidden;">
   <!-- Subtle glow effect -->
-  <div style="position: absolute; top: -40px; left: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(242,209,0,0.05); filter: blur(40px); pointer-events: none;"></div>
+  <div style="position: absolute; top: -40px; left: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(79, 70, 229, 0.05); filter: blur(40px); pointer-events: none;"></div>
 
   <div class="validator-heading-row">
     <div class="validator-heading-copy">
       <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">category</span>
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">category</span>
         Taxonomy Bulk Identifier
       </span>
       <h2 class="validator-heading validator-heading-banner">Taxonomy Identification</h2>
@@ -14,6 +14,26 @@
   <p class="meta" style="margin-bottom: 16px;">
     Identify categories and subcategories in bulk using Wikipedia, Wikidata, IMDb, TMDb, and Instagram profiles.
   </p>
+  <div class="template-download-card" style="margin-bottom: 20px; padding: 14px; border-radius: 12px; background: rgba(79, 70, 229, 0.04); border: 1px solid rgba(79, 70, 229, 0.1); display: flex; flex-direction: column; gap: 8px;">
+    <div style="display: flex; align-items: center; gap: 8px; color: #4f46e5; font-size: 0.85rem; font-weight: 700;">
+      <span class="material-symbols-outlined" style="font-size: 18px;">download_for_offline</span>
+      Taxonomy Setup Template
+    </div>
+    <p class="meta" style="margin: 0; font-size: 0.78rem; line-height: 1.4; color: #475569;">
+      Use a pre-formatted structure with headers for automatic taxonomy mapping. Download our offline Excel template or copy our online Google Sheet.
+    </p>
+    <div style="display: flex; gap: 10px; margin-top: 4px;">
+      <a href="/taxonomy/download-template" class="template-btn excel-btn" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; text-decoration: none; padding: 6px 12px; border-radius: 6px; border: 1px solid #4f46e5; color: #4f46e5; background: #ffffff; font-weight: 600; transition: all 150ms ease;">
+        <span class="material-symbols-outlined" style="font-size: 14px;">file_download</span>
+        Excel Template (.xlsx)
+      </a>
+      <a href="https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/copy" target="_blank" rel="noopener noreferrer" class="template-btn sheet-btn" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; text-decoration: none; padding: 6px 12px; border-radius: 6px; border: 1px solid #0f9d58; color: #0f9d58; background: #ffffff; font-weight: 600; transition: all 150ms ease;">
+        <span class="material-symbols-outlined" style="font-size: 14px;">grid_on</span>
+        Google Sheet Template
+      </a>
+    </div>
+  </div>
+
   <form
     class="validator-form"
     id="taxonomy-form"
@@ -46,7 +66,7 @@
     <!-- Expected Output Columns -->
     <div style="margin-top: 4px;">
       <p style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">view_column</span>
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">view_column</span>
         Expected Output Columns
       </p>
       <div style="display: flex; flex-wrap: wrap; gap: 6px;">
@@ -61,7 +81,7 @@
     <!-- Pipeline Logic Steps -->
     <div style="margin-top: 12px;">
       <p style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin: 0 0 10px 0; display: flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">account_tree</span>
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">account_tree</span>
         Pipeline Logic
       </p>
       <div style="display: flex; flex-direction: column; gap: 8px;">

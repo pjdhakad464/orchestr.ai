@@ -5,7 +5,7 @@
   <div class="validator-heading-row">
     <div class="validator-heading-copy">
       <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">shield</span>
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">shield</span>
         Workbook Sheet Validator
       </span>
       <h2 class="validator-heading validator-heading-banner">Data Ops Larger Project Validation</h2>
@@ -13,7 +13,7 @@
   </div>
   <p class="meta" style="margin-bottom: 16px;">
     Need setup help? Open the
-    <a href="/excel-validator/guide" style="color: #f2d100; text-decoration: none; font-weight: 600;">validator how-to guide</a>.
+    <a href="/excel-validator/guide" style="color: #4f46e5; text-decoration: none; font-weight: 600;">validator how-to guide</a>.
   </p>
   <form
     class="validator-form"
@@ -41,63 +41,100 @@
           placeholder="https://docs.google.com/spreadsheets/d/..."
         />
       </label>
-    </div>
-    <div class="validator-source-grid" style="margin-top: 4px;">
-      <label class="file-picker">
-        <span>Review Mode</span>
-        <select name="review_mode" id="review-mode" onchange="togglePlatformFilter()">
-          <option value="full">Full Metadata Review</option>
-          <option value="social_only">Social Handle Review Only</option>
-          <option value="categorization">Categorization Review</option>
-          <option value="platform_specific">Platform-Specific Review</option>
-          <option value="missing_only">Missing Data Review</option>
-          <option value="existing_qa">Existing Data QA Review</option>
-          <option value="duplicate_conflict">Duplicate & Conflict Review</option>
-        </select>
-      </label>
-      <div class="platform-selector-group" id="platform-filter-container" style="display: none; grid-column: span 2; margin-top: 8px;">
-        <span style="display: block; font-size: 0.75rem; font-weight: 700; color: #f2d100; margin-bottom: 10px; letter-spacing: 0.08em; text-transform: uppercase;">Platform Select</span>
+    <div class="validator-options-container" style="display: flex; flex-direction: column; gap: 16px; margin: 16px 0; background: rgba(79,70,229,0.03); border: 1px solid rgba(79,70,229,0.08); padding: 16px; border-radius: 12px;">
+      
+      <!-- Columns to Validate (Targets) -->
+      <div>
+        <span style="display: block; font-size: 0.76rem; font-weight: 700; color: #475569; margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase;">Columns to Validate</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: #0f172a;">
+            <input type="checkbox" id="chk-social" class="custom-checkbox" checked onchange="updateReviewMode()" />
+            <span>Social Handles / Links</span>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: #0f172a;">
+            <input type="checkbox" id="chk-categorization" class="custom-checkbox" checked onchange="updateReviewMode()" />
+            <span>Categorization</span>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: #0f172a;">
+            <input type="checkbox" id="chk-duplicates" class="custom-checkbox" onchange="updateReviewMode()" />
+            <span>Duplicate & Conflict Scan</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Scope of Cells to Validate -->
+      <div>
+        <span style="display: block; font-size: 0.76rem; font-weight: 700; color: #475569; margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase;">Validation Scope</span>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <label class="scope-radio-label active" id="lbl-scope-all" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid #4f46e5; background: #e0e7ff; color: #4f46e5; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 150ms ease;">
+            <input type="radio" name="validation_scope" value="all" checked style="display: none;" onchange="setScope('all')" />
+            <span>Validate All Cells</span>
+          </label>
+          <label class="scope-radio-label" id="lbl-scope-missing" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(15,23,42,0.1); background: #ffffff; color: #475569; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 150ms ease;">
+            <input type="radio" name="validation_scope" value="missing_only" style="display: none;" onchange="setScope('missing_only')" />
+            <span>Empty Cells Only</span>
+          </label>
+          <label class="scope-radio-label" id="lbl-scope-existing" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(15,23,42,0.1); background: #ffffff; color: #475569; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 150ms ease;">
+            <input type="radio" name="validation_scope" value="existing_qa" style="display: none;" onchange="setScope('existing_qa')" />
+            <span>QA Existing Data Only</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Platform Selection (visible only when Social is selected) -->
+      <div id="platform-filter-container" style="display: block; margin-top: 4px; border-top: 1px solid rgba(15,23,42,0.06); padding-top: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 0.76rem; font-weight: 700; color: #475569; letter-spacing: 0.04em; text-transform: uppercase;">Platforms to Verify</span>
+          <div style="display: flex; gap: 8px; font-size: 0.7rem; font-weight: 600;">
+            <button type="button" onclick="toggleAllPlatforms(true)" style="background: none; border: none; color: #4f46e5; cursor: pointer; padding: 0;">Select All</button>
+            <span style="color: rgba(15,23,42,0.2);">|</span>
+            <button type="button" onclick="toggleAllPlatforms(false)" style="background: none; border: none; color: #64748b; cursor: pointer; padding: 0;">Clear All</button>
+          </div>
+        </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" class="platform-icon-btn active" data-platform="facebook" onclick="selectPlatform('facebook')">
-            <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02"/></svg>
+          <button type="button" class="platform-icon-btn active" data-platform="facebook" onclick="togglePlatform('facebook')">
+            <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19(2.23.19)v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02"/></svg>
             <span>Facebook</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="instagram" onclick="selectPlatform('instagram')">
+          <button type="button" class="platform-icon-btn active" data-platform="instagram" onclick="togglePlatform('instagram')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4zm4.4 3a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m5-4.25a.75.75 0 0 1 .75.75a.75.75 0 0 1-.75.75a.75.75 0 0 1-.75-.75a.75.75 0 0 1 .75-.75"/></svg>
             <span>Instagram</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="twitter" onclick="selectPlatform('twitter')">
+          <button type="button" class="platform-icon-btn active" data-platform="twitter" onclick="togglePlatform('twitter')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             <span>Twitter/X</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="tiktok" onclick="selectPlatform('tiktok')">
+          <button type="button" class="platform-icon-btn active" data-platform="tiktok" onclick="togglePlatform('tiktok')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02c.08 1.53.63 3.09 1.75 4.17c1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.86-.74-3.94-1.74c-.58-.56-1.02-1.22-1.37-1.93c-.02 2.24-.01 4.48-.02 6.72c-.08 2.05-.74 4.07-2.05 5.53a7.3 7.3 0 0 1-8.52 1.63A7.2 7.2 0 0 1 2.2 13.06a7.3 7.3 0 0 1 5.92-7.85c.67-.1 1.35-.1 2.02.01v4.18c-.82-.24-1.74-.15-2.48.3c-.88.54-1.36 1.61-1.23 2.63c.12 1.34 1.25 2.45 2.59 2.5c1.47.02 2.75-.98 3.03-2.42c.11-.53.1-1.07.1-1.61c0-3.6 0-7.21 0-10.82Z"/></svg>
             <span>TikTok</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="youtube" onclick="selectPlatform('youtube')">
+          <button type="button" class="platform-icon-btn active" data-platform="youtube" onclick="togglePlatform('youtube')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M23 12s0-3.85-.46-5.58a3.02 3.02 0 0 0-2.12-2.12C18.7 4 12 4 12 4s-6.7 0-8.42.46a3.02 3.02 0 0 0-2.12 2.12C1 8.15 1 12 1 12s0 3.85.46 5.58a3.02 3.02 0 0 0 2.12 2.12C5.3 20 12 20 12 20s6.7 0 8.42-.46a3.02 3.02 0 0 0 2.12-2.12C23 15.85 23 12 23 12zm-14 3.5v-7l6.5 3.5z"/></svg>
             <span>YouTube</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="wikipedia" onclick="selectPlatform('wikipedia')">
+          <button type="button" class="platform-icon-btn active" data-platform="wikipedia" onclick="togglePlatform('wikipedia')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12.09 2.91c-.43 0-.82.26-.98.67L7.69 12.3L4.92 5.09c-.19-.48-.68-.8-1.2-.8H2v1.5h1.16l3.83 10.03l-2.6 6.55c-.21.53.18 1.13.75 1.13h2.36l3.35-8.52h2.24l3.35 8.52h2.36c.57 0 .96-.6.75-1.13l-2.6-6.55l3.83-10.03H22v-1.5h-1.72c-.52 0-1.01.32-1.2.8l-2.77 7.21l-3.42-8.72c-.16-.41-.55-.67-.98-.67h.18z"/></svg>
             <span>Wikipedia</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="imdb" onclick="selectPlatform('imdb')">
+          <button type="button" class="platform-icon-btn active" data-platform="imdb" onclick="togglePlatform('imdb')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M21 2H3a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1M7.5 17h-1.6V7H7.5zm5 0h-1.3l-.7-4.1l-.8 4.1h-1.2V7h1.4l.6 3.9l.6-3.9h1.4zm5-4a2 2 0 0 1-2 2h-1.3V7h1.3a2 2 0 0 1 2 2zm-1.8-4.5v3.3h.4a.7.7 0 0 0 .7-.7V9.2a.7.7 0 0 0-.7-.7z"/></svg>
             <span>IMDb</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="linkedin" onclick="selectPlatform('linkedin')">
+          <button type="button" class="platform-icon-btn active" data-platform="linkedin" onclick="togglePlatform('linkedin')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.8v8.37h2.8v-4.67c0-.25.02-.5.1-.68a1.14 1.14 0 0 1 1-.77c.76 0 1 .58 1 1.42v4.7zM6.5 8.37a1.37 1.37 0 1 0 0-2.75a1.37 1.37 0 0 0 0 2.75M8 18.5V10.1H5v8.4z"/></svg>
             <span>LinkedIn</span>
           </button>
-          <button type="button" class="platform-icon-btn" data-platform="website" onclick="selectPlatform('website')">
+          <button type="button" class="platform-icon-btn active" data-platform="website" onclick="togglePlatform('website')">
             <svg class="platform-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M16.36 14c.08-.66.14-1.32.14-2c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.62a8.81 8.81 0 0 1-4 3.56M11 14H8.64a13.3 13.3 0 0 1-.14-2c0-.68.06-1.34.14-2H11m0 9v-3H8.38c-.32 1.25-.78 2.45-1.38 3.56a8.81 8.81 0 0 1-4-3.56h2.62M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 1.56c.9 1.13 1.6 2.37 2.06 3.69h-4.12C10.4 4.93 11.1 3.69 12 3.56"/></svg>
             <span>Website</span>
           </button>
         </div>
-        <input type="hidden" name="platform_filter" id="platform-filter" value="facebook" />
       </div>
     </div>
+    
+    <!-- Hidden fields matching the backend route parameters -->
+    <input type="hidden" name="review_mode" id="review-mode" value="social_only,categorization" />
+    <input type="hidden" name="platform_filter" id="platform-filter" value="facebook,instagram,twitter,tiktok,youtube,wikipedia,imdb,linkedin,website" />
 
     <p class="meta validator-description">
       Upload your task workbook or CSV, or paste a Google Sheets link, then download the reviewed Excel file with failed cells highlighted in red plus a Validation Summary sheet.
@@ -106,7 +143,7 @@
     <!-- Expected Output Columns -->
     <div style="margin-top: 8px;">
       <p style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 16px; color: #f2d100;">view_column</span>
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">view_column</span>
         Output Highlights
       </p>
       <div style="display: flex; flex-wrap: wrap; gap: 6px;">
@@ -171,25 +208,93 @@
 </section>
 
 <script>
-function togglePlatformFilter() {
-  const reviewMode = document.getElementById("review-mode").value;
+let selectedPlatforms = ["facebook", "instagram", "twitter", "tiktok", "youtube", "wikipedia", "imdb", "linkedin", "website"];
+let activeScope = "all";
+
+function updateReviewMode() {
+  const isSocial = document.getElementById("chk-social").checked;
+  const isCat = document.getElementById("chk-categorization").checked;
+  const isDupe = document.getElementById("chk-duplicates").checked;
+  
   const platformContainer = document.getElementById("platform-filter-container");
-  if (reviewMode === "platform_specific") {
+  if (isSocial) {
     platformContainer.style.display = "block";
   } else {
     platformContainer.style.display = "none";
   }
+  
+  let modes = [];
+  if (isSocial) modes.push("social_only");
+  if (isCat) modes.push("categorization");
+  if (isDupe) modes.push("duplicate_conflict");
+  
+  if (activeScope === "missing_only") {
+    modes.push("missing_only");
+  } else if (activeScope === "existing_qa") {
+    modes.push("existing_qa");
+  }
+  
+  if (modes.length === 0) {
+    document.getElementById("review-mode").value = "full";
+  } else {
+    document.getElementById("review-mode").value = modes.join(",");
+  }
 }
 
-function selectPlatform(platform) {
-  document.getElementById("platform-filter").value = platform;
+function setScope(scopeVal) {
+  activeScope = scopeVal;
+  
+  const labels = document.querySelectorAll(".scope-radio-label");
+  labels.forEach(lbl => {
+    lbl.classList.remove("active");
+    lbl.style.border = "1px solid rgba(15,23,42,0.1)";
+    lbl.style.background = "#ffffff";
+    lbl.style.color = "#475569";
+    lbl.style.fontWeight = "500";
+  });
+  
+  let activeId = "lbl-scope-all";
+  if (scopeVal === "missing_only") activeId = "lbl-scope-missing";
+  else if (scopeVal === "existing_qa") activeId = "lbl-scope-existing";
+  
+  const activeLabel = document.getElementById(activeId);
+  activeLabel.classList.add("active");
+  activeLabel.style.border = "1px solid #4f46e5";
+  activeLabel.style.background = "#e0e7ff";
+  activeLabel.style.color = "#4f46e5";
+  activeLabel.style.fontWeight = "600";
+  
+  updateReviewMode();
+}
+
+function togglePlatform(platform) {
+  const btn = document.querySelector(`[data-platform="${platform}"]`);
+  const index = selectedPlatforms.indexOf(platform);
+  
+  if (index > -1) {
+    selectedPlatforms.splice(index, 1);
+    btn.classList.remove("active");
+  } else {
+    selectedPlatforms.push(platform);
+    btn.classList.add("active");
+  }
+  
+  document.getElementById("platform-filter").value = selectedPlatforms.join(",");
+}
+
+function toggleAllPlatforms(selectAll) {
+  selectedPlatforms = selectAll ? ["facebook", "instagram", "twitter", "tiktok", "youtube", "wikipedia", "imdb", "linkedin", "website"] : [];
+  
   const buttons = document.querySelectorAll(".platform-icon-btn");
   buttons.forEach(btn => {
-    if (btn.getAttribute("data-platform") === platform) {
+    const plat = btn.getAttribute("data-platform");
+    if (selectAll) {
       btn.classList.add("active");
     } else {
       btn.classList.remove("active");
     }
   });
+  
+  document.getElementById("platform-filter").value = selectedPlatforms.join(",");
 }
 </script>
