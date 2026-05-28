@@ -242,6 +242,9 @@ class WorkbookValidationIssue(BaseModel):
     rule: str
     message: str
     value: str = ""
+    finding_category: str = "Needs Manual Review"
+    confidence: str = "High"
+    confidence_reason: str = ""
 
 
 class WorkbookValidationArtifact(BaseModel):

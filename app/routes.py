@@ -302,6 +302,8 @@ async def validate_excel(
     rules_file: UploadFile | None = File(None),
     google_sheet_url: Annotated[str | None, Form()] = None,
     run_by: Annotated[str | None, Form()] = None,
+    review_mode: Annotated[str, Form()] = "full",
+    platform_filter: Annotated[str | None, Form()] = None,
 ) -> HTMLResponse:
     run_by_name = (run_by or "").strip()
     if not run_by_name:
@@ -332,11 +334,11 @@ async def validate_excel(
                     "_error.html",
                     message="Upload an Excel workbook (.xlsx), a CSV file (.csv), or use a Google Sheets URL.",
                 )
-            artifact = await run_in_threadpool(validate_workbook, await workbook.read(), uploaded_filename, rules)
+            artifact = await run_in_threadpool(validate_workbook, await workbook.read(), uploaded_filename, rules, review_mode, platform_filter)
             workbook_name = uploaded_filename
         else:
             google_workbook, source_name = await run_in_threadpool(load_google_sheet_workbook, google_sheet_reference)
-            artifact = await run_in_threadpool(validate_loaded_workbook, google_workbook, source_name, rules)
+            artifact = await run_in_threadpool(validate_loaded_workbook, google_workbook, source_name, rules, review_mode, platform_filter)
             workbook_name = source_name
     except WorkbookValidationConfigError as exc:
         return render_partial(request, "_error.html", message=str(exc))

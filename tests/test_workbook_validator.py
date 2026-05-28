@@ -275,7 +275,7 @@ def test_youtube_urls_with_percent_20_and_percent_7_are_flagged(monkeypatch):
 def test_youtube_multi_url_cells_check_each_entry(monkeypatch):
     checked_urls: list[str] = []
 
-    def fake_fetch(url: str, platform: str, client=None):
+    def fake_fetch(url: str, platform: str, client=None, title=""):
         checked_urls.append(url)
         return True, ""
 
@@ -2590,3 +2590,108 @@ def test_it_internet_computing_category_is_allowed():
 
     title_category_issues = {issue.cell for issue in artifact.issues if issue.rule == "in"}
     assert "B2" not in title_category_issues
+
+
+def test_smart_review_modes():
+    from app.models import ValidationRule
+    # Setup workbook with some validation issues in multiple columns
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Catalog"
+    sheet.append(["title", "title_category", "facebook_page"])
+    # Row 2 has invalid category and invalid facebook page
+    sheet.append(["Title A", "Invalid Category", "https://facebook.com/p/someprofile"])
+    # Row 3 has missing title category (which is required)
+    sheet.append(["Title B", "", "https://facebook.com/official_page"])
+    
+    buffer = io.BytesIO()
+    workbook.save(buffer)
+    
+    rules = [
+        ValidationRule(sheet="*", column="title_category", check="in", values=["Movies", "TV Shows", "Talent"]),
+        ValidationRule(sheet="*", column="facebook_page", check="url_not_contains_if_present", tokens=["/p/"])
+    ]
+    
+    # 1. Full Review - both issues flagged
+    artifact_full = validate_workbook(buffer.getvalue(), "test.xlsx", rules, review_mode="full")
+    assert any(issue.column == "B" for issue in artifact_full.issues)
+    assert any(issue.column == "C" for issue in artifact_full.issues)
+    
+    # 2. Social Handle Review Only - only facebook issue flagged
+    artifact_social = validate_workbook(buffer.getvalue(), "test.xlsx", rules, review_mode="social_only")
+    assert not any(issue.column == "B" for issue in artifact_social.issues)
+    assert any(issue.column == "C" for issue in artifact_social.issues)
+    
+    # 3. Categorization Review - only title_category issue flagged
+    artifact_cat = validate_workbook(buffer.getvalue(), "test.xlsx", rules, review_mode="categorization")
+    assert any(issue.column == "B" for issue in artifact_cat.issues)
+    assert not any(issue.column == "C" for issue in artifact_cat.issues)
+    
+    # 4. Platform-Specific Facebook Review
+    artifact_fb = validate_workbook(buffer.getvalue(), "test.xlsx", rules, review_mode="platform_specific", platform_filter="facebook")
+    assert not any(issue.column == "B" for issue in artifact_fb.issues)
+    assert any(issue.column == "C" for issue in artifact_fb.issues)
+
+    # 5. Missing Data Review - only checks blank fields (Title B's title_category is blank)
+    artifact_missing = validate_workbook(buffer.getvalue(), "test.xlsx", rules, review_mode="missing_only")
+    assert len(artifact_missing.issues) == 1
+    assert artifact_missing.issues[0].cell == "B3"
+
+
+def test_duplicate_conflict_scan():
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Catalog"
+    sheet.append(["title", "facebook_page"])
+    # Title A on row 2 & 3: Duplicate Entity
+    sheet.append(["Title A", "https://facebook.com/page1"])
+    sheet.append(["Title A", "https://facebook.com/page2"])
+    # Row 4 & 5: Conflicting handle (different titles sharing the same facebook_page)
+    sheet.append(["Title B", "https://facebook.com/shared"])
+    sheet.append(["Title C", "https://facebook.com/shared"])
+    
+    buffer = io.BytesIO()
+    workbook.save(buffer)
+    
+    artifact = validate_workbook(buffer.getvalue(), "test.xlsx", [], review_mode="duplicate_conflict")
+    
+    # Check that duplicate entity and conflicting handle are both flagged
+    issue_messages = [issue.message for issue in artifact.issues]
+    assert any("Duplicate entity" in m for m in issue_messages)
+    assert any("Conflicting handle" in m for m in issue_messages)
+    assert all(issue.finding_category == "Duplicate" for issue in artifact.issues)
+    assert all(issue.confidence == "High" for issue in artifact.issues)
+
+
+def test_facebook_classification():
+    from app.services.workbook_validator import _classify_facebook_page
+    
+    # 1. Suspicious/Impersonation Mismatch
+    cat, conf, reason = _classify_facebook_page("https://facebook.com/unrelatedhandle", "Pristine Brand", "Some description")
+    assert cat == "Suspicious/Impersonation"
+    assert conf == "Low"
+    
+    # 2. Fan Page
+    cat, conf, reason = _classify_facebook_page("https://facebook.com/brand", "Brand", "This is an unofficial fanpage for Brand")
+    assert cat == "Fan Page"
+    assert conf == "High"
+    
+    # 3. Community Page
+    cat, conf, reason = _classify_facebook_page("https://facebook.com/brand", "Brand", "Join our community group to discuss!")
+    assert cat == "Community Page"
+    assert conf == "High"
+    
+    # 4. Auto-generated Topic Page
+    cat, conf, reason = _classify_facebook_page("https://facebook.com/brand", "Brand", "Interest page generated automatically by Facebook.")
+    assert cat == "Auto-generated"
+    assert conf == "High"
+
+    # 5. Official Regional
+    cat, conf, reason = _classify_facebook_page("https://facebook.com/brandfrance", "Brand France", "Local localized page.")
+    assert cat == "Official Regional"
+    assert conf == "Medium"
+    
+    # 6. Official Verified
+    cat, conf, reason = _classify_facebook_page("https://facebook.com/brand", "Brand", "Verified profile of Brand.")
+    assert cat == "Official"
+    assert conf == "High"

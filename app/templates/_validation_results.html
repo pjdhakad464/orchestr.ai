@@ -35,6 +35,9 @@
           <th>Sheet</th>
           <th>Cell</th>
           <th>Rule</th>
+          <th>Category</th>
+          <th>Confidence</th>
+          <th>Reason</th>
           <th>Message</th>
           <th>Value</th>
         </tr>
@@ -45,6 +48,9 @@
           <td>{{ issue.sheet }}</td>
           <td>{{ issue.cell }}</td>
           <td>{{ issue.rule }}</td>
+          <td><span class="badge finding-{{ issue.finding_category|lower|replace(' ', '-') }}">{{ issue.finding_category }}</span></td>
+          <td><span class="badge confidence-{{ issue.confidence|lower }}">{{ issue.confidence }}</span></td>
+          <td>{{ issue.confidence_reason or '-' }}</td>
           <td>{{ issue.message }}</td>
           <td>{{ issue.value or '-' }}</td>
         </tr>

@@ -36,6 +36,34 @@
         />
       </label>
     </div>
+    <div class="validator-source-grid" style="margin-top: 4px;">
+      <label class="file-picker">
+        <span>Review Mode</span>
+        <select name="review_mode" id="review-mode" onchange="togglePlatformFilter()">
+          <option value="full">Full Metadata Review</option>
+          <option value="social_only">Social Handle Review Only</option>
+          <option value="categorization">Categorization Review</option>
+          <option value="platform_specific">Platform-Specific Review</option>
+          <option value="missing_only">Missing Data Review</option>
+          <option value="existing_qa">Existing Data QA Review</option>
+          <option value="duplicate_conflict">Duplicate & Conflict Review</option>
+        </select>
+      </label>
+      <label class="file-picker" id="platform-filter-container" style="display: none;">
+        <span>Platform Select</span>
+        <select name="platform_filter" id="platform-filter">
+          <option value="facebook">Facebook Only</option>
+          <option value="instagram">Instagram Only</option>
+          <option value="twitter">Twitter/X Only</option>
+          <option value="tiktok">TikTok Only</option>
+          <option value="youtube">YouTube Only</option>
+          <option value="wikipedia">Wikipedia Only</option>
+          <option value="imdb">IMDb Only</option>
+          <option value="linkedin">LinkedIn Only</option>
+          <option value="website">Website Only</option>
+        </select>
+      </label>
+    </div>
     <p class="meta validator-description">
       Upload your task workbook or CSV, or paste a Google Sheets link, then download the reviewed Excel file with failed cells highlighted in red plus a Validation Summary sheet.
     </p>
@@ -88,3 +116,15 @@
     </p>
   </div>
 </section>
+
+<script>
+function togglePlatformFilter() {
+  const reviewMode = document.getElementById("review-mode").value;
+  const platformContainer = document.getElementById("platform-filter-container");
+  if (reviewMode === "platform_specific") {
+    platformContainer.style.display = "block";
+  } else {
+    platformContainer.style.display = "none";
+  }
+}
+</script>

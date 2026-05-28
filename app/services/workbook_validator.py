@@ -39,7 +39,7 @@ ERROR_FILL = PatternFill(fill_type="solid", start_color="FFC7CE", end_color="FFC
 ERROR_FONT = Font(color="9C0006")
 WARNING_FILL = PatternFill(fill_type="solid", start_color="FFFCE4D6", end_color="FFFCE4D6")
 WARNING_FONT = Font(color="FFC65911")
-SUMMARY_HEADERS = ["Sheet", "Row", "Column", "Cell", "Rule", "Message", "Value"]
+SUMMARY_HEADERS = ["Sheet", "Row", "Column", "Cell", "Rule", "Finding Category", "Confidence", "Confidence Reason", "Message", "Value"]
 COMMON_DATE_FORMATS = (
     "%d-%m-%Y",
     "%B-%d-%Y",
@@ -118,15 +118,19 @@ def validate_workbook(
     file_bytes: bytes,
     filename: str,
     rules: list[ValidationRule],
+    review_mode: str = "full",
+    platform_filter: str | None = None,
 ) -> WorkbookValidationArtifact:
     workbook = load_validation_workbook(file_bytes, filename)
-    return validate_loaded_workbook(workbook, filename, rules)
+    return validate_loaded_workbook(workbook, filename, rules, review_mode, platform_filter)
 
 
 def validate_loaded_workbook(
     workbook: Workbook,
     filename: str,
     rules: list[ValidationRule],
+    review_mode: str = "full",
+    platform_filter: str | None = None,
 ) -> WorkbookValidationArtifact:
     issues: list[WorkbookValidationIssue] = []
     social_cache: dict[str, tuple[bool, str]] = {}
@@ -135,8 +139,31 @@ def validate_loaded_workbook(
     rottentomatoes_cache: dict[str, tuple[bool, dict[str, Any] | None, str]] = {}
     worksheet_contexts: dict[tuple[str, int], WorksheetValidationContext] = {}
 
+    if review_mode == "duplicate_conflict":
+        for worksheet in workbook.worksheets:
+            if worksheet.title == "Validation Summary":
+                continue
+            try:
+                worksheet_context = _get_worksheet_validation_context(worksheet_contexts, worksheet, 1)
+            except Exception:
+                continue
+            _perform_duplicate_conflict_scan(worksheet_context, worksheet, issues)
+            
+        _append_summary_sheet(workbook, issues)
+        output = io.BytesIO()
+        workbook.save(output)
+        safe_name = f"{Path(filename).stem}_validated.xlsx"
+        return WorkbookValidationArtifact(
+            validation_id=str(uuid.uuid4()),
+            filename=safe_name,
+            file_bytes=output.getvalue(),
+            issues=issues,
+        )
+
     with _social_http_client() as social_client:
         for rule in rules:
+            if not _rule_matches_review_mode(rule, review_mode, platform_filter):
+                continue
             wildcard_sheet = (rule.sheet or "*").strip() in {"*", "Any"}
             for worksheet in _select_worksheets(workbook, rule.sheet):
                 worksheet_context = _get_worksheet_validation_context(worksheet_contexts, worksheet, rule.header_row)
@@ -187,9 +214,15 @@ def validate_loaded_workbook(
                     if not _conditions_match_row_context(row_context, compiled_conditions):
                         continue
 
+                    cell_value = row_context.get(column_key)
+                    if review_mode == "missing_only" and not _is_blank(cell_value):
+                        continue
+                    if review_mode == "existing_qa" and _is_blank(cell_value):
+                        continue
+
                     cell = worksheet.cell(row=row_number, column=column_index)
-                    passed, message = _evaluate_rule(
-                        row_context.get(column_key),
+                    passed, message, category, confidence, reason = _evaluate_rule(
+                        cell_value,
                         rule,
                         row_context=row_context,
                         social_cache=social_cache,
@@ -201,10 +234,19 @@ def validate_loaded_workbook(
                     if passed:
                         continue
 
-                    issues.append(_mark_issue(cell=cell, rule=rule, message=message, value=cell.value))
+                    issues.append(
+                        _mark_issue(
+                            cell=cell, 
+                            rule=rule, 
+                            message=message, 
+                            value=cell.value,
+                            finding_category=category,
+                            confidence=confidence,
+                            confidence_reason=reason
+                        )
+                    )
 
     _append_summary_sheet(workbook, issues)
-
     output = io.BytesIO()
     workbook.save(output)
     safe_name = f"{Path(filename).stem}_validated.xlsx"
@@ -1039,6 +1081,9 @@ def _validate_unique_rule_with_context(
                     rule=rule,
                     message=rule.message or f"{rule.column} must be unique.",
                     value=cell.value,
+                    finding_category="Duplicate",
+                    confidence="High",
+                    confidence_reason="Column value must be unique, but identical value exists in other row(s)."
                 )
             )
     return issues
@@ -1101,7 +1146,133 @@ def _evaluate_condition(value: Any, condition: ValidationCondition) -> bool:
     raise WorkbookValidationConfigError(f"Unsupported condition type: {condition.operator}")
 
 
+def _classify_facebook_page(url: str, title: str, page_text: str) -> tuple[str, str, str]:
+    normalized = re.sub(r"\s+", " ", page_text).casefold() if page_text else ""
+    url_lower = url.lower() if url else ""
+    title_lower = title.lower() if title else ""
+    
+    # Extract handle/ID from URL
+    handle = ""
+    parsed = urlparse(url)
+    segments = [s for s in parsed.path.split("/") if s]
+    if segments:
+        handle = segments[0].lower()
+    if handle == "profile.php" and parsed.query:
+        from urllib.parse import parse_qs
+        handle = parse_qs(parsed.query).get("id", [""])[0]
+    
+    # 1. Suspicious / Impersonation Mismatch
+    title_words = [w for w in re.findall(r"\b[a-z]{3,}\b", title_lower)]
+    if handle and title_words and not any(w in handle for w in title_words):
+        return "Suspicious/Impersonation", "Low", f"Facebook handle '{handle}' does not match title words."
+        
+    # 2. Fan Page
+    if "fan page" in normalized or "fanpage" in normalized or "unofficial" in normalized or "backup" in normalized or "parody" in normalized:
+        return "Fan Page", "High", "Page description indicates fan page, parody, or unofficial archive."
+        
+    # 3. Community Page
+    if "community group" in normalized or "community page" in normalized or "public group" in normalized:
+        return "Community Page", "High", "Page is labeled as a community group or public group."
+        
+    # 4. Auto-generated
+    if "interest page" in normalized or "topic page" in normalized or "auto-generated" in normalized:
+        return "Auto-generated", "High", "Interest page generated automatically by Facebook."
+        
+    # 5. Official Regional
+    regional_words = {"france", "germany", "spain", "italy", "japan", "brazil", "mexico", "india", "uk", "canada", "australia", "regional", "latam", "europe", "asia", "localized"}
+    if any(word in title_lower or word in handle for word in regional_words):
+        return "Official Regional", "Medium", "Local branch or regional keyword found in title/handle."
+        
+    # 6. Official Verified
+    if "verified account" in normalized or "verified profile" in normalized or "official page" in normalized:
+        return "Official", "High", "Verified official page badge or metadata confirmed."
+        
+    # 7. Unofficial
+    if "unofficial" in normalized or "fan-made" in normalized:
+        return "Unofficial", "Medium", "Unverified or unofficial fan page attributes."
+        
+    # Default is Unable to Verify if page is empty or geoblocked, or Official with Medium confidence if active
+    if not page_text or len(page_text) < 100:
+        return "Unable to Verify", "Low", "Empty page content or page is private/geoblocked."
+        
+    return "Official", "Medium", "Active profile matches title name, but lacks explicit verification badge."
+
+
 def _evaluate_rule(
+    value: Any,
+    rule: ValidationRule,
+    row_context: dict[str, Any] | None = None,
+    social_cache: dict[str, tuple[bool, str]] | None = None,
+    social_client: httpx.Client | None = None,
+    movie_release_cache: dict[str, tuple[bool, dict[str, Any] | None, str]] | None = None,
+    reference_cache: dict[str, tuple[bool, dict[str, Any] | None, str]] | None = None,
+    rottentomatoes_cache: dict[str, tuple[bool, dict[str, Any] | None, str]] | None = None,
+) -> tuple[bool, str, str, str, str]:
+    passed, message = _evaluate_rule_core(
+        value,
+        rule,
+        row_context,
+        social_cache,
+        social_client,
+        movie_release_cache,
+        reference_cache,
+        rottentomatoes_cache,
+    )
+    if passed:
+        return True, "", "Verified Correct", "High", ""
+
+    category = "Suspected Incorrect"
+    confidence = "High"
+    reason = ""
+
+    message_lower = message.lower()
+    
+    # Check for quality issues / Fan pages
+    if "fan page" in message_lower or "fanpage" in message_lower:
+        category = "Fan Page Detected"
+        confidence = "High"
+        reason = "Page content or attributes indicate this is a fan page, not an official account."
+    elif "friends instead of followers" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "Profile shows friends count instead of followers, suggesting a personal timeline rather than an official page."
+    elif "blocked url pattern" in message_lower or "cannot contain" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "The URL format contains path segments reserved for personal timelines or page setup templates."
+    elif "http 404" in message_lower or "404" in message_lower:
+        category = "No Official Presence Found"
+        confidence = "High"
+        reason = "The social link returns HTTP 404 Not Found, indicating the account does not exist or has been deleted."
+    elif "http 403" in message_lower or "forbidden" in message_lower or "403" in message_lower:
+        category = "Unable to Verify"
+        confidence = "Low"
+        reason = "Access to the profile is restricted or geoblocked (HTTP 403 Forbidden)."
+    elif "timeout" in message_lower or "connect" in message_lower:
+        category = "Unable to Verify"
+        confidence = "Low"
+        reason = "The server timed out or failed to connect while verifying the account."
+    elif "does not appear related to title" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "Medium"
+        reason = "The profile is reachable but its content does not match the title name."
+    elif "unable to verify" in message_lower:
+        category = "Unable to Verify"
+        confidence = "Low"
+        reason = "Validation check failed to verify the profile authenticity due to restricted access or missing metadata."
+    elif "is required" in message_lower:
+        category = "Needs Manual Review"
+        confidence = "High"
+        reason = "Field is required according to rules but is currently blank."
+    elif "must match one of the allowed values" in message_lower or "approved list" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "Cell value is not in the list of approved classification tags."
+    
+    return False, message, category, confidence, reason
+
+
+def _evaluate_rule_core(
     value: Any,
     rule: ValidationRule,
     row_context: dict[str, Any] | None = None,
@@ -1324,12 +1495,22 @@ def _row_is_empty(worksheet, row_number: int) -> bool:
     return True
 
 
-def _mark_issue(cell, rule: ValidationRule, message: str, value: Any) -> WorkbookValidationIssue:
-    issue_fill, issue_font = _issue_style_for_rule(rule, message)
+def _mark_issue(
+    cell, 
+    rule: ValidationRule | None, 
+    message: str, 
+    value: Any,
+    finding_category: str = "Needs Manual Review",
+    confidence: str = "High",
+    confidence_reason: str = ""
+) -> WorkbookValidationIssue:
+    issue_fill, issue_font = ERROR_FILL, ERROR_FONT
+    if rule:
+        issue_fill, issue_font = _issue_style_for_rule(rule, message)
     cell.fill = issue_fill
     cell.font = issue_font
 
-    comment_body = f"{rule.check}: {message}"
+    comment_body = f"{rule.check if rule else 'duplicate_conflict'}: {message}"
     if cell.comment and comment_body not in cell.comment.text:
         cell.comment = Comment(f"{cell.comment.text}\n{comment_body}", "Validator")
     elif cell.comment is None:
@@ -1340,9 +1521,12 @@ def _mark_issue(cell, rule: ValidationRule, message: str, value: Any) -> Workboo
         row=cell.row,
         column=get_column_letter(cell.column),
         cell=cell.coordinate,
-        rule=rule.check,
+        rule=rule.check if rule else "duplicate_conflict",
         message=message,
         value="" if value is None else str(value),
+        finding_category=finding_category,
+        confidence=confidence,
+        confidence_reason=confidence_reason,
     )
 
 
@@ -1372,13 +1556,16 @@ def _append_summary_sheet(workbook: Workbook, issues: list[WorkbookValidationIss
                 issue.column,
                 issue.cell,
                 issue.rule,
+                issue.finding_category,
+                issue.confidence,
+                issue.confidence_reason,
                 issue.message,
                 issue.value,
             ]
         )
 
     if not issues:
-        summary.append(["Workbook", 0, "-", "-", "passed", "No validation issues found.", "-"])
+        summary.append(["Workbook", 0, "-", "-", "passed", "Verified Correct", "High", "", "No validation issues found.", "-"])
 
     for column in summary.columns:
         max_length = max(len(str(cell.value or "")) for cell in column)
@@ -1857,7 +2044,7 @@ def _validate_social_reference(
 
         cache_key = f"{rule.platform}:{normalized_url}"
         if cache_key not in cache:
-            cache[cache_key] = _fetch_social_reference(normalized_url, rule.platform, client)
+            cache[cache_key] = _fetch_social_reference(normalized_url, rule.platform, client, title)
 
         success, detail = cache[cache_key]
         if not success:
@@ -3029,7 +3216,7 @@ def _deduplicate_preserving_order(values: list[Any]) -> list[str]:
     return deduplicated
 
 
-def _fetch_social_reference(url: str, platform: str, client: httpx.Client | None = None) -> tuple[bool, str]:
+def _fetch_social_reference(url: str, platform: str, client: httpx.Client | None = None, title: str = "") -> tuple[bool, str]:
     try:
         if client is None:
             with _build_social_http_client() as http_client:
@@ -3049,7 +3236,7 @@ def _fetch_social_reference(url: str, platform: str, client: httpx.Client | None
     if not passed:
         return passed, detail
 
-    content_issue = _detect_social_page_quality_issue(platform, response.text)
+    content_issue = _detect_social_page_quality_issue(platform, response.text, url, title)
     if content_issue:
         return False, content_issue
 
@@ -3495,19 +3682,20 @@ def _tmdb_get(client: httpx.Client, path: str, params: dict[str, Any] | None = N
     return response.json()
 
 
-def _detect_social_page_quality_issue(platform: str, page_text: str) -> str:
+def _detect_social_page_quality_issue(platform: str, page_text: str, url: str = "", title: str = "") -> str:
     if platform != "facebook":
         return ""
 
-    normalized = re.sub(r"\s+", " ", page_text).casefold()
+    normalized = re.sub(r"\s+", " ", page_text).casefold() if page_text else ""
     if not normalized:
-        return ""
-
-    if "fan page" in normalized or "fanpage" in normalized:
-        return "page appears to be a fan page"
+        return "Unable to Verify (page is empty or geoblocked)"
 
     if re.search(r"\bfriends\b", normalized) and not re.search(r"\bfollowers?\b", normalized):
-        return "page appears to show friends instead of followers"
+        return "page appears to show friends instead of followers (personal timeline)"
+
+    classification, confidence, reason = _classify_facebook_page(url, title, page_text)
+    if classification not in {"Official", "Official Regional"}:
+        return f"Facebook page classified as {classification}: {reason}"
 
     return ""
 
@@ -3535,3 +3723,124 @@ class _ReusableSocialClient:
 
     def __exit__(self, exc_type, exc, tb) -> None:
         self.client.close()
+
+
+def _rule_matches_review_mode(rule: ValidationRule, review_mode: str, platform_filter: str | None) -> bool:
+    if review_mode == "full":
+        return True
+    
+    col = (rule.column or "").strip().lower()
+    
+    if review_mode == "social_only":
+        social_cols = {
+            "facebook_page", "twitter_handle", "instagram_user", "tiktok_user", 
+            "youtube_channel_username", "wikipedia_url", "wikidata_id", "imdb_id", 
+            "linkedin_page", "website", "official_website"
+        }
+        return col in social_cols
+        
+    if review_mode == "categorization":
+        cat_cols = {
+            "title_category", "title_sub_category", "talent_type", "talent_subtype", 
+            "genre", "primary_genre"
+        }
+        return col in cat_cols
+        
+    if review_mode == "platform_specific":
+        if not platform_filter:
+            return True
+        pf = platform_filter.lower()
+        if pf == "facebook":
+            return col in {"facebook_page"}
+        if pf == "instagram":
+            return col in {"instagram_user"}
+        if pf == "twitter":
+            return col in {"twitter_handle"}
+        if pf == "tiktok":
+            return col in {"tiktok_user"}
+        if pf == "youtube":
+            return col in {"youtube_channel_username"}
+        if pf == "wikipedia":
+            return col in {"wikipedia_url"}
+        if pf == "imdb":
+            return col in {"imdb_id"}
+        if pf == "linkedin":
+            return col in {"linkedin_page"}
+        if pf == "website":
+            return col in {"website", "official_website"}
+        return True
+        
+    return True
+
+
+def _perform_duplicate_conflict_scan(worksheet_context, worksheet, issues):
+    title_rows = {}
+    handle_groups = {
+        "facebook_page": {},
+        "twitter_handle": {},
+        "instagram_user": {},
+        "youtube_channel_username": {},
+        "tiktok_user": {},
+        "wikidata_id": {},
+        "imdb_id": {},
+    }
+    
+    header_map = worksheet_context.header_map
+    title_index = header_map.get("title")
+    
+    for row_number in worksheet_context.active_rows:
+        row_ctx = _get_row_context(worksheet_context, row_number)
+        title_val = row_ctx.get("title")
+        if not _is_blank(title_val):
+            norm_title = _normalize_value(title_val).strip().lower()
+            title_rows.setdefault(norm_title, []).append((row_number, title_val))
+            
+        for handle_col, groups in handle_groups.items():
+            col_idx = header_map.get(handle_col)
+            if col_idx is not None:
+                val = row_ctx.get(handle_col)
+                if not _is_blank(val):
+                    norm_val = _normalize_value(val).strip().lower()
+                    groups.setdefault(norm_val, []).append((row_number, title_val or f"Row {row_number}", val))
+
+    # Detect duplicate titles
+    if title_index is not None:
+        for norm_title, rows in title_rows.items():
+            if len(rows) > 1:
+                for row_num, orig_title in rows:
+                    cell = worksheet.cell(row=row_num, column=title_index)
+                    other_rows = ", ".join(str(r[0]) for r in rows if r[0] != row_num)
+                    message = f"Duplicate entity: Title '{orig_title}' also found on row(s): {other_rows}."
+                    issues.append(
+                        _mark_issue(
+                            cell=cell, 
+                            rule=None, 
+                            message=message, 
+                            value=orig_title,
+                            finding_category="Duplicate",
+                            confidence="High",
+                            confidence_reason="Identical entity name matches exactly on multiple rows in sheet."
+                        )
+                    )
+
+    # Detect conflicting handles
+    for handle_col, groups in handle_groups.items():
+        col_idx = header_map.get(handle_col)
+        for norm_val, entries in groups.items():
+            unique_titles = {e[1].strip().lower(): e[1] for e in entries}
+            if len(unique_titles) > 1:
+                for row_num, title_val, orig_val in entries:
+                    cell = worksheet.cell(row=row_num, column=col_idx)
+                    others = ", ".join(f"row {e[0]} ('{e[1]}')" for e in entries if e[0] != row_num)
+                    message = f"Conflicting handle: '{orig_val}' is shared with other entities: {others}."
+                    issues.append(
+                        _mark_issue(
+                            cell=cell,
+                            rule=None,
+                            message=message,
+                            value=orig_val,
+                            finding_category="Duplicate",
+                            confidence="High",
+                            confidence_reason="Same social handle or external ID is assigned to multiple distinct title names."
+                        )
+                    )
