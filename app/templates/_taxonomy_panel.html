@@ -1,0 +1,78 @@
+<section class="panel validator-panel">
+  <div class="validator-heading-row">
+    <div class="validator-heading-copy">
+      <p class="eyebrow">Taxonomy Bulk Identifier</p>
+      <h2 class="validator-heading validator-heading-banner">Data Ops Taxonomy Identification</h2>
+    </div>
+  </div>
+  <p class="meta">
+    Identify categories and subcategories in bulk using Wikipedia, Wikidata, IMDb, TMDb, and Instagram profiles.
+  </p>
+  <form
+    class="validator-form"
+    id="taxonomy-form"
+    hx-post="/bulk-classify-taxonomy"
+    hx-target="#taxonomy-workspace"
+    hx-indicator="#taxonomy-indicator"
+    hx-encoding="multipart/form-data"
+    enctype="multipart/form-data"
+  >
+    <div class="validator-source-grid">
+      <label class="file-picker">
+        <span>Workbook source file (.xlsx or .csv)</span>
+        <input
+          type="file"
+          name="workbook"
+          accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          required
+        />
+      </label>
+      <label class="file-picker">
+        <span>Run by</span>
+        <input type="text" name="run_by" placeholder="Enter your name or team name" required />
+      </label>
+    </div>
+    <p class="meta validator-description">
+      Upload your names sheet (with optional Instagram columns). The tool will output a fully populated Excel sheet matching the official taxonomy guide.
+    </p>
+    <div class="validator-rules-simplified">
+      <div class="validator-sidecar">
+        <button type="submit">Identify Taxonomy</button>
+      </div>
+    </div>
+  </form>
+  <div
+    id="taxonomy-indicator"
+    class="validator-progress indicator htmx-indicator"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-progress="0"
+  >
+    <div class="validator-progress-head">
+      <p class="validator-progress-label">Classification progress</p>
+      <span class="validator-progress-value" data-progress-value>0%</span>
+    </div>
+    <div
+      class="validator-progress-track"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      aria-label="Workbook classification progress"
+      data-progressbar
+    >
+      <span class="validator-progress-fill"></span>
+    </div>
+    <p class="validator-progress-copy" data-progress-copy>Reading sheet rows and querying intelligence databases...</p>
+  </div>
+</section>
+
+<section id="taxonomy-workspace" class="workspace">
+  <div class="empty-state">
+    <h2>Ready to classify</h2>
+    <p>
+      Upload an Excel or CSV file to classify names. The resulting workbook will add the correct Category and Sub-category columns to your dataset.
+    </p>
+  </div>
+</section>

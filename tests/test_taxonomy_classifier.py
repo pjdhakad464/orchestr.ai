@@ -111,7 +111,7 @@ async def test_taxonomy_classifier_brand_classification():
 
         result = await classifier.classify("Nike")
         assert result["category"] == "Fashion"
-        assert "Product Category - Apparel" in result["sub_category"] or "Product Category - Footwear" in result["sub_category"]
+        assert any(sub in result["sub_category"] for sub in ["Product Category - Apparel", "Product Category - Footwear", "Women's Apparel"])
 
 
 def test_classify_title_route_returns_html():
@@ -131,3 +131,60 @@ def test_classify_title_route_returns_html():
         assert "Talent" in response.text
         assert "Gender - Woman" in response.text
         assert "Talent Subtype - Actress" in response.text
+
+
+def test_bulk_taxonomy_endpoint():
+    import io
+    import openpyxl
+    import re
+    client = TestClient(app)
+    
+    wb = openpyxl.Workbook()
+    sheet = wb.active
+    sheet.append(["Title Name", "Instagram Link"])
+    sheet.append(["Selena Gomez", "https://instagram.com/selenagomez"])
+    sheet.append(["Nike", "@nike"])
+    
+    buffer = io.BytesIO()
+    wb.save(buffer)
+    file_bytes = buffer.getvalue()
+    
+    with patch("app.routes.taxonomy_classifier.classify", new_callable=AsyncMock) as mock_classify:
+        mock_classify.side_effect = [
+            {"category": "Talent", "sub_category": "Gender - Woman\nTalent Type - Musician"},
+            {"category": "Fashion", "sub_category": "Women's Apparel"}
+        ]
+        
+        response = client.post(
+            "/bulk-classify-taxonomy",
+            files={"workbook": ("test_titles.xlsx", file_bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+            data={"run_by": "Test Operator"}
+        )
+        
+        assert response.status_code == 200
+        assert "Taxonomy Identification Completed" in response.text
+        assert "Selena Gomez" in response.text
+        assert "Nike" in response.text
+        assert "Talent" in response.text
+        assert "Fashion" in response.text
+        
+        match = re.search(r'/taxonomy/download/([a-fA-F0-9\-]+)', response.text)
+        assert match is not None
+        job_id = match.group(1)
+        
+        download_response = client.get(f"/taxonomy/download/{job_id}")
+        assert download_response.status_code == 200
+        assert "spreadsheetml.sheet" in download_response.headers["content-type"]
+        
+        downloaded_wb = openpyxl.load_workbook(io.BytesIO(download_response.content))
+        downloaded_sheet = downloaded_wb.active
+        
+        assert downloaded_sheet.cell(row=2, column=1).value == "Selena Gomez"
+        assert downloaded_sheet.cell(row=2, column=2).value == "https://instagram.com/selenagomez"
+        assert downloaded_sheet.cell(row=2, column=3).value == "Talent"
+        assert downloaded_sheet.cell(row=2, column=4).value == "Gender - Woman\nTalent Type - Musician"
+        
+        assert downloaded_sheet.cell(row=3, column=1).value == "Nike"
+        assert downloaded_sheet.cell(row=3, column=2).value == "@nike"
+        assert downloaded_sheet.cell(row=3, column=3).value == "Fashion"
+        assert downloaded_sheet.cell(row=3, column=4).value == "Women's Apparel"

@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Workbook Sheet Validator{% endblock %}
+{% block title %}Workbook Sheet Validator & Taxonomy Bulk Identifier{% endblock %}
 
 {% block content %}
-{% include "_validator_panel.html" %}
+<div class="validator-split-container">
+  {% include "_validator_panel.html" %}
+  {% include "_taxonomy_panel.html" %}
+</div>
 {% endblock %}

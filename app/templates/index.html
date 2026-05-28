@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "_validator_panel.html" %}
+<div class="validator-split-container">
+  {% include "_validator_panel.html" %}
+  {% include "_taxonomy_panel.html" %}
+</div>
 {% endblock %}

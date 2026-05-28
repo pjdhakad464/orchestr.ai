@@ -26,6 +26,7 @@ data/imdb_datasets/
 data/imdb_lookup_app/
 data/wikipedia_cache/
 data/validation_history.sqlite3
+data/taxonomy_cache.sqlite3
 data/raw/
 data/social_*
 data/*.csv

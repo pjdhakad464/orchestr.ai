@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import uuid
+import re
 from pathlib import Path
 from typing import Annotated
 
@@ -436,4 +437,249 @@ async def classify_title(
         title=cleaned_name,
         category=result["category"],
         sub_category=result["sub_category"],
+    )
+
+
+def _detect_columns(headers: list[str]) -> tuple[int, int | None]:
+    title_idx = 0
+    ig_idx = None
+    
+    for idx, h in enumerate(headers):
+        h_lower = str(h).strip().lower()
+        if h_lower in {"title", "name", "entity_name", "title_name", "entity", "brand", "brand_name", "talent", "talent_name"}:
+            title_idx = idx
+            break
+    else:
+        for idx, h in enumerate(headers):
+            h_lower = str(h).strip().lower()
+            if "name" in h_lower or "title" in h_lower or "brand" in h_lower:
+                title_idx = idx
+                break
+                
+    for idx, h in enumerate(headers):
+        h_lower = str(h).strip().lower()
+        if h_lower in {"instagram", "ig", "instagram_user", "instagram_handle", "ig_handle", "instagram_page", "ig_page", "instagram_url", "ig_url"}:
+            ig_idx = idx
+            break
+    else:
+        for idx, h in enumerate(headers):
+            h_lower = str(h).strip().lower()
+            if "instagram" in h_lower or "ig" in h_lower or "handle" in h_lower or "page" in h_lower or "link" in h_lower:
+                ig_idx = idx
+                break
+                
+    return title_idx, ig_idx
+
+
+def process_taxonomy_bulk_file(
+    file_bytes: bytes,
+    filename: str,
+    run_by: str,
+    classifier: TaxonomyClassifier,
+) -> tuple[str, int, list[dict[str, Any]], bytes]:
+    import openpyxl
+    from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
+    import csv
+    
+    is_csv = filename.lower().endswith(".csv")
+    input_rows = []
+    headers = []
+    
+    if is_csv:
+        content = file_bytes.decode("utf-8-sig", errors="ignore")
+        reader = csv.reader(io.StringIO(content))
+        all_lines = list(reader)
+        if all_lines:
+            headers = [h.strip() for h in all_lines[0]]
+            input_rows = all_lines[1:]
+    else:
+        wb = openpyxl.load_workbook(io.BytesIO(file_bytes), data_only=True)
+        sheet = wb.active
+        for col in range(1, sheet.max_column + 1):
+            val = sheet.cell(row=1, column=col).value
+            headers.append(str(val).strip() if val is not None else f"Column {col}")
+        for row in range(2, sheet.max_row + 1):
+            row_vals = []
+            for col in range(1, len(headers) + 1):
+                row_vals.append(sheet.cell(row=row, column=col).value)
+            if any(v is not None for v in row_vals):
+                input_rows.append(row_vals)
+
+    total_rows = len(input_rows)
+    if total_rows == 0:
+        raise RuntimeError("The uploaded workbook or CSV has no data rows.")
+
+    title_idx, ig_idx = _detect_columns(headers)
+
+    import asyncio
+    async def run_classification():
+        semaphore = asyncio.Semaphore(15)
+        results = {}
+        
+        async def process_row(idx, row):
+            title_val = str(row[title_idx]).strip() if title_idx < len(row) and row[title_idx] is not None else ""
+            ig_val = ""
+            if ig_idx is not None and ig_idx < len(row) and row[ig_idx] is not None:
+                ig_val = str(row[ig_idx]).strip()
+                
+            if not title_val:
+                results[idx] = {"category": "UNVERIFIED", "sub_category": "Title name cannot be blank."}
+                return
+                
+            async with semaphore:
+                try:
+                    res = await classifier.classify(title_val, ig_val)
+                    results[idx] = res
+                except Exception as e:
+                    results[idx] = {"category": "UNVERIFIED", "sub_category": f"Error: {e}"}
+                    
+        tasks = [process_row(idx, row) for idx, row in enumerate(input_rows)]
+        await asyncio.gather(*tasks)
+        return results
+
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+    if loop.is_running():
+        import concurrent.futures
+        future = asyncio.run_coroutine_threadsafe(run_classification(), loop)
+        classification_results = future.result()
+    else:
+        classification_results = loop.run_until_complete(run_classification())
+
+    out_wb = openpyxl.Workbook()
+    out_sheet = out_wb.active
+    out_sheet.title = "Taxonomy Classification"
+
+    header_fill = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
+    header_font = Font(name="Segoe UI", size=11, bold=True, color="FFFFFF")
+    data_font = Font(name="Segoe UI", size=10)
+    badge_font = Font(name="Segoe UI", size=10, bold=True, color="1E40AF")
+    badge_fill = PatternFill(start_color="DBEAFE", end_color="DBEAFE", fill_type="solid")
+    
+    thin_border = Border(
+        left=Side(style="thin", color="E2E8F0"),
+        right=Side(style="thin", color="E2E8F0"),
+        top=Side(style="thin", color="E2E8F0"),
+        bottom=Side(style="thin", color="E2E8F0")
+    )
+
+    new_headers = headers + ["Identified Title Category", "Identified Title Sub-Category"]
+    for col_idx, h in enumerate(new_headers, 1):
+        cell = out_sheet.cell(row=1, column=col_idx)
+        cell.value = h
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+    preview_rows = []
+    
+    for row_idx, row in enumerate(input_rows, 2):
+        res = classification_results.get(row_idx - 2, {"category": "UNVERIFIED", "sub_category": ""})
+        category_val = res.get("category", "UNVERIFIED")
+        subcategory_val = res.get("sub_category", "")
+        
+        for col_idx, val in enumerate(row, 1):
+            cell = out_sheet.cell(row=row_idx, column=col_idx)
+            cell.value = val
+            cell.font = data_font
+            cell.border = thin_border
+            
+        cat_col = len(row) + 1
+        cat_cell = out_sheet.cell(row=row_idx, column=cat_col)
+        cat_cell.value = category_val
+        cat_cell.font = badge_font
+        cat_cell.fill = badge_fill
+        cat_cell.border = thin_border
+        cat_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+        sub_col = len(row) + 2
+        sub_cell = out_sheet.cell(row=row_idx, column=sub_col)
+        sub_cell.value = subcategory_val
+        sub_cell.font = data_font
+        sub_cell.border = thin_border
+        sub_cell.alignment = Alignment(wrap_text=True)
+
+        if row_idx - 2 < 15:
+            title_val = str(row[title_idx]).strip() if title_idx < len(row) and row[title_idx] is not None else ""
+            ig_val = ""
+            if ig_idx is not None and ig_idx < len(row) and row[ig_idx] is not None:
+                ig_val = str(row[ig_idx]).strip()
+            preview_rows.append({
+                "row_num": row_idx,
+                "title": title_val,
+                "instagram": ig_val,
+                "category": category_val,
+                "sub_category": subcategory_val
+            })
+
+    for col in out_sheet.columns:
+        max_len = max(len(str(cell.value or "")) for cell in col)
+        col_letter = openpyxl.utils.get_column_letter(col[0].column)
+        out_sheet.column_dimensions[col_letter].width = min(max(max_len + 3, 12), 40)
+
+    out_buf = io.BytesIO()
+    out_wb.save(out_buf)
+    out_bytes = out_buf.getvalue()
+
+    job_id = str(uuid.uuid4())
+    return job_id, total_rows, preview_rows, out_bytes
+
+
+@router.post("/bulk-classify-taxonomy", response_class=HTMLResponse)
+async def bulk_classify_taxonomy(
+    request: Request,
+    workbook: UploadFile = File(...),
+    run_by: Annotated[str, Form()] = "",
+) -> HTMLResponse:
+    run_by_name = run_by.strip()
+    if not run_by_name:
+        return render_partial(request, "_error.html", message="Enter your name or team name.")
+        
+    uploaded_filename = workbook.filename or "uploaded_taxonomy_sheet.xlsx"
+    if not (uploaded_filename.lower().endswith(".xlsx") or uploaded_filename.lower().endswith(".csv")):
+        return render_partial(request, "_error.html", message="Upload an Excel workbook (.xlsx) or a CSV file (.csv).")
+
+    file_bytes = await workbook.read()
+    
+    try:
+        job_id, total_rows, preview_rows, out_bytes = await run_in_threadpool(
+            process_taxonomy_bulk_file,
+            file_bytes,
+            uploaded_filename,
+            run_by_name,
+            taxonomy_classifier
+        )
+        cache.set(f"taxonomy_export:{job_id}", (uploaded_filename, out_bytes))
+    except Exception as exc:
+        return render_partial(request, "_error.html", message=f"Bulk taxonomy identification failed: {exc}")
+
+    return render_partial(
+        request,
+        "_taxonomy_results.html",
+        filename=uploaded_filename,
+        total_rows=total_rows,
+        preview_rows=preview_rows,
+        job_id=job_id,
+    )
+
+
+@router.get("/taxonomy/download/{job_id}")
+async def download_taxonomy_file(job_id: str):
+    cached = cache.get(f"taxonomy_export:{job_id}")
+    if not cached:
+        return HTMLResponse("Download expired or not found. Please classify again.", status_code=404)
+    filename, file_bytes = cached
+    
+    safe_name = re.sub(r"[^\w\-_.]", "_", filename)
+    stem = Path(safe_name).stem
+    classified_filename = f"{stem}_classified.xlsx"
+    
+    return StreamingResponse(
+        io.BytesIO(file_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{classified_filename}"'},
     )
