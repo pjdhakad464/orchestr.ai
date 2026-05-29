@@ -2686,12 +2686,77 @@ def test_facebook_classification():
     assert cat == "Auto-generated"
     assert conf == "High"
 
-    # 5. Official Regional
+    # 6. Official Regional
     cat, conf, reason = _classify_facebook_page("https://facebook.com/brandfrance", "Brand France", "Local localized page.")
     assert cat == "Official Regional"
     assert conf == "Medium"
     
-    # 6. Official Verified
+    # 7. Official Verified
     cat, conf, reason = _classify_facebook_page("https://facebook.com/brand", "Brand", "Verified profile of Brand.")
     assert cat == "Official"
     assert conf == "High"
+
+
+def test_lookup_tmdb_record(monkeypatch):
+    import httpx
+    from app.services.workbook_validator import _lookup_imdb_record, settings
+
+    monkeypatch.setattr(settings, "tmdb_api_key", "mock_key")
+    monkeypatch.setattr(settings, "tmdb_read_access_token", "mock_token")
+
+    called_urls = []
+
+    def mock_network_get(url, client=None, params=None, headers=None):
+        called_urls.append(url)
+        mock_req = httpx.Request("GET", url)
+        if "api.themoviedb.org" in url:
+            assert headers is not None
+            assert headers.get("Authorization") == "Bearer mock_token"
+            assert params.get("external_source") == "imdb_id"
+            
+            if "tt13382698" in url:
+                return httpx.Response(200, json={
+                    "movie_results": [{
+                        "title": "The Title Movie",
+                        "original_title": "The Original Title Movie"
+                    }],
+                    "tv_results": [],
+                    "tv_episode_results": [],
+                    "tv_season_results": [],
+                    "person_results": []
+                }, request=mock_req)
+            elif "nm11958810" in url:
+                return httpx.Response(200, json={
+                    "movie_results": [],
+                    "tv_results": [],
+                    "tv_episode_results": [],
+                    "tv_season_results": [],
+                    "person_results": [{
+                        "name": "Jane Cast member"
+                    }]
+                }, request=mock_req)
+        elif "omdbapi.com" in url:
+            return httpx.Response(200, json={"Response": "False", "Error": "Mocked OMDb failure"}, request=mock_req)
+        return httpx.Response(404, json={}, request=mock_req)
+
+    monkeypatch.setattr("app.services.workbook_validator._network_get", mock_network_get)
+    
+    def mock_dataset_lookup(imdb_id):
+        return False, None, "Bypassed"
+    monkeypatch.setattr("app.services.workbook_validator._lookup_imdb_dataset_record", mock_dataset_lookup)
+
+    # 1. Movie title lookup
+    success, metadata, detail = _lookup_imdb_record("https://www.imdb.com/title/tt13382698", client=None)
+    assert success is True
+    assert metadata["title"] == "The Title Movie"
+    assert metadata["type"] == "movie"
+    assert metadata["id"] == "tt13382698"
+    assert metadata["source"] == "tmdb-find"
+    
+    # 2. Person lookup
+    success, metadata, detail = _lookup_imdb_record("nm11958810", client=None)
+    assert success is True
+    assert metadata["title"] == "Jane Cast member"
+    assert metadata["type"] == "person"
+    assert metadata["id"] == "nm11958810"
+    assert metadata["source"] == "tmdb-find"

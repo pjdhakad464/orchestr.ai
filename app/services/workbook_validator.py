@@ -3065,6 +3065,13 @@ def _lookup_imdb_record(raw_value: str, client: httpx.Client | None) -> tuple[bo
         if omdb_detail:
             fallback_details.append(omdb_detail)
 
+    if settings.tmdb_api_key:
+        tmdb_success, tmdb_metadata, tmdb_detail = _lookup_tmdb_record(imdb_id, client)
+        if tmdb_success:
+            return tmdb_success, tmdb_metadata, tmdb_detail
+        if tmdb_detail:
+            fallback_details.append(tmdb_detail)
+
     normalized_url = _normalize_social_reference("imdb", raw_value)
     if not normalized_url:
         return False, None, "IMDb URL could not be normalized"
@@ -3082,6 +3089,111 @@ def _lookup_imdb_record(raw_value: str, client: httpx.Client | None) -> tuple[bo
 
     record_type = "person" if imdb_id.startswith("nm") else ""
     return True, {"title": title, "type": record_type, "id": imdb_id, "url": str(response.url)}, ""
+
+
+def _lookup_tmdb_record(imdb_id: str, client: httpx.Client | None) -> tuple[bool, dict[str, Any] | None, str]:
+    if not settings.tmdb_api_key:
+        return False, None, "TMDB API key not configured"
+
+    url = f"https://api.themoviedb.org/3/find/{imdb_id}"
+    params = {"external_source": "imdb_id"}
+    headers = {}
+    if settings.tmdb_read_access_token:
+        headers["Authorization"] = f"Bearer {settings.tmdb_read_access_token}"
+    else:
+        params["api_key"] = settings.tmdb_api_key
+
+    try:
+        response = _network_get(
+            url,
+            client=client,
+            params=params,
+            headers=headers,
+        )
+        response.raise_for_status()
+    except httpx.HTTPError as exc:
+        return False, None, f"TMDB lookup failed: {exc.__class__.__name__}"
+
+    payload = response.json()
+    
+    # Analyze find results
+    movies = payload.get("movie_results") or []
+    tvs = payload.get("tv_results") or []
+    episodes = payload.get("tv_episode_results") or []
+    seasons = payload.get("tv_season_results") or []
+    people = payload.get("person_results") or []
+
+    if movies:
+        item = movies[0]
+        return (
+            True,
+            {
+                "title": item.get("title") or item.get("original_title") or "",
+                "type": "movie",
+                "id": imdb_id,
+                "url": f"https://www.imdb.com/title/{imdb_id}/",
+                "source": "tmdb-find",
+            },
+            "",
+        )
+
+    if tvs:
+        item = tvs[0]
+        return (
+            True,
+            {
+                "title": item.get("name") or item.get("original_name") or "",
+                "type": "tvSeries",
+                "id": imdb_id,
+                "url": f"https://www.imdb.com/title/{imdb_id}/",
+                "source": "tmdb-find",
+            },
+            "",
+        )
+
+    if episodes:
+        item = episodes[0]
+        return (
+            True,
+            {
+                "title": item.get("name") or "",
+                "type": "tvEpisode",
+                "id": imdb_id,
+                "url": f"https://www.imdb.com/title/{imdb_id}/",
+                "source": "tmdb-find",
+            },
+            "",
+        )
+
+    if seasons:
+        item = seasons[0]
+        return (
+            True,
+            {
+                "title": item.get("name") or "",
+                "type": "tvSeason",
+                "id": imdb_id,
+                "url": f"https://www.imdb.com/title/{imdb_id}/",
+                "source": "tmdb-find",
+            },
+            "",
+        )
+
+    if people:
+        item = people[0]
+        return (
+            True,
+            {
+                "title": item.get("name") or "",
+                "type": "person",
+                "id": imdb_id,
+                "url": f"https://www.imdb.com/name/{imdb_id}/",
+                "source": "tmdb-find",
+            },
+            "",
+        )
+
+    return False, None, f"IMDb id {imdb_id} not found in TMDB find endpoint"
 
 
 def _lookup_omdb_title_record(imdb_id: str, client: httpx.Client | None) -> tuple[bool, dict[str, Any] | None, str]:
