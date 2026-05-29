@@ -173,10 +173,10 @@ def _map_instagram_metadata(handle: str, meta: dict) -> dict[str, str] | None:
             talent_type = "Model"
             talent_subtype = "Talent Subtype - Internet Personality - Content Creator"
         
-        sub_categories.append(f"Talent Type - {talent_type}")
         if not talent_subtype.startswith("Talent Subtype -"):
             talent_subtype = f"Talent Subtype - {talent_subtype}"
         sub_categories.append(talent_subtype)
+        sub_categories.append(f"Talent Type - {talent_type}")
         
         return {"category": category, "sub_category": "\n".join(sub_categories)}
 
@@ -605,8 +605,8 @@ class TaxonomyClassifier:
                 talent_type = "Journalist"
                 subtype = "Media Personality - TV"
 
-            sub_category_lines.append(f"Talent Type - {talent_type}")
             sub_category_lines.append(f"Talent Subtype - {subtype}")
+            sub_category_lines.append(f"Talent Type - {talent_type}")
 
         else:
             is_movie = any(q in p31_qids for q in ["Q11424", "Q24869", "Q201658"]) or "films" in cats_str or "movie" in extract or (len(title) > 6 and "film" in title.lower())
