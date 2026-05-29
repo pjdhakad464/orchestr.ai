@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     imdb_lookup_dataset_dir: str = "/tmp/imdb_datasets" if is_vercel else ""
     imdb_lookup_refresh_hours: int = 24
     imdb_lookup_export_ttl_seconds: int = 900
+    tmdb_api_key: str = ""
+    tmdb_read_access_token: str = ""
+    omdb_api_key: str = ""
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILE,

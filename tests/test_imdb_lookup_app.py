@@ -135,3 +135,121 @@ def _write_gzipped_tsv(path: Path, headers: list[str], rows: list[list[str]]) ->
         writer = csv.writer(file_handle, delimiter="\t")
         writer.writerow(headers)
         writer.writerows(rows)
+
+
+def test_api_fallback_when_db_unavailable(monkeypatch):
+    from imdb_lookup_app.services.lookup import ImdbLookupService, ImdbLookupServiceError
+    import httpx
+
+    # Force database to be unavailable
+    def mock_ensure_index(*args, **kwargs):
+        raise ImdbLookupServiceError("Index is not available on Vercel.")
+    monkeypatch.setattr(ImdbLookupService, "_ensure_imdb_dataset_index", mock_ensure_index)
+
+    # Configure API keys
+    monkeypatch.setattr(settings, "tmdb_api_key", "mock_tmdb_key")
+    monkeypatch.setattr(settings, "omdb_api_key", "mock_omdb_key")
+
+    # Mock client responses
+    def mock_get(self, url, params=None, headers=None, **kwargs):
+        url_str = str(url)
+        if "api.themoviedb.org/3/find/tt1234567" in url_str:
+            return httpx.Response(200, json={
+                "movie_results": [{
+                    "id": 101,
+                    "title": "Mock Movie via TMDB Find",
+                    "original_title": "Original Title",
+                    "release_date": "2026-05-29"
+                }],
+                "tv_results": [],
+                "tv_episode_results": [],
+                "tv_season_results": [],
+                "person_results": []
+            })
+        elif "api.themoviedb.org/3/find/nm1234567" in url_str:
+            return httpx.Response(200, json={
+                "movie_results": [],
+                "tv_results": [],
+                "tv_episode_results": [],
+                "tv_season_results": [],
+                "person_results": [{
+                    "id": 201,
+                    "name": "Mock Person via TMDB Find",
+                    "known_for_department": "Acting",
+                    "known_for": [{"title": "Known Work Title"}]
+                }]
+            })
+        elif "omdbapi.com" in url_str:
+            # Check if search or ID query
+            p = params or {}
+            if "s" in p:
+                return httpx.Response(200, json={
+                    "Response": "True",
+                    "Search": [{
+                        "Title": "OMDb Search Result",
+                        "Year": "2025",
+                        "imdbID": "tt2222222",
+                        "Type": "movie"
+                    }]
+                })
+            else:
+                return httpx.Response(200, json={
+                    "Response": "True",
+                    "Title": "OMDb ID Result",
+                    "Year": "2024",
+                    "imdbID": p.get("i", ""),
+                    "Type": "series"
+                })
+        elif "api.themoviedb.org/3/search/person" in url_str:
+            return httpx.Response(200, json={
+                "results": [{
+                    "id": 6384,
+                    "name": "Keanu Reeves",
+                    "known_for_department": "Acting",
+                    "known_for": [{"title": "The Matrix"}]
+                }]
+            })
+        elif "api.themoviedb.org/3/person/6384/external_ids" in url_str:
+            return httpx.Response(200, json={
+                "imdb_id": "nm0000206"
+            })
+        return httpx.Response(404)
+
+    monkeypatch.setattr(httpx.Client, "get", mock_get)
+
+    client = TestClient(app)
+
+    # 1. Test auto mode with ID (tt...) -> TMDB Find Movie
+    resp1 = client.post("/api/lookup", json={"mode": "auto", "values": ["tt1234567"]})
+    assert resp1.status_code == 200
+    rows1 = resp1.json()["rows"]
+    assert len(rows1) == 1
+    assert rows1[0]["display_name"] == "Mock Movie via TMDB Find"
+    assert rows1[0]["status"] == "matched"
+    assert rows1[0]["notes"] == "Resolved via TMDB Find API."
+
+    # 2. Test auto mode with ID (nm...) -> TMDB Find Person
+    resp2 = client.post("/api/lookup", json={"mode": "auto", "values": ["nm1234567"]})
+    assert resp2.status_code == 200
+    rows2 = resp2.json()["rows"]
+    assert len(rows2) == 1
+    assert rows2[0]["display_name"] == "Mock Person via TMDB Find"
+    assert rows2[0]["entity_kind"] == "person"
+    assert rows2[0]["known_for_titles"] == "Known Work Title"
+
+    # 3. Test title_to_id -> OMDb Search
+    resp3 = client.post("/api/lookup", json={"mode": "title_to_id", "values": ["OMDb Search Result"]})
+    assert resp3.status_code == 200
+    rows3 = resp3.json()["rows"]
+    assert len(rows3) == 1
+    assert rows3[0]["imdb_id"] == "tt2222222"
+    assert rows3[0]["notes"] == "Resolved via OMDb search API."
+
+    # 4. Test person_to_id -> TMDB Person Search
+    resp4 = client.post("/api/lookup", json={"mode": "person_to_id", "values": ["Keanu Reeves"]})
+    assert resp4.status_code == 200
+    rows4 = resp4.json()["rows"]
+    assert len(rows4) == 1
+    assert rows4[0]["imdb_id"] == "nm0000206"
+    assert rows4[0]["notes"] == "Resolved via TMDB person search API."
+

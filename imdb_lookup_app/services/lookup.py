@@ -31,7 +31,12 @@ class ImdbLookupService:
         if not cleaned_values:
             return LookupBatchResult(summary=["No values were provided."])
 
-        db_path = self._ensure_imdb_dataset_index()
+        db_available = True
+        try:
+            db_path = self._ensure_imdb_dataset_index()
+        except ImdbLookupServiceError:
+            db_available = False
+
         rows: list[LookupRow] = []
         status_counts: dict[LookupStatus, int] = {
             "matched": 0,
@@ -40,12 +45,19 @@ class ImdbLookupService:
             "invalid": 0,
         }
 
-        with sqlite3.connect(db_path) as connection:
-            connection.row_factory = sqlite3.Row
-            for value in cleaned_values:
-                matched_rows, status = self._lookup_single_value(connection, value, mode)
-                rows.extend(matched_rows)
-                status_counts[status] += 1
+        if db_available:
+            with sqlite3.connect(db_path) as connection:
+                connection.row_factory = sqlite3.Row
+                for value in cleaned_values:
+                    matched_rows, status = self._lookup_single_value(connection, value, mode)
+                    rows.extend(matched_rows)
+                    status_counts[status] += 1
+        else:
+            with httpx.Client(timeout=httpx.Timeout(20.0, connect=10.0)) as client:
+                for value in cleaned_values:
+                    matched_rows, status = self._lookup_single_value_via_api(client, value, mode)
+                    rows.extend(matched_rows)
+                    status_counts[status] += 1
 
         summary = [f"{len(cleaned_values)} inputs processed"]
         if status_counts["matched"]:
@@ -312,6 +324,401 @@ class ImdbLookupService:
             status="not_found",
             notes=note,
         )
+
+    def _lookup_single_value_via_api(
+        self,
+        client: httpx.Client,
+        raw_value: str,
+        mode: LookupMode,
+    ) -> tuple[list[LookupRow], LookupStatus]:
+        imdb_id = _extract_imdb_identifier(raw_value)
+
+        if mode == "id_to_name":
+            if not imdb_id:
+                return [self._build_invalid_row(raw_value, mode, "Expected an IMDb id like tt1234567 or nm1234567.")], "invalid"
+            result = self._lookup_by_identifier_via_api(client, raw_value, imdb_id, mode)
+            return [result], result.status
+
+        if mode == "title_to_id":
+            rows = self._lookup_title_via_api(client, raw_value, mode)
+            return rows, _rows_status(rows)
+
+        if mode == "person_to_id":
+            rows = self._lookup_person_via_api(client, raw_value, mode)
+            return rows, _rows_status(rows)
+
+        # Mode: auto
+        if imdb_id:
+            result = self._lookup_by_identifier_via_api(client, raw_value, imdb_id, mode)
+            return [result], result.status
+
+        title_rows = self._lookup_title_via_api(client, raw_value, mode)
+        person_rows = self._lookup_person_via_api(client, raw_value, mode)
+        rows = title_rows + person_rows
+        if rows:
+            return _rebalance_auto_rows(rows), _rows_status(rows)
+        return [self._build_not_found_row(raw_value, mode, "No API match was found for the title or person name.")], "not_found"
+
+    def _lookup_by_identifier_via_api(
+        self,
+        client: httpx.Client,
+        raw_value: str,
+        imdb_id: str,
+        mode: LookupMode,
+    ) -> LookupRow:
+        # 1. Try TMDB find first
+        if settings.tmdb_api_key:
+            try:
+                url = f"https://api.themoviedb.org/3/find/{imdb_id}"
+                params = {"external_source": "imdb_id"}
+                headers = {}
+                if settings.tmdb_read_access_token:
+                    headers["Authorization"] = f"Bearer {settings.tmdb_read_access_token}"
+                else:
+                    params["api_key"] = settings.tmdb_api_key
+
+                response = client.get(url, params=params, headers=headers)
+                if response.status_code == 200:
+                    payload = response.json()
+                    movies = payload.get("movie_results") or []
+                    tvs = payload.get("tv_results") or []
+                    episodes = payload.get("tv_episode_results") or []
+                    seasons = payload.get("tv_season_results") or []
+                    people = payload.get("person_results") or []
+
+                    if movies:
+                        item = movies[0]
+                        year = (item.get("release_date") or "")[:4]
+                        return LookupRow(
+                            input_value=raw_value,
+                            normalized_input=imdb_id,
+                            requested_mode=mode,
+                            resolved_lookup="id_to_title",
+                            status="matched",
+                            imdb_id=imdb_id,
+                            entity_kind="title",
+                            display_name=item.get("title") or item.get("original_title") or "",
+                            original_title=item.get("original_title") or "",
+                            title_type="movie",
+                            start_year=year,
+                            source_url=f"https://www.imdb.com/title/{imdb_id}/",
+                            matched_on="tconst",
+                            notes="Resolved via TMDB Find API.",
+                        )
+                    elif tvs:
+                        item = tvs[0]
+                        year = (item.get("first_air_date") or "")[:4]
+                        return LookupRow(
+                            input_value=raw_value,
+                            normalized_input=imdb_id,
+                            requested_mode=mode,
+                            resolved_lookup="id_to_title",
+                            status="matched",
+                            imdb_id=imdb_id,
+                            entity_kind="title",
+                            display_name=item.get("name") or item.get("original_name") or "",
+                            original_title=item.get("original_name") or "",
+                            title_type="tvSeries",
+                            start_year=year,
+                            source_url=f"https://www.imdb.com/title/{imdb_id}/",
+                            matched_on="tconst",
+                            notes="Resolved via TMDB Find API.",
+                        )
+                    elif episodes:
+                        item = episodes[0]
+                        year = (item.get("air_date") or "")[:4]
+                        return LookupRow(
+                            input_value=raw_value,
+                            normalized_input=imdb_id,
+                            requested_mode=mode,
+                            resolved_lookup="id_to_title",
+                            status="matched",
+                            imdb_id=imdb_id,
+                            entity_kind="title",
+                            display_name=item.get("name") or "",
+                            original_title="",
+                            title_type="tvEpisode",
+                            start_year=year,
+                            source_url=f"https://www.imdb.com/title/{imdb_id}/",
+                            matched_on="tconst",
+                            notes="Resolved via TMDB Find API.",
+                        )
+                    elif seasons:
+                        item = seasons[0]
+                        year = (item.get("air_date") or "")[:4]
+                        return LookupRow(
+                            input_value=raw_value,
+                            normalized_input=imdb_id,
+                            requested_mode=mode,
+                            resolved_lookup="id_to_title",
+                            status="matched",
+                            imdb_id=imdb_id,
+                            entity_kind="title",
+                            display_name=item.get("name") or "",
+                            original_title="",
+                            title_type="tvSeason",
+                            start_year=year,
+                            source_url=f"https://www.imdb.com/title/{imdb_id}/",
+                            matched_on="tconst",
+                            notes="Resolved via TMDB Find API.",
+                        )
+                    elif people:
+                        item = people[0]
+                        known_for_list = []
+                        for work in item.get("known_for") or []:
+                            w_title = work.get("title") or work.get("name")
+                            if w_title:
+                                known_for_list.append(w_title)
+                        return LookupRow(
+                            input_value=raw_value,
+                            normalized_input=imdb_id,
+                            requested_mode=mode,
+                            resolved_lookup="id_to_person",
+                            status="matched",
+                            imdb_id=imdb_id,
+                            entity_kind="person",
+                            display_name=item.get("name") or "",
+                            primary_profession=item.get("known_for_department") or "",
+                            known_for_titles=", ".join(known_for_list),
+                            source_url=f"https://www.imdb.com/name/{imdb_id}/",
+                            matched_on="nconst",
+                            notes="Resolved via TMDB Find API.",
+                        )
+            except Exception:
+                pass
+
+        # 2. Try OMDb API if it's a title (tt...)
+        if settings.omdb_api_key and imdb_id.startswith("tt"):
+            try:
+                url = "https://www.omdbapi.com/"
+                params = {"apikey": settings.omdb_api_key, "i": imdb_id}
+                response = client.get(url, params=params)
+                if response.status_code == 200:
+                    payload = response.json()
+                    if payload.get("Response") != "False":
+                        year = payload.get("Year") or ""
+                        start_year = year.split("–")[0].strip() if "–" in year else year.strip()
+                        end_year = year.split("–")[1].strip() if "–" in year and len(year.split("–")) > 1 else ""
+                        return LookupRow(
+                            input_value=raw_value,
+                            normalized_input=imdb_id,
+                            requested_mode=mode,
+                            resolved_lookup="id_to_title",
+                            status="matched",
+                            imdb_id=imdb_id,
+                            entity_kind="title",
+                            display_name=payload.get("Title") or "",
+                            original_title=payload.get("Title") or "",
+                            title_type=_normalize_title_type(payload.get("Type")),
+                            start_year=start_year,
+                            end_year=end_year,
+                            source_url=f"https://www.imdb.com/title/{imdb_id}/",
+                            matched_on="tconst",
+                            notes="Resolved via OMDb API.",
+                        )
+            except Exception:
+                pass
+
+        return self._build_not_found_row(raw_value, mode, "IMDb identifier was not found via TMDB or OMDb APIs.")
+
+    def _lookup_title_via_api(
+        self,
+        client: httpx.Client,
+        raw_value: str,
+        mode: LookupMode,
+    ) -> list[LookupRow]:
+        normalized = _normalize_lookup_text(raw_value)
+        if not normalized:
+            return [self._build_invalid_row(raw_value, mode, "The title value is blank after normalization.")]
+
+        # 1. Try OMDb search first (returns IMDb IDs directly for multiple matches)
+        if settings.omdb_api_key:
+            try:
+                url = "https://www.omdbapi.com/"
+                params = {"apikey": settings.omdb_api_key, "s": raw_value}
+                response = client.get(url, params=params)
+                if response.status_code == 200:
+                    payload = response.json()
+                    if payload.get("Response") != "False":
+                        search_results = payload.get("Search") or []
+                        search_results = search_results[:25]
+                        total_matches = len(search_results)
+                        status: LookupStatus = "multiple_matches" if total_matches > 1 else "matched"
+                        rows = []
+                        for index, item in enumerate(search_results, start=1):
+                            imdb_id = item.get("imdbID") or ""
+                            year = item.get("Year") or ""
+                            start_year = year.split("–")[0].strip() if "–" in year else year.strip()
+                            rows.append(
+                                LookupRow(
+                                    input_value=raw_value,
+                                    normalized_input=normalized,
+                                    requested_mode=mode,
+                                    resolved_lookup="title_to_id",
+                                    status=status,
+                                    match_rank=index,
+                                    total_matches=total_matches,
+                                    imdb_id=imdb_id,
+                                    entity_kind="title",
+                                    display_name=item.get("Title") or "",
+                                    original_title=item.get("Title") or "",
+                                    title_type=_normalize_title_type(item.get("Type")),
+                                    start_year=start_year,
+                                    source_url=f"https://www.imdb.com/title/{imdb_id}/" if imdb_id else "",
+                                    matched_on="primary_title",
+                                    notes="Resolved via OMDb search API.",
+                                )
+                            )
+                        if rows:
+                            return rows
+            except Exception:
+                pass
+
+        # 2. Try TMDB search movie/tv if OMDb fails or is not configured
+        if settings.tmdb_api_key:
+            try:
+                # Query movie
+                url_m = "https://api.themoviedb.org/3/search/movie"
+                params_m = {"query": raw_value}
+                headers = {}
+                if settings.tmdb_read_access_token:
+                    headers["Authorization"] = f"Bearer {settings.tmdb_read_access_token}"
+                else:
+                    params_m["api_key"] = settings.tmdb_api_key
+
+                response_m = client.get(url_m, params=params_m, headers=headers)
+                results = []
+                if response_m.status_code == 200:
+                    payload_m = response_m.json()
+                    for item in payload_m.get("results") or []:
+                        results.append((item, "movie"))
+
+                # Query TV
+                url_tv = "https://api.themoviedb.org/3/search/tv"
+                params_tv = {"query": raw_value}
+                response_tv = client.get(url_tv, params=params_tv, headers=headers)
+                if response_tv.status_code == 200:
+                    payload_tv = response_tv.json()
+                    for item in payload_tv.get("results") or []:
+                        results.append((item, "tv"))
+
+                results = results[:5]
+                if results:
+                    rows = []
+                    total_matches = len(results)
+                    status = "multiple_matches" if total_matches > 1 else "matched"
+                    for index, (item, media_type) in enumerate(results, start=1):
+                        tmdb_id = item.get("id")
+                        imdb_id = ""
+                        try:
+                            ext_url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}/external_ids"
+                            resp_ext = client.get(ext_url, params=params_m, headers=headers)
+                            if resp_ext.status_code == 200:
+                                imdb_id = resp_ext.json().get("imdb_id") or ""
+                        except Exception:
+                            pass
+
+                        date_key = "release_date" if media_type == "movie" else "first_air_date"
+                        year = (item.get(date_key) or "")[:4]
+                        title_key = "title" if media_type == "movie" else "name"
+                        rows.append(
+                            LookupRow(
+                                input_value=raw_value,
+                                normalized_input=normalized,
+                                requested_mode=mode,
+                                resolved_lookup="title_to_id",
+                                status=status,
+                                match_rank=index,
+                                total_matches=total_matches,
+                                imdb_id=imdb_id,
+                                entity_kind="title",
+                                display_name=item.get(title_key) or "",
+                                original_title=item.get("original_title") or item.get("original_name") or "",
+                                title_type="movie" if media_type == "movie" else "tvSeries",
+                                start_year=year,
+                                source_url=f"https://www.imdb.com/title/{imdb_id}/" if imdb_id else "",
+                                matched_on="primary_title",
+                                notes="Resolved via TMDB search API.",
+                            )
+                        )
+                    if rows:
+                        return rows
+            except Exception:
+                pass
+
+        return [self._build_not_found_row(raw_value, mode, "No title matches were found via API.")]
+
+    def _lookup_person_via_api(
+        self,
+        client: httpx.Client,
+        raw_value: str,
+        mode: LookupMode,
+    ) -> list[LookupRow]:
+        normalized = _normalize_lookup_text(raw_value)
+        if not normalized:
+            return [self._build_invalid_row(raw_value, mode, "The person name is blank after normalization.")]
+
+        if settings.tmdb_api_key:
+            try:
+                url = "https://api.themoviedb.org/3/search/person"
+                params = {"query": raw_value}
+                headers = {}
+                if settings.tmdb_read_access_token:
+                    headers["Authorization"] = f"Bearer {settings.tmdb_read_access_token}"
+                else:
+                    params["api_key"] = settings.tmdb_api_key
+
+                response = client.get(url, params=params, headers=headers)
+                if response.status_code == 200:
+                    payload = response.json()
+                    search_results = payload.get("results") or []
+                    search_results = search_results[:5]
+                    if search_results:
+                        rows = []
+                        total_matches = len(search_results)
+                        status: LookupStatus = "multiple_matches" if total_matches > 1 else "matched"
+                        for index, item in enumerate(search_results, start=1):
+                            tmdb_id = item.get("id")
+                            imdb_id = ""
+                            try:
+                                ext_url = f"https://api.themoviedb.org/3/person/{tmdb_id}/external_ids"
+                                resp_ext = client.get(ext_url, params=params, headers=headers)
+                                if resp_ext.status_code == 200:
+                                    imdb_id = resp_ext.json().get("imdb_id") or ""
+                            except Exception:
+                                pass
+
+                            known_for_list = []
+                            for work in item.get("known_for") or []:
+                                w_title = work.get("title") or work.get("name")
+                                if w_title:
+                                    known_for_list.append(w_title)
+
+                            rows.append(
+                                LookupRow(
+                                    input_value=raw_value,
+                                    normalized_input=normalized,
+                                    requested_mode=mode,
+                                    resolved_lookup="person_to_id",
+                                    status=status,
+                                    match_rank=index,
+                                    total_matches=total_matches,
+                                    imdb_id=imdb_id,
+                                    entity_kind="person",
+                                    display_name=item.get("name") or "",
+                                    primary_profession=item.get("known_for_department") or "",
+                                    known_for_titles=", ".join(known_for_list),
+                                    source_url=f"https://www.imdb.com/name/{imdb_id}/" if imdb_id else "",
+                                    matched_on="primary_name",
+                                    notes="Resolved via TMDB person search API.",
+                                )
+                            )
+                        if rows:
+                            return rows
+            except Exception:
+                pass
+
+        return [self._build_not_found_row(raw_value, mode, "No person matches were found via API.")]
 
     def _ensure_imdb_dataset_index(self) -> Path:
         dataset_dir = self._imdb_dataset_dir()
@@ -589,9 +996,12 @@ def _normalize_lookup_text(value: object) -> str:
 def _normalize_title_type(value: object) -> str:
     normalized = _normalize_lookup_text(value).replace(" ", "")
     aliases = {
+        "movie": "movie",
+        "series": "tvSeries",
         "tvseries": "tvSeries",
-        "tvminiseries": "tvMiniSeries",
+        "episode": "tvEpisode",
         "tvepisode": "tvEpisode",
+        "tvminiseries": "tvMiniSeries",
         "tvspecial": "tvSpecial",
         "tvmovie": "tvMovie",
     }
