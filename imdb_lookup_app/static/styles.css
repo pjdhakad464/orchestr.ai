@@ -809,3 +809,119 @@ button:active,
     width: 100%;
   }
 }
+
+/* ─── PREMIUM NAVIGATION HEADER ─── */
+.suite-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 16px 40px;
+  box-shadow: 0 4px 30px rgba(103, 61, 230, 0.02);
+  transition: all 0.3s ease;
+}
+
+.suite-navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.45rem;
+  color: var(--text-main);
+  text-decoration: none;
+  letter-spacing: -0.03em;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.suite-navbar-brand:hover {
+  transform: scale(1.02);
+}
+
+.suite-navbar-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  box-shadow: 0 0 12px var(--brand-primary);
+  animation: logoGlow 2s infinite ease-in-out;
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 12px var(--brand-primary);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px var(--brand-primary), 0 0 30px var(--brand-primary);
+  }
+}
+
+.suite-navbar-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.suite-navbar-link {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 99px;
+  transition: var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.suite-navbar-link:hover {
+  color: var(--brand-primary);
+  background: rgba(103, 61, 230, 0.05);
+  transform: translateY(-1px);
+}
+
+.suite-navbar-link.active {
+  color: #ffffff;
+  background: var(--brand-primary);
+  box-shadow: 0 4px 14px rgba(103, 61, 230, 0.3);
+}
+
+.suite-navbar-link.active:hover {
+  background: #542cc7;
+  transform: translateY(-1px);
+}
+
+.suite-navbar-link .material-symbols-outlined {
+  font-size: 18px;
+}
+
+@media (max-width: 900px) {
+  .suite-navbar {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+  .suite-navbar-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .suite-navbar-link {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+}
