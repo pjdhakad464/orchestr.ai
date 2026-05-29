@@ -17,8 +17,8 @@ Beverages,Beverage Company - Brooklyn Bottling Group
 Beverages,Beverage Company - Brooklyn Brewery
 Beverages,Beverage Company - Brown-Forman
 Beverages,Beverage Company - C&C Group
-Beverages,Beverage Company - CANarchy
 Beverages,Beverage Company - Campbell Soup Company
+Beverages,Beverage Company - CANarchy
 Beverages,Beverage Company - Castle Brands
 Beverages,Beverage Company - Celsius Holdings
 Beverages,Beverage Company - Constellation Brands
@@ -31,12 +31,12 @@ Beverages,Beverage Company - Don Sebastiani & Sons
 Beverages,Beverage Company - Duvel Moortgat
 Beverages,Beverage Company - E & J Gallo Winery
 Beverages,Beverage Company - Essentia Water
-Beverages,Beverage Company - FIFCO USA
 Beverages,Beverage Company - Farmer Brothers Company
+Beverages,Beverage Company - FIFCO USA
 Beverages,Beverage Company - Florida's Natural Growers
 Beverages,Beverage Company - Founders Brewing Co.
-Beverages,Beverage Company - GT's Living Foods
 Beverages,Beverage Company - Geloso Beverage Group
+Beverages,Beverage Company - GT's Living Foods
 Beverages,Beverage Company - Hain Celestial Group
 Beverages,Beverage Company - Harvest Hill Beverage Company
 Beverages,"Beverage Company - Health-Ade, LLC"
@@ -50,11 +50,11 @@ Beverages,Beverage Company - Jel Sert Co
 Beverages,Beverage Company - Kasapreko
 Beverages,Beverage Company - Kendall-Jackson Wine Estates
 Beverages,Beverage Company - Keurig Dr Pepper
-Beverages,Beverage Company - LVMH
 Beverages,Beverage Company - Langer Juice Company
 Beverages,Beverage Company - Lassonde Industries Inc
 Beverages,Beverage Company - Lifeway Foods
 Beverages,Beverage Company - Living Essentials LLC
+Beverages,Beverage Company - LVMH
 Beverages,Beverage Company - Marchesi de' Frescobaldi
 Beverages,Beverage Company - Mark Anthony Group
 Beverages,Beverage Company - Mast-Jägermeister
@@ -97,8 +97,8 @@ Beverages,Beverage Company - Treasury Wine Estates
 Beverages,Beverage Company - Tree Top Inc.
 Beverages,Beverage Company - Trinchero Family Estates
 Beverages,Beverage Company - Unilever
-Beverages,Beverage Company - VPX/Bang Energy
 Beverages,Beverage Company - Vina Concha Y Toro
+Beverages,Beverage Company - VPX/Bang Energy
 Beverages,Beverage Company - Welch Foods Inc.
 Beverages,Beverage Type - Beer
 Beverages,Beverage Type - Champagne & Sparkling
@@ -134,6 +134,18 @@ Beverages,Whiskey Type - Other
 Beverages,Whiskey Type - Rye
 Beverages,Whiskey Type - Scotch
 Beverages,Whiskey Type - Tennessee
+Consumer Electronics,Consumer Electronics Type - Appliances
+Consumer Electronics,Consumer Electronics Type - Audio
+Consumer Electronics,"Consumer Electronics Type - Cameras, Camcorders & Drones"
+Consumer Electronics,Consumer Electronics Type - Cell Phones
+Consumer Electronics,"Consumer Electronics Type - Chargers, Cables, Adapters"
+Consumer Electronics,Consumer Electronics Type - Computers & Tablets
+Consumer Electronics,"Consumer Electronics Type - Smart Home, Security & Wi-Fi"
+Consumer Electronics,Consumer Electronics Type - Streaming Media Players
+Consumer Electronics,Consumer Electronics Type - TV
+Consumer Electronics,Consumer Electronics Type - Video Games
+Consumer Electronics,Consumer Electronics Type - Wearable Technology
+"Consumer Electronics, Video Game, Video Game Publishers",Developer - Big Bad Wolf
 CPG,CPG Type - Beverage
 CPG,CPG Type - Consumer Electronics
 CPG,CPG Type - Food
@@ -144,8 +156,8 @@ CPG,Primary Electronics Product Type - Audio & Sound
 CPG,Primary Electronics Product Type - Computers
 CPG,Primary Electronics Product Type - Home Appliances
 CPG,Primary Electronics Product Type - Smartphones
-CPG,Primary Electronics Product Type - TV Peripheral Devices
 CPG,Primary Electronics Product Type - Televisions
+CPG,Primary Electronics Product Type - TV Peripheral Devices
 CPG,Primary Food Type - Confectionary & Shelf-Stable Desserts
 CPG,Primary Household Product Type - Air Fresheners
 CPG,Primary Household Product Type - Batteries
@@ -166,18 +178,6 @@ CPG,Primary Personal Care Type - Skin Care
 "CPG, Health & Beauty",Beauty Type - Bath & Body
 "CPG, Health & Beauty",Beauty Type - Skincare
 "CPG, Health & Beauty",Beauty Type - Tools & Brushes
-Consumer Electronics,Consumer Electronics Type - Appliances
-Consumer Electronics,Consumer Electronics Type - Audio
-Consumer Electronics,"Consumer Electronics Type - Cameras, Camcorders & Drones"
-Consumer Electronics,Consumer Electronics Type - Cell Phones
-Consumer Electronics,"Consumer Electronics Type - Chargers, Cables, Adapters"
-Consumer Electronics,Consumer Electronics Type - Computers & Tablets
-Consumer Electronics,"Consumer Electronics Type - Smart Home, Security & Wi-Fi"
-Consumer Electronics,Consumer Electronics Type - Streaming Media Players
-Consumer Electronics,Consumer Electronics Type - TV
-Consumer Electronics,Consumer Electronics Type - Video Games
-Consumer Electronics,Consumer Electronics Type - Wearable Technology
-"Consumer Electronics, Video Game, Video Game Publishers",Developer - Big Bad Wolf
 Fashion,Beauty
 Fashion,Handbags
 Fashion,Home
@@ -1403,8 +1403,8 @@ Restaurants,Restaurant Category - Sports Bar
 Restaurants,Restaurant Category - Steak
 Restaurants,Restaurant Category - Varied Menu
 Restaurants,Restaurant Locations - 1-199
-Restaurants,Restaurant Locations - 200-400
 Restaurants,Restaurant Locations - 2000 or more
+Restaurants,Restaurant Locations - 200-400
 Restaurants,Restaurant Locations - 400-800
 Restaurants,Restaurant Locations - 800-2000
 Restaurants,Restaurant Ownership - Corporate
@@ -1575,79 +1575,6 @@ Sports Franchise,Location: State - Wisconsin
 "Sports Organizations and Bodies, Venues, Events & Attractions, Sports Franchise",Sports Type - Golf
 "Sports Organizations and Bodies, Venues, Events & Attractions, Sports Franchise",Sports Type - Motorsports
 "Sports Organizations and Bodies, Venues, Events & Attractions, Sports Franchise",Sports Type - Racquet Sports
-TV Network,Community Type - Action
-TV Network,Community Type - Comedy
-TV Network,Community Type - Customer Care
-TV Network,Community Type - Diversity & Representation
-TV Network,Community Type - Documentary
-TV Network,Community Type - Drama
-TV Network,Community Type - Events
-TV Network,Community Type - Film
-TV Network,Community Type - Horror
-TV Network,Community Type - Kids & Family
-TV Network,Community Type - Other
-TV Network,Community Type - Reality
-TV Network,Community Type - Sci-Fi & Fantasy
-TV Network,Community Type - Sports
-TV Network,Location: Country - Chile
-TV Network,Location: Country - Denmark
-TV Network,Location: Country - Finland
-TV Network,Location: Country - Indonesia
-TV Network,Location: Country - Ireland
-TV Network,Location: Country - Malaysia
-TV Network,Location: Country - Nigeria
-TV Network,Location: Country - Norway
-TV Network,Location: Country - Philippines
-TV Network,Location: Country - Poland
-TV Network,Location: Country - Singapore
-TV Network,Location: Country - Sweden
-TV Network,Location: Country - Thailand
-TV Network,Location: Country - United Kingdom
-TV Network,Region - APAC
-TV Network,Region - Domestic
-TV Network,Region - EMEA
-TV Network,Region - International
-TV Network,Region - LATAM
-TV Network,Region - NA
-TV Network,Streaming Type - Brand
-TV Network,Streaming Type - Community
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Argentina
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Australia
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Brazil
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - India
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Japan
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Mexico
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Netherlands
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - New Zealand
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - South Africa
-"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Turkey
-TV Shows,Daypart - Daytime
-TV Shows,Daypart - Early Fringe
-TV Shows,Daypart - Early Morning
-TV Shows,Daypart - Early News
-TV Shows,Daypart - Late Fringe
-TV Shows,Daypart - Late News
-TV Shows,Daypart - Other
-TV Shows,Daypart - Overnight
-TV Shows,Daypart - Post Late Fringe
-TV Shows,Daypart - Prime Access
-TV Shows,Daypart - Prime Time
-TV Shows,Program Type - Block
-TV Shows,Program Type - Live Event
-TV Shows,Program Type - Mini-Series
-TV Shows,Program Type - Series
-TV Shows,Program Type - Special
-TV Shows,Program Type - TV Movie
-"TV Shows, Movies",Language Type - English
-"TV Shows, Movies",Language Type - Hindi
-"TV Shows, Movies",Language Type - Malayalam
-"TV Shows, Movies",Language Type - Other
-"TV Shows, Movies",Language Type - Tamil
-"TV Shows, Movies",Language Type - Telugu
-"TV Shows, TV Network",Network - Ad Supported Cable
-"TV Shows, TV Network",Network - Broadcast
-"TV Shows, TV Network",Network - Premium Cable
-"TV Shows, TV Network",Network - Streaming
 Talent,Gender - Man
 Talent,Gender - Non-Binary
 Talent,Gender - Woman
@@ -1997,6 +1924,79 @@ Travel,Travel Type - Booking Sites
 Travel,Travel Type - Car Rental
 Travel,Travel Type - Cruise Lines
 Travel,Travel Type - Hotels
+TV Network,Community Type - Action
+TV Network,Community Type - Comedy
+TV Network,Community Type - Customer Care
+TV Network,Community Type - Diversity & Representation
+TV Network,Community Type - Documentary
+TV Network,Community Type - Drama
+TV Network,Community Type - Events
+TV Network,Community Type - Film
+TV Network,Community Type - Horror
+TV Network,Community Type - Kids & Family
+TV Network,Community Type - Other
+TV Network,Community Type - Reality
+TV Network,Community Type - Sci-Fi & Fantasy
+TV Network,Community Type - Sports
+TV Network,Location: Country - Chile
+TV Network,Location: Country - Denmark
+TV Network,Location: Country - Finland
+TV Network,Location: Country - Indonesia
+TV Network,Location: Country - Ireland
+TV Network,Location: Country - Malaysia
+TV Network,Location: Country - Nigeria
+TV Network,Location: Country - Norway
+TV Network,Location: Country - Philippines
+TV Network,Location: Country - Poland
+TV Network,Location: Country - Singapore
+TV Network,Location: Country - Sweden
+TV Network,Location: Country - Thailand
+TV Network,Location: Country - United Kingdom
+TV Network,Region - APAC
+TV Network,Region - Domestic
+TV Network,Region - EMEA
+TV Network,Region - International
+TV Network,Region - LATAM
+TV Network,Region - NA
+TV Network,Streaming Type - Brand
+TV Network,Streaming Type - Community
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Argentina
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Australia
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Brazil
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - India
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Japan
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Mexico
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Netherlands
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - New Zealand
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - South Africa
+"TV Network, Sports Franchise, Sports Organizations and Bodies",Location: Country - Turkey
+TV Shows,Daypart - Daytime
+TV Shows,Daypart - Early Fringe
+TV Shows,Daypart - Early Morning
+TV Shows,Daypart - Early News
+TV Shows,Daypart - Late Fringe
+TV Shows,Daypart - Late News
+TV Shows,Daypart - Other
+TV Shows,Daypart - Overnight
+TV Shows,Daypart - Post Late Fringe
+TV Shows,Daypart - Prime Access
+TV Shows,Daypart - Prime Time
+TV Shows,Program Type - Block
+TV Shows,Program Type - Live Event
+TV Shows,Program Type - Mini-Series
+TV Shows,Program Type - Series
+TV Shows,Program Type - Special
+TV Shows,Program Type - TV Movie
+"TV Shows, Movies",Language Type - English
+"TV Shows, Movies",Language Type - Hindi
+"TV Shows, Movies",Language Type - Malayalam
+"TV Shows, Movies",Language Type - Other
+"TV Shows, Movies",Language Type - Tamil
+"TV Shows, Movies",Language Type - Telugu
+"TV Shows, TV Network",Network - Ad Supported Cable
+"TV Shows, TV Network",Network - Broadcast
+"TV Shows, TV Network",Network - Premium Cable
+"TV Shows, TV Network",Network - Streaming
 "Venues, Events & Attractions, Sports Franchise, Sports Organizations and Bodies",Sports Type - Athletics
 "Venues, Events & Attractions, Sports Franchise, Sports Organizations and Bodies",Sports Type - Cricket
 "Venues, Events & Attractions, Sports Franchise, Sports Organizations and Bodies",Sports Type - Cycling
@@ -2012,6 +2012,7 @@ Travel,Travel Type - Hotels
 "Venues, Events & Attractions, Sports Franchise, Sports Organizations and Bodies",Sports Type - Running
 "Venues, Events & Attractions, Sports Franchise, Sports Organizations and Bodies",Sports Type - Tennis
 "Venues, Events & Attractions, Sports Franchise, Sports Organizations and Bodies",Sports Type - Wrestling
+Video Game,Developer - @unepic_fran
 Video Game,Developer - 100 GAMES
 Video Game,Developer - 101XP
 Video Game,Developer - 1047 Games
@@ -2031,8 +2032,8 @@ Video Game,Developer - 2Awesome Studio
 Video Game,Developer - 2ndBoss
 Video Game,Developer - 2pt Interactive
 Video Game,Developer - 343 Industries
-Video Game,Developer - 3DClouds
 Video Game,Developer - 3d Clouds
+Video Game,Developer - 3DClouds
 Video Game,Developer - 4 GLADIATORS
 Video Game,Developer - 40 Giants Entertainment
 Video Game,Developer - 45 studio
@@ -2049,33 +2050,20 @@ Video Game,Developer - 8 Bit Pxl Games
 Video Game,Developer - 8bits fanatics
 Video Game,Developer - 909Games
 Video Game,Developer - 9Ratones
-Video Game,Developer - @unepic_fran
 Video Game,Developer - A Grumpy Fox
 Video Game,Developer - A Tale of Games
-Video Game,Developer - A-lim
-Video Game,Developer - ABX Games Studio
-Video Game,Developer - ACE Team
-Video Game,"Developer - ACTION SQUARE CO., LTD"
-Video Game,Developer - AHEARTFULOFGAMES
-Video Game,Developer - AJ Ordaz Games
-Video Game,Developer - AKPublish pty ltd
-Video Game,Developer - AMATA K.K.
-Video Game,Developer - AOE Plus
-Video Game,Developer - AOne Games
-Video Game,Developer - ARTIFACTS
-Video Game,Developer - ARTillery
-Video Game,Developer - ASHGAMES
-Video Game,Developer - AUSCODERS
-Video Game,Developer - AUTO SLAVIC d.o.o.
-Video Game,Developer - AZAMATIKA
 Video Game,Developer - Abrakam SA
 Video Game,Developer - Absorb Reality
 Video Game,Developer - AbstractArt
+Video Game,Developer - ABX Games Studio
 Video Game,Developer - Abyzzmo Entertainment
+Video Game,Developer - ACE Team
 Video Game,Developer - Acid Nerve
 Video Game,Developer - Acram Digital
+Video Game,"Developer - ACTION SQUARE CO., LTD"
 Video Game,Developer - Actoon Studio
 Video Game,Developer - Acyntha
+Video Game,Developer - adamgryu
 Video Game,Developer - Adamvision Studios
 Video Game,Developer - Adee
 Video Game,Developer - Aerial_Knight
@@ -2086,12 +2074,13 @@ Video Game,Developer - Affility
 Video Game,Developer - Afterburner Studios
 Video Game,Developer - Against Gravity
 Video Game,Developer - Agelvik
+Video Game,Developer - AHEARTFULOFGAMES
 Video Game,Developer - Airship Syndicate Entertainment
+Video Game,Developer - AJ Ordaz Games
 Video Game,Developer - Aki Corp.
+Video Game,Developer - AKPublish pty ltd
 Video Game,Developer - Aksys Games
 Video Game,Developer - Akupara Games
-Video Game,Developer - Al-link
-Video Game,Developer - AlPixel Games
 Video Game,Developer - Albino Moose Games
 Video Game,Developer - Alda Games
 Video Game,Developer - Alexandr Bondarenko
@@ -2100,9 +2089,13 @@ Video Game,Developer - Alexey Roenko
 Video Game,Developer - Alien Pixel Studios
 Video Game,Developer - Alientrap
 Video Game,Developer - AlignmentSharp
+Video Game,Developer - A-lim
 Video Game,Developer - All in! Games
+Video Game,Developer - Al-link
 Video Game,Developer - Allods Team Arcade
+Video Game,Developer - AlPixel Games
 Video Game,Developer - Amanita Design
+Video Game,Developer - AMATA K.K.
 Video Game,Developer - Amazing
 Video Game,Developer - Ametist Studio
 Video Game,Developer - Amortiz Games
@@ -2114,12 +2107,16 @@ Video Game,Developer - Angel Matrix
 Video Game,Developer - Angry Demon Studio
 Video Game,Developer - Animal Uprising
 Video Game,Developer - Aniplex Inc.
+Video Game,Developer - ansdor
 Video Game,Developer - Ant Workshop
 Video Game,Developer - Antab
 Video Game,Developer - Antena
 Video Game,Developer - Anti Pattern Stuudio
 Video Game,Developer - Antti Vaihia
+Video Game,Developer - AOE Plus
+Video Game,Developer - AOne Games
 Video Game,Developer - Applava
+Video Game,Developer - aPriori Digital
 Video Game,Developer - Aqua Style
 Video Game,Developer - Aquiris Game Studio
 Video Game,Developer - Arbitrarily Good Productions
@@ -2138,15 +2135,19 @@ Video Game,Developer - Artdink
 Video Game,Developer - Arte Experience
 Video Game,Developer - Artefacts Studio
 Video Game,Developer - ArticNet
+Video Game,Developer - ARTIFACTS
 Video Game,Developer - Artifex Mundi
+Video Game,Developer - ARTillery
 Video Game,Developer - Artisan Studios
 Video Game,Developer - Arturo Buschmann
 Video Game,"Developer - Arvore Immersive Experiences, LLC"
 Video Game,Developer - Arzest
+Video Game,Developer - ASHGAMES
 Video Game,Developer - Asobism
 Video Game,Developer - Asobo Studio
 Video Game,Developer - Aspyr
 Video Game,Developer - Assemble Entertainment
+Video Game,Developer - astragon
 Video Game,Developer - Asylum Square Interactive
 Video Game,Developer - Atent Games
 Video Game,Developer - Atlus
@@ -2154,6 +2155,8 @@ Video Game,Developer - Atomicom
 Video Game,Developer - Atooi  LLC
 Video Game,Developer - Atypical Games
 Video Game,Developer - Aurita Games
+Video Game,Developer - AUSCODERS
+Video Game,Developer - AUTO SLAVIC d.o.o.
 Video Game,"Developer - Avanquest Software,Linkle"
 Video Game,Developer - Avernus Software
 Video Game,Developer - Aviary Studios
@@ -2161,12 +2164,7 @@ Video Game,Developer - Awaken Realms Digital
 Video Game,Developer - Awe Interactive
 Video Game,Developer - AweKteam
 Video Game,Developer - Axis Games
-Video Game,Developer - BBG Entertainment GmbH
-Video Game,Developer - BERGAMES
-Video Game,Developer - BIGLOTGAMES
-Video Game,Developer - BNW GAMES
-Video Game,Developer - BRUTE FORCE
-Video Game,Developer - BUG-Studio
+Video Game,Developer - AZAMATIKA
 Video Game,Developer - Baby Corp
 Video Game,Developer - Bad Dream Games
 Video Game,Developer - Bad Minions
@@ -2183,14 +2181,16 @@ Video Game,Developer - Barkland Games
 Video Game,Developer - Baroque Decay
 Video Game,Developer - Baseline Games
 Video Game,Developer - BatFields
-Video Game,Developer - BeMenGo
+Video Game,Developer - BBG Entertainment GmbH
 Video Game,Developer - Bearded Brothers Games
 Video Game,Developer - Beautiful Glitch
 Video Game,Developer - Bedtime Digital Games
 Video Game,Developer - Beethoven & Dinosaur
 Video Game,Developer - Behaviour Interactive
+Video Game,Developer - BeMenGo
 Video Game,Developer - BenjiSoft
 Video Game,Developer - Benoit Varasse
+Video Game,Developer - BERGAMES
 Video Game,Developer - Berzerk Studio
 Video Game,Developer - Bethesda Game Studios
 Video Game,Developer - Bethesda Softworks
@@ -2200,6 +2200,7 @@ Video Game,Developer - Big Blue Bubble Inc.
 Video Game,Developer - Big Heart Productions
 Video Game,Developer - Big Village Games
 Video Game,Developer - Big Way
+Video Game,Developer - BIGLOTGAMES
 Video Game,Developer - Bimo Entertainment
 Video Game,Developer - BioWare
 Video Game,Developer - Bit Ink Studios
@@ -2222,6 +2223,7 @@ Video Game,Developer - Bloom Digital Media Inc.
 Video Game,Developer - Bloom Mushroom
 Video Game,Developer - Blowfish Studios
 Video Game,Developer - Blue Sunset Games
+Video Game,Developer - BNW GAMES
 Video Game,Developer - Bolder Games
 Video Game,Developer - Boneloaf
 Video Game,Developer - Bonte Avond
@@ -2233,17 +2235,19 @@ Video Game,Developer - BottleCube Inc.
 Video Game,Developer - Brad Howard
 Video Game,Developer - Brainwash Gang
 Video Game,Developer - Brass Token
-Video Game,Developer - Brave Giant
 Video Game,Developer - Brave at Night
+Video Game,Developer - Brave Giant
 Video Game,Developer - Brawsome
 Video Game,Developer - BreakFirst
 Video Game,Developer - Breaking Walls
 Video Game,Developer - Breakthrough Gaming LLC
 Video Game,Developer - Broken Arms Games
 Video Game,Developer - Brownies
+Video Game,Developer - BRUTE FORCE
 Video Game,Developer - Bryce Bucher
 Video Game,Developer - Buddy System
 Video Game,Developer - Bugbear
+Video Game,Developer - BUG-Studio
 Video Game,Developer - Bungie
 Video Game,Developer - Bunkovsky Games
 Video Game,Developer - Bunnyhug
@@ -2252,13 +2256,6 @@ Video Game,Developer - BushiRoad
 Video Game,Developer - ButtonX
 Video Game,Developer - Byte Through Entertainment
 Video Game,Developer - ByteRockers' Games
-Video Game,Developer - CC Games
-Video Game,Developer - CD Projekt Red Studio
-Video Game,Developer - CHECK MATE SPOLKA Z OGRANICZONA ODPOWIEDZIALNOSCIA
-Video Game,Developer - CI Games
-Video Game,Developer - CINDYZ STUDIO
-Video Game,Developer - CO5MONAUT
-Video Game,Developer - COWCAT
 Video Game,Developer - Cafundo Estudio Criativo Eireli
 Video Game,Developer - Caio Flavio
 Video Game,"Developer - Camouflaj, LLC"
@@ -2270,10 +2267,13 @@ Video Game,Developer - Cattle Call
 Video Game,Developer - Cave
 Video Game,Developer - Cave Games
 Video Game,Developer - Cavyhouse
+Video Game,Developer - CC Games
+Video Game,Developer - CD Projekt Red Studio
 Video Game,Developer - Chainsawesome Games
 Video Game,Developer - Chameleon Games
 Video Game,Developer - Chaosmonger Studio
 Video Game,Developer - Chasing Rats Games
+Video Game,Developer - CHECK MATE SPOLKA Z OGRANICZONA ODPOWIEDZIALNOSCIA
 Video Game,Developer - CheckMate Publishing
 Video Game,Developer - Chemical Pudding
 Video Game,Developer - Chequered Ink Ltd.
@@ -2290,6 +2290,8 @@ Video Game,Developer - Chubby Pixel
 Video Game,Developer - Chunderfins
 Video Game,"Developer - Churapps Co.,Ltd."
 Video Game,Developer - Chuyan Inc.
+Video Game,Developer - CI Games
+Video Game,Developer - CINDYZ STUDIO
 Video Game,Developer - City Connection
 Video Game,Developer - Clever Plays
 Video Game,Developer - Cleversan Games
@@ -2297,6 +2299,7 @@ Video Game,Developer - Clickteam
 Video Game,Developer - Clifftop Games
 Video Game,Developer - Cloisters
 Video Game,Developer - Clover Bite
+Video Game,Developer - CO5MONAUT
 Video Game,Developer - Coatsink Software
 Video Game,Developer - Cobble Games SP
 Video Game,Developer - Cococucumber
@@ -2326,6 +2329,7 @@ Video Game,Developer - Corey Martin
 Video Game,Developer - Cosen
 Video Game,Developer - Cotton Game
 Video Game,Developer - Counterplay Games
+Video Game,Developer - COWCAT
 Video Game,Developer - Cozy Bee Games
 Video Game,Developer - Cracked Heads Games
 Video Game,Developer - Craftshop Arts Inc.
@@ -2360,25 +2364,19 @@ Video Game,Developer - Cyan Worlds
 Video Game,Developer - Cyanide
 Video Game,Developer - CyberConnect2
 Video Game,Developer - Cyberstep
-Video Game,Developer - D-Lo Games
 Video Game,Developer - D3Publisher
 Video Game,Developer - D6 TEAM
-Video Game,Developer - DANGEN Entertainment
-Video Game,Developer - DCF Studios
-Video Game,Developer - DIVERS
-Video Game,Developer - DONTNOD Entertainment
-Video Game,Developer - DOOD GAMES
-Video Game,Developer - DP Games
-Video Game,Developer - DYA Games
 Video Game,Developer - Daedalic Entertainment
 Video Game,Developer - Dakko Dakko
 Video Game,Developer - Dallen Larson
 Video Game,Developer - Dan Domingues
+Video Game,Developer - DANGEN Entertainment
 Video Game,Developer - Daniel Mullins Games
 Video Game,Developer - Daniel Wengenroth
 Video Game,Developer - DarkDes Labs
 Video Game,Developer - Darkflow Software
 Video Game,Developer - David Grof s.p.
+Video Game,Developer - DCF Studios
 Video Game,Developer - Dead Drop Studios LLC
 Video Game,Developer - Deck 13
 Video Game,Developer - Deck Nine Games
@@ -2390,12 +2388,12 @@ Video Game,Developer - Denda Games
 Video Game,Developer - Deonn Software ltd.
 Video Game,Developer - Derin
 Video Game,Developer - Deskworks
+Video Game,Developer - dev4play
 Video Game,Developer - DevilishGames
 Video Game,Developer - Dhood Productions
 Video Game,Developer - Die Gute Fabrik
 Video Game,Developer - Digerati Distribution
 Video Game,Developer - Diggidy.net
-Video Game,Developer - DigiTales Interactive
 Video Game,Developer - Digiart Interactive
 Video Game,Developer - Digital Crafter
 Video Game,Developer - Digital Dreams Entertainment LLC
@@ -2405,26 +2403,33 @@ Video Game,Developer - Digital Kingdom
 Video Game,Developer - Digital Leisure
 Video Game,Developer - Digital Reality
 Video Game,Developer - Digital Tribe
+Video Game,Developer - DigiTales Interactive
 Video Game,Developer - DillyFrame
 Video Game,Developer - Dinous Games
 Video Game,Developer - Dire Wolf Digital
 Video Game,Developer - Discovery
 Video Game,Developer - Discovery Channel Multimedia
 Video Game,Developer - Distractionware Limited
-Video Game,Developer - DoToRis
+Video Game,Developer - DIVERS
+Video Game,Developer - D-Lo Games
 Video Game,Developer - Doborog Games
 Video Game,Developer - Dolores Entertainment
 Video Game,Developer - Donkey Crew
+Video Game,Developer - DONTNOD Entertainment
+Video Game,Developer - DOOD GAMES
 Video Game,Developer - Doodal
 Video Game,Developer - DotEmu
+Video Game,Developer - DoToRis
 Video Game,Developer - Double Fine Productions
 Video Game,Developer - DoubleMoose Games
 Video Game,Developer - Dovetail Games
+Video Game,Developer - DP Games
 Video Game,Developer - Drageus Games
 Video Game,Developer - Drago Entertainment
 Video Game,Developer - Dragonest
 Video Game,Developer - Drakhar Studio
 Video Game,Developer - Drakkar Dev
+Video Game,Developer - dramatic create
 Video Game,Developer - Dreams Uncorporated
 Video Game,Developer - DrinkBox Studios
 Video Game,Developer - Dual Effect
@@ -2433,33 +2438,30 @@ Video Game,Developer - Duck Team
 Video Game,Developer - DuckbearLab
 Video Game,Developer - Dume Games
 Video Game,Developer - Dustwind Studios
+Video Game,Developer - DYA Games
 Video Game,Developer - Dynamic Voltage Games
-Video Game,Developer - E-Home Entertainment
-Video Game,Developer - E-Line Media
 Video Game,Developer - EA Canada
 Video Game,Developer - EA DICE
 Video Game,Developer - EA Tiburon
-Video Game,Developer - EKO Software
-Video Game,Developer - ELIXOR
-Video Game,Developer - EOK Labs
-Video Game,Developer - EP Games
-Video Game,Developer - ERIK GAMES
-Video Game,Developer - EXE Create
-Video Game,Developer - EXOR Studios
 Video Game,Developer - East2West Games
 Video Game,Developer - EastAsiaSoft
+Video Game,Developer - ebi-hime
 Video Game,Developer - Eclipse Games
 Video Game,Developer - Eden Games Mobile
 Video Game,Developer - Edia Co.
 Video Game,Developer - EggNut
+Video Game,Developer - E-Home Entertainment
 Video Game,Developer - Eidetic
 Video Game,Developer - Eidos Montreal
 Video Game,Developer - Einzelartig Games
+Video Game,Developer - EKO Software
 Video Game,Developer - Elasto Mania Team
 Video Game,Developer - Elden Pixels
 Video Game,Developer - Elder Games
 Video Game,Developer - Electronic Arts
 Video Game,Developer - Elefantopia LLC
+Video Game,Developer - E-Line Media
+Video Game,Developer - ELIXOR
 Video Game,Developer - Emberlab
 Video Game,Developer - Emil Ismaylov
 Video Game,Developer - Empty Clip Studios
@@ -2472,14 +2474,17 @@ Video Game,Developer - EnsenaSoft
 Video Game,Developer - Entalto Studios
 Video Game,Developer - Entity3
 Video Game,Developer - Entwickler-X
-Video Game,Developer - EpiXR Games
+Video Game,Developer - EOK Labs
+Video Game,Developer - EP Games
 Video Game,Developer - Epic Games
 Video Game,Developer - Epic Llama
 Video Game,Developer - Epic Llama Games
 Video Game,Developer - Epitasis Games
+Video Game,Developer - EpiXR Games
 Video Game,Developer - Epopeia Games
 Video Game,Developer - Erdem Sen
 Video Game,Developer - Eric Games
+Video Game,Developer - ERIK GAMES
 Video Game,Developer - Escape
 Video Game,Developer - EskemaGames
 Video Game,Developer - Estinb Labs
@@ -2488,18 +2493,13 @@ Video Game,Developer - Etienne Trudeau
 Video Game,Developer - Euphoria Games
 Video Game,Developer - Evil Tortilla Games Incorporated
 Video Game,Developer - Exbleative
+Video Game,Developer - EXE Create
+Video Game,Developer - EXOR Studios
 Video Game,Developer - Expansive Worlds
 Video Game,Developer - Experience Inc.
 Video Game,Developer - Experiment 101
 Video Game,Developer - Explosm
 Video Game,Developer - EzeN Labs
-Video Game,Developer - FDG Entertainment
-Video Game,Developer - FEED
-Video Game,Developer - FIVE-BN STUDIO
-Video Game,Developer - FM Studio
-Video Game,Developer - FMV Interactive
-Video Game,Developer - FUN Labs
-Video Game,Developer - FUZE Technologies
 Video Game,Developer - Fabraz
 Video Game,Developer - Facepunch Studios
 Video Game,Developer - Failbetter Games
@@ -2513,6 +2513,8 @@ Video Game,Developer - Fast Travel Games
 Video Game,Developer - FastGame
 Video Game,Developer - Fat Panda Games
 Video Game,Developer - Fatbot Games
+Video Game,Developer - FDG Entertainment
+Video Game,Developer - FEED
 Video Game,Developer - Felistella
 Video Game,Developer - Fellhuhn
 Video Game,Developer - Fellow Traveller
@@ -2526,6 +2528,7 @@ Video Game,Developer - Firesprite
 Video Game,Developer - First Watch Games
 Video Game,Developer - Fishlabs
 Video Game,Developer - Five Aces Publishing Ltd.
+Video Game,Developer - FIVE-BN STUDIO
 Video Game,Developer - Fizbin
 Video Game,Developer - Flaming Llama Games
 Video Game,Developer - Flashbulb
@@ -2539,6 +2542,8 @@ Video Game,Developer - Flyhigh Works
 Video Game,Developer - Flying Islands Team
 Video Game,Developer - Flying Wild Hog
 Video Game,Developer - Flynn's Arcade
+Video Game,Developer - FM Studio
+Video Game,Developer - FMV Interactive
 Video Game,Developer - Foam Punch
 Video Game,Developer - Focus Home Interactive
 Video Game,Developer - Foolish Mortals Games
@@ -2550,11 +2555,12 @@ Video Game,Developer - Fractal Projects
 Video Game,Developer - FrameLine Network
 Video Game,Developer - Francis Vace
 Video Game,Developer - Frany Games
-Video Game,Developer - FreakZone
 Video Game,Developer - Freaky Creations
-Video Game,Developer - FreeMind S.A
+Video Game,Developer - FreakZone
+Video Game,Developer - frecle APS
 Video Game,Developer - Freebird Games
 Video Game,Developer - Freedom Games
+Video Game,Developer - FreeMind S.A
 Video Game,Developer - French-Bread
 Video Game,Developer - Fresh Planet
 Video Game,Developer - Frima Studio
@@ -2563,8 +2569,8 @@ Video Game,Developer - From Software
 Video Game,Developer - Frontier Developments
 Video Game,Developer - Frosty Pop Games Inc
 Video Game,Developer - Fsix Games
-Video Game,Developer - FuRyu
 Video Game,Developer - Fummy
+Video Game,Developer - FUN Labs
 Video Game,Developer - Funbox Media
 Video Game,Developer - Funcom
 Video Game,Developer - Funktronic Labs
@@ -2573,13 +2579,9 @@ Video Game,Developer - Funky Punky Games
 Video Game,Developer - Funnel Entertainment
 Video Game,Developer - Funselektor Labs Inc.
 Video Game,Developer - FuriouSoftPhoenix
-Video Game,Developer - G-mode
+Video Game,Developer - FuRyu
+Video Game,Developer - FUZE Technologies
 Video Game,"Developer - GAGEX Co.,Ltd."
-Video Game,Developer - GAME NACIONAL
-Video Game,Developer - GAMEDIA
-Video Game,Developer - GGTECH Entertainment
-Video Game,Developer - GS2 Games
-Video Game,Developer - GS2 Games Inc.
 Video Game,Developer - Gagonfe
 Video Game,Developer - Gaijin Distribution
 Video Game,Developer - Galdra Studios
@@ -2589,13 +2591,16 @@ Video Game,Developer - Game Dynasty
 Video Game,Developer - Game Freak
 Video Game,Developer - Game Mavericks
 Video Game,Developer - Game Museum
+Video Game,Developer - GAME NACIONAL
+Video Game,Developer - gamebra.in
+Video Game,Developer - Gamebrew Studio
+Video Game,Developer - Gamecom Team
+Video Game,Developer - GAMEDIA
+Video Game,Developer - Gamella Studios
+Video Game,Developer - Gameloft
 Video Game,Developer - GameLoop
 Video Game,Developer - GameMill Entertainment
 Video Game,Developer - GameParadiso
-Video Game,Developer - Gamebrew Studio
-Video Game,Developer - Gamecom Team
-Video Game,Developer - Gamella Studios
-Video Game,Developer - Gameloft
 Video Game,Developer - Gametry
 Video Game,Developer - Gaming Minds Studios
 Video Game,Developer - Gamious
@@ -2610,6 +2615,8 @@ Video Game,Developer - General Interactive Co.
 Video Game,Developer - Gentlymad
 Video Game,Developer - Geography of Robots
 Video Game,Developer - GetAGame
+Video Game,Developer - gFaUmNe
+Video Game,Developer - GGTECH Entertainment
 Video Game,Developer - Ghislain Avrillon
 Video Game,Developer - Ghost Pattern
 Video Game,Developer - Ghost Ship Games
@@ -2629,6 +2636,7 @@ Video Game,Developer - Glasscannon Studio
 Video Game,Developer - Glee-Cheese Studio
 Video Game,Developer - Glimmer Studio
 Video Game,Developer - Glowfish Interactive
+Video Game,Developer - G-mode
 Video Game,Developer - Goblinz
 Video Game,Developer - Godbey Games LLC
 Video Game,Developer - Goloso Games
@@ -2646,11 +2654,14 @@ Video Game,Developer - Gray Page Studio
 Video Game,Developer - Green Sauce Games
 Video Game,Developer - Greg Lobanov
 Video Game,Developer - Grey Alien Games
-Video Game,Developer - GrimTalin
 Video Game,Developer - Grimorio of Games
+Video Game,Developer - GrimTalin
+Video Game,Developer - grin robot
 Video Game,Developer - Grinding Gear Games
 Video Game,Developer - Ground Shatter Ltd.
 Video Game,Developer - Grove Street Games
+Video Game,Developer - GS2 Games
+Video Game,Developer - GS2 Games Inc.
 Video Game,Developer - Guara Studios
 Video Game,Developer - Guerrilla
 Video Game,Developer - Gunfire Games
@@ -2658,11 +2669,11 @@ Video Game,Developer - GungHo
 Video Game,Developer - GuruGuru
 Video Game,Developer - Gusarapo Games
 Video Game,Developer - Gust
+Video Game,Developer - h.a.n.d. Inc.
 Video Game,Developer - H.T.Projects
+Video Game,Developer - Haemimont Games
 Video Game,Developer - HAKAMA
 Video Game,Developer - HAL Labs
-Video Game,Developer - HUBA Games
-Video Game,Developer - Haemimont Games
 Video Game,Developer - Half-Face Games
 Video Game,Developer - Hallowmend
 Video Game,Developer - Hammer and Ravens
@@ -2690,9 +2701,10 @@ Video Game,Developer - Hidden Trap
 Video Game,Developer - Hiding Spot
 Video Game,Developer - Higgs Games
 Video Game,Developer - High Little Moments SA
-Video Game,"Developer - Hit-Point Co., Ltd."
-Video Game,Developer - HitGames Studio
+Video Game,Developer - historia Inc
 Video Game,Developer - Hitcents
+Video Game,Developer - HitGames Studio
+Video Game,"Developer - Hit-Point Co., Ltd."
 Video Game,Developer - Hiwarp
 Video Game,Developer - Hodoo Bear
 Video Game,Developer - Hollow Ponds and Richard Hogg
@@ -2700,6 +2712,7 @@ Video Game,Developer - Hook Games
 Video Game,Developer - Hoplon Infotainment
 Video Game,Developer - House Of Pandas
 Video Game,Developer - Housemarque
+Video Game,Developer - HUBA Games
 Video Game,Developer - Huey Games
 Video Game,Developer - Humble Games
 Video Game,Developer - Humble Grove
@@ -2707,35 +2720,36 @@ Video Game,Developer - Humongous Entertainment
 Video Game,Developer - Hup Games
 Video Game,Developer - Hydra Games SA
 Video Game,Developer - Hyogo Onimushi
-Video Game,Developer - HypeTrain Digital
 Video Game,Developer - Hyperparadise
+Video Game,Developer - HypeTrain Digital
+Video Game,Developer - Iananimator
 Video Game,Developer - IBAR EZKERRAR IKASTOLA S. COOP.
 Video Game,Developer - IC Games
-Video Game,Developer - IGGYMOB
-Video Game,Developer - IGOAL
-Video Game,Developer - IIIFonic
-Video Game,"Developer - ILCA, Inc."
-Video Game,Developer - ININ Games
-Video Game,Developer - INTERMARUM
-Video Game,Developer - ISOMETRICORP Games
-Video Game,Developer - Iananimator
 Video Game,Developer - Ice-Pick Lodge
+Video Game,Developer - id Software
 Video Game,Developer - Idea Factory
 Video Game,Developer - Idoz
+Video Game,Developer - idoz & phops
+Video Game,Developer - IGGYMOB
 Video Game,Developer - Ignatios Productions
+Video Game,Developer - IGOAL
 Video Game,Developer - IguanaBee
+Video Game,Developer - IIIFonic
 Video Game,Developer - Ikon Games
+Video Game,"Developer - ILCA, Inc."
 Video Game,Developer - IllFonic
 Video Game,Developer - Illogika
 Video Game,Developer - Illusion Ray Studio
 Video Game,Developer - Image & Form
+Video Game,Developer - imaginarylab
 Video Game,Developer - ImaginationOverflow
 Video Game,Developer - Imagineer
+Video Game,Developer - iMel
 Video Game,Developer - Improx Games
-Video Game,Developer - InXile Entertainment
 Video Game,Developer - Independent Arts
 Video Game,Developer - Indie Remix Studios LLC
 Video Game,Developer - Indie Team
+Video Game,Developer - indienova
 Video Game,Developer - IndieRevo
 Video Game,Developer - Indigo Studios
 Video Game,Developer - Infamous Quests
@@ -2743,6 +2757,7 @@ Video Game,Developer - Infinigon Games
 Video Game,Developer - Infinite State Games
 Video Game,"Developer - Infomunca Recruitment, Texelworks"
 Video Game,Developer - Infuse Studio
+Video Game,Developer - ININ Games
 Video Game,Developer - Inkle
 Video Game,Developer - Inlogic
 Video Game,Developer - Inlogic Software
@@ -2752,15 +2767,19 @@ Video Game,Developer - Insomniac Games
 Video Game,Developer - InstaMarketingAndGame
 Video Game,Developer - Interabang Entertainment
 Video Game,Developer - Interactive Dreams Limited
+Video Game,Developer - INTERMARUM
 Video Game,Developer - Intetic
 Video Game,Developer - Inti Creates
 Video Game,Developer - Invictus Games
 Video Game,Developer - Invisible Walls ApS
+Video Game,Developer - InXile Entertainment
 Video Game,Developer - Io Interactive
 Video Game,Developer - Iron Galaxy Studios
 Video Game,Developer - Isaias Game Dev
+Video Game,Developer - ISOMETRICORP Games
+Video Game,Developer - isTom Games
+Video Game,Developer - it Matters Games
 Video Game,Developer - J600
-Video Game,Developer - JM Neto Game Dev
 Video Game,"Developer - Jackbox Games, Inc."
 Video Game,Developer - Jacob Jansen Bredesen
 Video Game,Developer - JanduSoft
@@ -2769,6 +2788,7 @@ Video Game,Developer - Jankenteam
 Video Game,Developer - Jesse Makkonen
 Video Game,Developer - JetDogs Studios
 Video Game,Developer - Jinthree Studio
+Video Game,Developer - JM Neto Game Dev
 Video Game,Developer - Joe Richardson
 Video Game,Developer - John Broyhill
 Video Game,Developer - Johnny Ostad
@@ -2789,18 +2809,14 @@ Video Game,Developer - Just Add Water
 Video Game,Developer - Just For Games
 Video Game,Developer - Jutsu Games
 Video Game,Developer - K148 Game Studio
-Video Game,Developer - KANAWO
-Video Game,Developer - KIMIDORI SOFT
-Video Game,Developer - KING Art
-Video Game,Developer - KLab Global Pte. Ltd.
-Video Game,Developer - KR Games
-Video Game,Developer - KT Racing
 Video Game,Developer - Kadokawa
+Video Game,Developer - kaeru-san games
 Video Game,Developer - Kaiko
 Video Game,Developer - Kairosoft Co. Ltd
 Video Game,Developer - Kaizen Game Works
 Video Game,Developer - Kaleidoscube
 Video Game,Developer - Kalypso
+Video Game,Developer - KANAWO
 Video Game,Developer - Kaneda Games
 Video Game,Developer - Karl Fedrikkson
 Video Game,Developer - Kayabros
@@ -2811,12 +2827,16 @@ Video Game,Developer - Kelsam
 Video Game,Developer - Kemco
 Video Game,Developer - Kenny Sun
 Video Game,Developer - Khud0
+Video Game,Developer - kido
 Video Game,Developer - Kids Room
 Video Game,Developer - Kikai Digital
+Video Game,Developer - KIMIDORI SOFT
 Video Game,Developer - Kimulator's Films inc.
 Video Game,Developer - Kind Cat Games
+Video Game,Developer - KING Art
 Video Game,Developer - Kistler Benjamin
 Video Game,Developer - Kitfox Games
+Video Game,Developer - KLab Global Pte. Ltd.
 Video Game,Developer - Klabater
 Video Game,Developer - Klassefilm
 Video Game,Developer - Klei Entertainment
@@ -2832,22 +2852,20 @@ Video Game,Developer - Konami
 Video Game,Developer - Konfa Games
 Video Game,Developer - Kong Studios
 Video Game,Developer - Korion Interactive
+Video Game,Developer - KR Games
 Video Game,Developer - Kraken Unleashed
 Video Game,Developer - Krome Studios
 Video Game,Developer - KrzysztofPodsada
+Video Game,Developer - KrzysztofPodsada
+Video Game,Developer - KT Racing
 Video Game,Developer - Kuato Studios
 Video Game,Developer - Kyle Thompson
 Video Game,Developer - Kylotton
 Video Game,Developer - Kyuushoku Touban
-Video Game,Developer - LABS Works
-Video Game,Developer - LEAP Game Studios
-Video Game,Developer - LKA
-Video Game,Developer - LKMAD
-Video Game,Developer - LLC KURENTER
-Video Game,Developer - LNDFRR
 Video Game,Developer - La Belle Games
 Video Game,Developer - Lab42
 Video Game,Developer - Labrador Studios
+Video Game,Developer - LABS Works
 Video Game,Developer - Lancarse
 Video Game,Developer - LandFall Games
 Video Game,Developer - Lasse Zacho Malver
@@ -2856,11 +2874,13 @@ Video Game,Developer - Last Man Gaming
 Video Game,Developer - Laughing Machines
 Video Game,Developer - LazyEti
 Video Game,Developer - Lazyrays Studios
+Video Game,Developer - LEAP Game Studios
 Video Game,Developer - LearnDistrict Inc.
 Video Game,Developer - Lienzo
 Video Game,Developer - Light Ape Games
 Video Game,Developer - Light Brick
 Video Game,Developer - Lightning Games
+Video Game,Developer - lightUp
 Video Game,Developer - Lightwood Games
 Video Game,Developer - Limestone Games
 Video Game,Developer - Limit Break
@@ -2875,7 +2895,11 @@ Video Game,Developer - Little Field Studio
 Video Game,Developer - Little Ricebowl
 Video Game,Developer - Live Wire
 Video Game,Developer - Live Wire Films
+Video Game,Developer - LKA
+Video Game,Developer - LKMAD
 Video Game,Developer - Llamasoft
+Video Game,Developer - LLC KURENTER
+Video Game,Developer - LNDFRR
 Video Game,Developer - Lockpickle
 Video Game,Developer - Log Games
 Video Game,Developer - Loneminded
@@ -2894,10 +2918,6 @@ Video Game,Developer - M Theory
 Video Game,Developer - M2
 Video Game,Developer - M2H
 Video Game,Developer - M9 Packaging Ltd
-Video Game,Developer - MD GAMES
-Video Game,Developer - MEGAXUS
-Video Game,Developer - MLB AM
-Video Game,Developer - MM//Productions
 Video Game,Developer - MachineGames
 Video Game,Developer - Mad Jackal Games
 Video Game,Developer - Mad Mimic
@@ -2906,7 +2926,9 @@ Video Game,Developer - Mads And Friends
 Video Game,Developer - Mages.
 Video Game,Developer - Magic Pockets
 Video Game,Developer - Magic Shot Games
+Video Game,Developer - magicdweedoo
 Video Game,Developer - Magicfish Studio
+Video Game,Developer - maJAJa
 Video Game,Developer - Male Doll
 Video Game,Developer - ManaVoid Entertainment Inc.
 Video Game,Developer - Mane6 Inc
@@ -2932,11 +2954,13 @@ Video Game,Developer - Maxis
 Video Game,Developer - Mayo Games
 Video Game,Developer - Maze Theory
 Video Game,Developer - McPeppergames
+Video Game,Developer - MD GAMES
 Video Game,Developer - Mean Grip Studio
 Video Game,Developer - Medallion
 Video Game,Developer - Mediascape
-Video Game,Developer - MegaPixel Studio
 Video Game,Developer - Megame
+Video Game,Developer - MegaPixel Studio
+Video Game,Developer - MEGAXUS
 Video Game,Developer - Mens Sana Interactive
 Video Game,Developer - Mental Drink
 Video Game,Developer - Mercury Steam
@@ -2956,6 +2980,7 @@ Video Game,Developer - Migami Games
 Video Game,Developer - Might And Delight
 Video Game,Developer - Mighty Kingdom
 Video Game,Developer - Mighty Yell
+Video Game,Developer - miHoYo
 Video Game,Developer - Mike And Jason
 Video Game,Developer - Mike Palotas
 Video Game,Developer - Mike Toth trading as Toth Games
@@ -2968,6 +2993,8 @@ Video Game,Developer - Misc Games
 Video Game,Developer - Mischief
 Video Game,Developer - Mistfly Games
 Video Game,Developer - Mitsuki Games
+Video Game,Developer - MLB AM
+Video Game,Developer - MM//Productions
 Video Game,"Developer - Mobius Digital, LLC"
 Video Game,Developer - Modern Storyteller
 Video Game,Developer - Modus Games
@@ -3000,24 +3027,24 @@ Video Game,Developer - MrCiastku
 Video Game,Developer - MuHa Games
 Video Game,Developer - Muse Games
 Video Game,Developer - Myriad Games Studio
-Video Game,Developer - N-Fusion Interactive
-Video Game,Developer - NAISU
-Video Game,Developer - NAMI TENTOU MUSHI
-Video Game,Developer - NAPE GAMES
-Video Game,Developer - NExT Studios
-Video Game,Developer - NNG LAB
-Video Game,Developer - NYX Digital
 Video Game,Developer - Nacon
+Video Game,Developer - NAISU
 Video Game,Developer - Nakana.io
 Video Game,Developer - Nameless XIII
+Video Game,Developer - namethemachine
+Video Game,Developer - NAMI TENTOU MUSHI
 Video Game,Developer - Namra Games
 Video Game,Developer - Naoka Games
+Video Game,Developer - NAPE GAMES
 Video Game,Developer - Naps Team
+Video Game,Developer - naptime.games
 Video Game,Developer - Natsume
 Video Game,Developer - Naughty Dog
 Video Game,Developer - Navegante Entertainment
 Video Game,Developer - Nd Cube
+Video Game,Developer - nDreams
 Video Game,Developer - Necrosoft Games
+Video Game,Developer - neko.works
 Video Game,Developer - Nellyvision
 Video Game,Developer - Nementic Games
 Video Game,Developer - Neon Doctrine
@@ -3033,6 +3060,8 @@ Video Game,Developer - New Blood Interactive
 Video Game,Developer - New Star Games
 Video Game,Developer - New World Interactive
 Video Game,Developer - Next Stage
+Video Game,Developer - NExT Studios
+Video Game,Developer - N-Fusion Interactive
 Video Game,Developer - Nibb Games
 Video Game,Developer - Nicalis
 Video Game,Developer - Niceplay Games
@@ -3048,6 +3077,7 @@ Video Game,Developer - Ninja Rabbit Studios
 Video Game,Developer - Nintendo
 Video Game,Developer - Nippon Columbia
 Video Game,Developer - Nippon Ichi Software
+Video Game,Developer - NNG LAB
 Video Game,Developer - No Brakes Games
 Video Game,Developer - No Gravity Games
 Video Game,Developer - No Matter Studios
@@ -3061,6 +3091,7 @@ Video Game,Developer - Norsfell
 Video Game,Developer - Northplay ApS
 Video Game,Developer - Noskov Sergey
 Video Game,Developer - Not a sailor studios
+Video Game,Developer - npckc
 Video Game,Developer - Nuk Games
 Video Game,Developer - Nuke Nine
 Video Game,Developer - Nul2studio
@@ -3068,15 +3099,11 @@ Video Game,Developer - Nullpointer Games
 Video Game,Developer - Numskull Games
 Video Game,Developer - NunoVicenteBarreto
 Video Game,Developer - Nupixo Games
+Video Game,Developer - nWay
+Video Game,Developer - NYX Digital
 Video Game,Developer - Nyx Digital Ltd
 Video Game,Developer - O.Stogden
 Video Game,Developer - O.T.K.Games
-Video Game,Developer - ON3D
-Video Game,Developer - ONE MORE LEVEL
-Video Game,Developer - OOO Valant
-Video Game,Developer - OPTILLUSION
-Video Game,Developer - OSome Studio
-Video Game,"Developer - OTTERIFIC GAMES, LLC"
 Video Game,Developer - Obscure Tales
 Video Game,Developer - Ocean Media
 Video Game,Developer - Ocellus Studio
@@ -3094,40 +3121,37 @@ Video Game,Developer - Olivier De Rop
 Video Game,Developer - Omega Force
 Video Game,Developer - Omni Systems
 Video Game,Developer - On Skull Games
-Video Game,Developer - OnFire Games
-Video Game,Developer - OnSkull Games
+Video Game,Developer - ON3D
 Video Game,Developer - One Earth Rising
 Video Game,Developer - One Gruel Studio
 Video Game,Developer - One Hand Free Studios
+Video Game,Developer - ONE MORE LEVEL
+Video Game,Developer - OnFire Games
 Video Game,Developer - Onion Games
 Video Game,Developer - Only By Midnight
+Video Game,Developer - OnSkull Games
 Video Game,Developer - Onteca
+Video Game,Developer - OOO Valant
+Video Game,Developer - OPTILLUSION
+Video Game,Developer - orange inc.
 Video Game,Developer - OrangePixel
 Video Game,Developer - Orbit Studio
+Video Game,Developer - origamihero games
 Video Game,Developer - Original Fire Games
 Video Game,Developer - Orube Game Studio
 Video Game,Developer - Osando Studio
 Video Game,Developer - Oskar Henrique
 Video Game,Developer - Oskar Stalberg
+Video Game,Developer - OSome Studio
 Video Game,Developer - Other Ocean Interactive
 Video Game,Developer - Otomate
+Video Game,"Developer - OTTERIFIC GAMES, LLC"
 Video Game,Developer - Out of the Blue Games S.L.
 Video Game,Developer - Outright Games
 Video Game,Developer - Over Drive
-Video Game,Developer - OverPowered Team
 Video Game,Developer - Overhype Studios
+Video Game,Developer - OverPowered Team
 Video Game,Developer - P2 Entertainment
-Video Game,Developer - PARK ESM
-Video Game,Developer - PERZIUR
-Video Game,Developer - PETOONS STUDIO SL
-Video Game,Developer - PHL Collective
-Video Game,Developer - PLiCy
-Video Game,Developer - PNNINE
-Video Game,"Developer - POCKET PAIR, Inc."
-Video Game,Developer - PQube
-Video Game,Developer - PSGames
-Video Game,Developer - PSR Outdoors
-Video Game,Developer - PXLink
 Video Game,Developer - Paleo Games LLC
 Video Game,Developer - Palm Beach Studios
 Video Game,Developer - Pancake Games
@@ -3140,6 +3164,7 @@ Video Game,Developer - Paradox Development Studio
 Video Game,Developer - Paradox Interactive
 Video Game,Developer - Parallel Circles
 Video Game,Developer - Paralune LLC
+Video Game,Developer - PARK ESM
 Video Game,Developer - Path Games
 Video Game,Developer - Pathea Games
 Video Game,Developer - Peaksel
@@ -3147,10 +3172,13 @@ Video Game,Developer - Penguin Pop Games LLC
 Video Game,Developer - People Can Fly
 Video Game,Developer - Perp Games
 Video Game,Developer - Person Of Interests
+Video Game,Developer - PERZIUR
 Video Game,Developer - Petit Fabrik
 Video Game,Developer - Petite Games
+Video Game,Developer - PETOONS STUDIO SL
 Video Game,Developer - Petrodiy Games
 Video Game,Developer - Phigames
+Video Game,Developer - PHL Collective
 Video Game,Developer - Phobia Game Studio
 Video Game,Developer - Phoenix Labs
 Video Game,Developer - Phoenix Reborn Games
@@ -3158,8 +3186,8 @@ Video Game,Developer - Picorinne Soft
 Video Game,Developer - Piece of Cake Studios
 Video Game,Developer - Pieslice Productions
 Video Game,Developer - Pigeon Dev
-Video Game,Developer - PikPok
 Video Game,Developer - Piko Interactive LLC
+Video Game,Developer - PikPok
 Video Game,Developer - Pine Scented Software
 Video Game,Developer - Pinel Games
 Video Game,Developer - Piotr Rochala
@@ -3174,6 +3202,7 @@ Video Game,Developer - Pixel Heart Studios
 Video Game,Developer - Pixel Lantern
 Video Game,Developer - Pixel Maniacs
 Video Game,Developer - Pixel Noire Games
+Video Game,Developer - pixel.games
 Video Game,Developer - Pixeland Games
 Video Game,Developer - Pixelheart
 Video Game,Developer - Pixelian Studio
@@ -3183,16 +3212,20 @@ Video Game,Developer - Pixpil
 Video Game,Developer - Planet Entertainment
 Video Game,Developer - Platine Dispositif
 Video Game,Developer - PlatinumGames
-Video Game,Developer - PlayTogether Studio
-Video Game,Developer - PlayWay
 Video Game,Developer - Playbae
 Video Game,Developer - Playground Games
 Video Game,Developer - Playism
 Video Game,Developer - Playstige Interactive
+Video Game,Developer - PlayTogether Studio
+Video Game,Developer - PlayWay
 Video Game,Developer - Playwing
+Video Game,Developer - PLiCy
 Video Game,Developer - Plitka Games
 Video Game,Developer - Plug In Digital
+Video Game,Developer - PNNINE
+Video Game,"Developer - POCKET PAIR, Inc."
 Video Game,Developer - Pocket Trap
+Video Game,Developer - pocket.watch
 Video Game,Developer - Polyarc
 Video Game,Developer - Polyblock Studio
 Video Game,Developer - Polygon Art Studios
@@ -3208,31 +3241,34 @@ Video Game,Developer - Portaplay
 Video Game,Developer - Postmeta Games
 Video Game,Developer - Postmeta Games Limited
 Video Game,Developer - PowerSlash Studios
+Video Game,Developer - PQube
 Video Game,Developer - Pretty Fly Games
 Video Game,Developer - Prideful Sloth
 Video Game,Developer - Prime Bit Games SA
 Video Game,Developer - Prison Games
 Video Game,Developer - Project Moreum
+Video Game,Developer - Project Moreum
 Video Game,Developer - ProjectMoon
 Video Game,Developer - Protocol Games
 Video Game,Developer - Prototype
 Video Game,Developer - Provincia Studio
+Video Game,Developer - PSGames
+Video Game,Developer - PSR Outdoors
 Video Game,Developer - Psytec Games Ltd
 Video Game,Developer - Pugware
+Video Game,Developer - puppet combo
 Video Game,Developer - Purple Tree
 Video Game,Developer - Purple Tree Studio
+Video Game,Developer - PXLink
 Video Game,Developer - Pyramid Games
 Video Game,Developer - Q-Games
 Video Game,Developer - QLoc
-Video Game,Developer - QUByte Interactive
 Video Game,Developer - Quantum Peaks
 Video Game,Developer - Quasar Dynamics
 Video Game,Developer - Qubic Games
 Video Game,Developer - QubicGames
+Video Game,Developer - QUByte Interactive
 Video Game,Developer - Qute
-Video Game,"Developer - ROTU Entertainment & Media, Ltd."
-Video Game,Developer - RS34
-Video Game,Developer - RUSLAN SALIKOV
 Video Game,Developer - Raccoons Studio
 Video Game,Developer - RaceWard Studio
 Video Game,Developer - Racjin
@@ -3255,9 +3291,11 @@ Video Game,Developer - Ravegan
 Video Game,Developer - Ravenscourt
 Video Game,Developer - Ravn Studio
 Video Game,Developer - Raw Fury
+Video Game,Developer - rBorn Games
+Video Game,Developer - realities
 Video Game,Developer - Realmforge Studios
-Video Game,Developer - RebelTwins
 Video Game,Developer - Rebellion
+Video Game,Developer - RebelTwins
 Video Game,Developer - Recreate and Mix Games
 Video Game,Developer - Red Art Games
 Video Game,Developer - Red Beard Games
@@ -3267,8 +3305,8 @@ Video Game,Developer - Red Fables
 Video Game,Developer - Red Koi Box
 Video Game,Developer - Red Martyr Entertainment
 Video Game,Developer - Red Owl Games
-Video Game,Developer - RedDeerGames
 Video Game,Developer - Redblack Spade
+Video Game,Developer - RedDeerGames
 Video Game,Developer - Redlock Studio
 Video Game,Developer - Refold
 Video Game,Developer - Regista
@@ -3300,55 +3338,50 @@ Video Game,Developer - Robi Studios
 Video Game,Developer - Robot Entertainment
 Video Game,Developer - Robot Invader
 Video Game,Developer - Rock Square Thunder
-Video Game,Developer - RockGame
 Video Game,Developer - Rocket ADrift
 Video Game,Developer - Rocket Panda Games
 Video Game,Developer - Rocket Vulture
+Video Game,Developer - RockGame
 Video Game,Developer - Rockstar Games
 Video Game,Developer - Rockstar North
 Video Game,Developer - Rogue Games
+Video Game,Developer - roll7
 Video Game,Developer - Romero Games Ltd.
 Video Game,Developer - Ronimo Games
 Video Game,Developer - Room710Games
 Video Game,Developer - Roomah Gaming
 Video Game,Developer - Rose Engine
+Video Game,Developer - roseVeRte
 Video Game,Developer - Roshan Nowshad
+Video Game,"Developer - ROTU Entertainment & Media, Ltd."
 Video Game,Developer - Rough Cyber Humans
 Video Game,Developer - Round2Games
-Video Game,Developer - RuWaMo Games
+Video Game,Developer - RS34
 Video Game,Developer - RubberBandGames
 Video Game,Developer - Ruben Alcaniz
 Video Game,Developer - Run-Down Games
 Video Game,Developer - RuneHeads
 Video Game,Developer - Runner Duck
+Video Game,Developer - RUSLAN SALIKOV
+Video Game,Developer - RuWaMo Games
 Video Game,Developer - Ryu ga Gotoku Studios
-Video Game,Developer - SAT-BOX
-Video Game,Developer - SC Ovilex Soft
-Video Game,Developer - SCE Santa Monica
-Video Game,Developer - SEEP
-Video Game,Developer - SFB Games
-Video Game,Developer - SFS Studios
-Video Game,Developer - SMOBILE INC
-Video Game,Developer - SNK
-Video Game,Developer - SNK Corporation
-Video Game,Developer - SOFTSTAR Entertainment
-Video Game,Developer - SOMI
-Video Game,Developer - SOUETTE STUDIO SPC
-Video Game,Developer - STP WORKS
-Video Game,Developer - SUPERHOT
 Video Game,Developer - Sabec Limited
 Video Game,Developer - Saber Interactive
 Video Game,Developer - Saber Minsk
 Video Game,Developer - Sad Panda Studios
 Video Game,Developer - SadSquare Studio
 Video Game,Developer - SaintHeiser
+Video Game,Developer - sakevisual
 Video Game,Developer - Salmon Snake
 Video Game,Developer - Samustai
 Video Game,Developer - Santa Ragione
 Video Game,Developer - Sanuk Games
 Video Game,Developer - Sasuke Shimoyama
+Video Game,Developer - SAT-BOX
 Video Game,Developer - Satur Entertainment
 Video Game,Developer - Sbug Games
+Video Game,Developer - SC Ovilex Soft
+Video Game,Developer - SCE Santa Monica
 Video Game,Developer - Schell Games
 Video Game,Developer - Scott Games
 Video Game,Developer - Scott slucher
@@ -3357,6 +3390,7 @@ Video Game,Developer - Scythe Dev Team
 Video Game,Developer - Sea Monster Media
 Video Game,Developer - Secret Item Games
 Video Game,Developer - Seed by Seed
+Video Game,Developer - SEEP
 Video Game,Developer - Sega
 Video Game,Developer - Sega Europe
 Video Game,Developer - SegaSoft
@@ -3367,6 +3401,8 @@ Video Game,Developer - Sergey Noskov
 Video Game,Developer - Serious Brothers
 Video Game,Developer - Sever
 Video Game,Developer - Sewer Cat
+Video Game,Developer - SFB Games
+Video Game,Developer - SFS Studios
 Video Game,Developer - Shade
 Video Game,Developer - Shadebob Games
 Video Game,Developer - Shed-Works
@@ -3401,14 +3437,18 @@ Video Game,Developer - Smarto Club
 Video Game,Developer - Smashbyte Games
 Video Game,Developer - SmileBoom
 Video Game,Developer - Smilegate
+Video Game,Developer - SMOBILE INC
 Video Game,Developer - Smokingbear Studio
 Video Game,Developer - Snapshot Games Inc.
 Video Game,Developer - SneakyBox
+Video Game,Developer - SNK
+Video Game,Developer - SNK Corporation
 Video Game,Developer - Snow Day Software
 Video Game,Developer - So Romantic
 Video Game,Developer - SockMonkey Studios
 Video Game,Developer - Soedesco
 Video Game,Developer - Soft Source Pte Ltd
+Video Game,Developer - SOFTSTAR Entertainment
 Video Game,"Developer - Softstar Technology (Beijing) Co.,Ltd"
 Video Game,Developer - Softstar Technology(beijing) Co Ltd
 Video Game,Developer - Solaris Mobile
@@ -3416,6 +3456,7 @@ Video Game,Developer - Somepx
 Video Game,Developer - Somequest Sp. z o. o.
 Video Game,Developer - Something We Made
 Video Game,Developer - Sometimes You
+Video Game,Developer - SOMI
 Video Game,Developer - Somnium Games d.o.o.
 Video Game,Developer - Sonic Powered
 Video Game,Developer - Sonnori
@@ -3423,6 +3464,7 @@ Video Game,Developer - Sonotrigger
 Video Game,Developer - Sony Interactive Entertainment
 Video Game,Developer - Sonzai Games
 Video Game,Developer - Sos Sosowski
+Video Game,Developer - SOUETTE STUDIO SPC
 Video Game,Developer - Source Byte Z.O.O
 Video Game,Developer - South East Games
 Video Game,Developer - SouthPAW Games
@@ -3452,11 +3494,13 @@ Video Game,Developer - Stegosoft Games
 Video Game,Developer - Steve Gal
 Video Game,Developer - Steve O Gorman
 Video Game,Developer - Sticky RICE Games
+Video Game,Developer - stillalive studios
 Video Game,Developer - Stone Lantern Games
 Video Game,Developer - Stonebot Studio
 Video Game,Developer - Stonewheat & Sons
 Video Game,Developer - Stormling Studios
 Video Game,Developer - Storybird
+Video Game,Developer - STP WORKS
 Video Game,Developer - Strange Games Studios
 Video Game,Developer - Strange Scaffold
 Video Game,Developer - Stray Fawn Studio
@@ -3486,10 +3530,11 @@ Video Game,Developer - Sunwolf Entertainment
 Video Game,Developer - Super Awesome Hyper Dimensional Mega Team
 Video Game,Developer - Super PowerUp Games
 Video Game,Developer - Super8BitRafa
-Video Game,Developer - SuperPowerUpGames
 Video Game,Developer - Superbrothers
 Video Game,Developer - Supergiant Games
+Video Game,Developer - SUPERHOT
 Video Game,Developer - Supermassive Games
+Video Game,Developer - SuperPowerUpGames
 Video Game,Developer - Suroka Games
 Video Game,Developer - Survios
 Video Game,Developer - Suzaku
@@ -3500,24 +3545,13 @@ Video Game,Developer - Swordswipes
 Video Game,Developer - Synthetic Domain
 Video Game,Developer - System Era Softworks
 Video Game,Developer - Systemic Reaction
-Video Game,Developer - T-Bull
-Video Game,"Developer - TALESSHOP Co., Ltd."
-Video Game,Developer - TERNOX
-Video Game,Developer - TG999
-Video Game,Developer - THOMAS CLAUS UND FRANK MENZEL
-Video Game,Developer - THQ Nordic
-Video Game,Developer - TIGAMES
-Video Game,Developer - TOYBOX
-Video Game,Developer - TREVA Entertainment
-Video Game,Developer - TROOOZE
-Video Game,Developer - TT Games
-Video Game,Developer - TYPE EH STUDIOS
 Video Game,Developer - Table Flip Games
 Video Game,Developer - Tahoe Games
 Video Game,Developer - Taito Corporation
 Video Game,Developer - Takahiro Miyazawa
 Video Game,Developer - Take-Two Interactive
 Video Game,Developer - Takorama
+Video Game,"Developer - TALESSHOP Co., Ltd."
 Video Game,Developer - Tamsoft
 Video Game,Developer - Tango Gameworks
 Video Game,Developer - Tanuki Creative Studios
@@ -3528,6 +3562,7 @@ Video Game,Developer - Tatamibeya
 Video Game,Developer - Tate Multimedia
 Video Game,Developer - Tavrox Games
 Video Game,Developer - Tayanna Studios
+Video Game,Developer - T-Bull
 Video Game,Developer - Tea Monster Games
 Video Game,Developer - Team Chicory
 Video Game,Developer - Team Hindsight
@@ -3544,19 +3579,21 @@ Video Game,Developer - Techland
 Video Game,Developer - Tenbirds
 Video Game,Developer - Tendo Core
 Video Game,Developer - Tentacle Soft
+Video Game,Developer - TERNOX
 Video Game,Developer - Tero Lunkka
 Video Game,Developer - Terrible Posture Games
 Video Game,Developer - Terrible Toybox
 Video Game,Developer - Tessara
 Video Game,Developer - Teyon
+Video Game,Developer - TG999
 Video Game,Developer - Thalamus Digital Publishing Ltd.
 Video Game,Developer - Thar Games
 Video Game,Developer - That Game Company
 Video Game,Developer - The Bitfather
 Video Game,Developer - The Farm 51
 Video Game,Developer - The Game Band
-Video Game,Developer - The MIX Games
 Video Game,Developer - The Media Indie Exchange
+Video Game,Developer - The MIX Games
 Video Game,Developer - The Nuttery Entertainment
 Video Game,Developer - The Outer Zone
 Video Game,Developer - The Outsiders
@@ -3566,21 +3603,25 @@ Video Game,Developer - The Toolshed LLC
 Video Game,Developer - The Voices Games
 Video Game,Developer - The Wandering Band LLC
 Video Game,Developer - TheDollarGameStore
-Video Game,Developer - ThiGames
 Video Game,Developer - Thiago Oliveira
+Video Game,Developer - ThiGames
 Video Game,Developer - ThinkingStars
 Video Game,Developer - Third Spirit
 Video Game,Developer - Third World Productions
+Video Game,Developer - THOMAS CLAUS UND FRANK MENZEL
 Video Game,Developer - Thomas Moon Kang
 Video Game,Developer - Thomas Young
 Video Game,Developer - Those Awesome Guys
+Video Game,Developer - THQ Nordic
 Video Game,Developer - Thrillhouse Games
+Video Game,Developer - TIGAMES
 Video Game,Developer - Tikipod Limited
 Video Game,Developer - Tin Man Games
 Video Game,Developer - Tinimations
 Video Game,Developer - Tinymoon
 Video Game,Developer - Tipping Goat LLC
 Video Game,Developer - ToastieLabs
+Video Game,Developer - tobyfox
 Video Game,Developer - Tom Happ
 Video Game,Developer - Tomas Sala
 Video Game,Developer - Tomo Camp
@@ -3589,14 +3630,16 @@ Video Game,Developer - Tony DE LUCIA
 Video Game,Developer - Top Hat Studios Inc
 Video Game,Developer - Toppluva AB
 Video Game,Developer - Torn Banner Studios
+Video Game,Developer - TOYBOX
 Video Game,Developer - Toys for Bob
 Video Game,Developer - Tozai Games
 Video Game,Developer - Trainwreck Studios
 Video Game,Developer - Trebuchet
 Video Game,Developer - TreeFall Studios L.L.C.
-Video Game,Developer - TriBit Studio
+Video Game,Developer - TREVA Entertainment
 Video Game,Developer - TribalWire Inc.
 Video Game,Developer - Tribe Tea
+Video Game,Developer - TriBit Studio
 Video Game,Developer - Tricore Inc.
 Video Game,Developer - Trigger the Monster
 Video Game,Developer - Triple Scale Games
@@ -3604,7 +3647,9 @@ Video Game,Developer - Triple Topping Games
 Video Game,Developer - Triple-I Games
 Video Game,Developer - Tripwire Interactive
 Video Game,Developer - Tron Galaxy
+Video Game,Developer - TROOOZE
 Video Game,Developer - Trosa
+Video Game,Developer - TT Games
 Video Game,Developer - TuanisApps
 Video Game,Developer - Tunnel Vision Studio
 Video Game,Developer - Tuque Games
@@ -3615,13 +3660,8 @@ Video Game,Developer - Twilight Frontier
 Video Game,Developer - Twin Hearts
 Video Game,Developer - Twin-Stick
 Video Game,Developer - Two Dog Games
+Video Game,Developer - TYPE EH STUDIOS
 Video Game,Developer - Type Moon
-Video Game,Developer - U-Play Online
-Video Game,Developer - UFO Interactive
-Video Game,Developer - UIG Entertainment
-Video Game,Developer - UNIVERSITY OF ABERTAY DUNDEE
-Video Game,Developer - USANIK STD
-Video Game,Developer - USC Games
 Video Game,Developer - Ubisoft
 Video Game,Developer - Ubisoft Bordeaux
 Video Game,Developer - Ubisoft Chengdu
@@ -3631,6 +3671,8 @@ Video Game,Developer - Ubisoft Quebec
 Video Game,Developer - Ubisoft Singapore
 Video Game,Developer - Ubisoft Sofia
 Video Game,Developer - Ubisoft Toronto
+Video Game,Developer - UFO Interactive
+Video Game,Developer - UIG Entertainment
 Video Game,Developer - Ullucus Heaven Inc
 Video Game,Developer - Ultimate Games
 Video Game,Developer - Unbalance
@@ -3640,27 +3682,31 @@ Video Game,Developer - Unfinished Pixel
 Video Game,Developer - Unfold Games
 Video Game,Developer - United Games Entertainment GmbH
 Video Game,Developer - United Label
+Video Game,Developer - UNIVERSITY OF ABERTAY DUNDEE
 Video Game,Developer - Unknown Worlds Entertainment
 Video Game,Developer - Untold Tales
+Video Game,Developer - U-Play Online
 Video Game,Developer - Uppercut Games Pty Ltd
 Video Game,Developer - Upstairs Digital
 Video Game,Developer - Urnique Studio
+Video Game,Developer - USANIK STD
+Video Game,Developer - USC Games
+Video Game,Developer - ustwo
 Video Game,Developer - Utopian World Of Sandwiches
-Video Game,Developer - VDimension
-Video Game,Developer - VEWO Interactive Inc.
-Video Game,Developer - VICO Game Studio
-Video Game,Developer - VOXEL LABS S.L.
 Video Game,"Developer - Vague Scenario, LLC"
 Video Game,Developer - Vakman
 Video Game,Developer - Valiant Game Studio AB
 Video Game,Developer - Variable State
+Video Game,Developer - VDimension
 Video Game,Developer - Vector Unit
 Video Game,Developer - Vectorpark Inc
 Video Game,Developer - Velan Studios
 Video Game,Developer - VerenigdeProducties
 Video Game,Developer - Vertigo Games
 Video Game,Developer - Vethergen
+Video Game,Developer - VEWO Interactive Inc.
 Video Game,Developer - Vicarious Visions
+Video Game,Developer - VICO Game Studio
 Video Game,Developer - Vidas Games
 Video Game,Developer - Vijuda
 Video Game,Developer - Viktor Yurchuk
@@ -3682,12 +3728,9 @@ Video Game,Developer - Volframe
 Video Game,Developer - Volition Inc.
 Video Game,Developer - Volkov Konstantin Sergeevich
 Video Game,Developer - Voltage
+Video Game,Developer - VOXEL LABS S.L.
 Video Game,Developer - Voxler
 Video Game,Developer - Vridge
-Video Game,Developer - WERDERA SRL
-Video Game,Developer - WISTONE ENTERTAINMENT
-Video Game,Developer - WOWWOW Technology
-Video Game,Developer - WSS Playground
 Video Game,Developer - Waku Waku Games
 Video Game,Developer - Walaber
 Video Game,Developer - Wales Interactive
@@ -3702,6 +3745,7 @@ Video Game,Developer - WayForward
 Video Game,Developer - We Create Stuff
 Video Game,Developer - Webnetic s. r. o.
 Video Game,Developer - Weird Beluga
+Video Game,Developer - WERDERA SRL
 Video Game,Developer - Westone Bit Entertainment
 Video Game,Developer - WhaleFood Games
 Video Game,Developer - WhileOne Productions
@@ -3723,6 +3767,7 @@ Video Game,Developer - Windstone Games
 Video Game,Developer - Winking Entertainment
 Video Game,Developer - Winter Works
 Video Game,Developer - Wired Dreams Studio
+Video Game,Developer - WISTONE ENTERTAINMENT
 Video Game,Developer - Witch Beam
 Video Game,Developer - Wizard Games
 Video Game,Developer - Wobbly Tooth Ltd
@@ -3734,19 +3779,22 @@ Video Game,Developer - Wonderful Lasers
 Video Game,Developer - Wondernaut Studio
 Video Game,Developer - WorldWideSoftware
 Video Game,Developer - Wormwood Studios
+Video Game,Developer - WOWWOW Technology
+Video Game,Developer - WSS Playground
 Video Game,Developer - Wube Software Ltd
-Video Game,Developer - XCOGAMES LLC
 Video Game,Developer - Xaloc Studios
 Video Game,Developer - Xbox Game Studios
+Video Game,Developer - XCOGAMES LLC
 Video Game,Developer - Xemono
 Video Game,Developer - Xitilon
-Video Game,Developer - YAW Studios
-Video Game,Developer - YO FUJII
 Video Game,Developer - Yacht Club Games
 Video Game,Developer - Yahaha Games
 Video Game,Developer - Yangyang Mobile
+Video Game,Developer - YAW Studios
 Video Game,Developer - Yellow Dot
 Video Game,Developer - Yellowcake Games
+Video Game,Developer - yeo
+Video Game,Developer - YO FUJII
 Video Game,Developer - Yongjustyong
 Video Game,Developer - Yookund
 Video Game,Developer - You Run Ltd
@@ -3763,52 +3811,6 @@ Video Game,Developer - Zillion Whales
 Video Game,Developer - Zoink!
 Video Game,Developer - Zonik Games
 Video Game,Developer - Zoo Corporation
-Video Game,Developer - aPriori Digital
-Video Game,Developer - adamgryu
-Video Game,Developer - ansdor
-Video Game,Developer - astragon
-Video Game,Developer - dev4play
-Video Game,Developer - dramatic create
-Video Game,Developer - ebi-hime
-Video Game,Developer - frecle APS
-Video Game,Developer - gFaUmNe
-Video Game,Developer - gamebra.in
-Video Game,Developer - grin robot
-Video Game,Developer - h.a.n.d. Inc.
-Video Game,Developer - historia Inc
-Video Game,Developer - iMel
-Video Game,Developer - id Software
-Video Game,Developer - idoz & phops
-Video Game,Developer - imaginarylab
-Video Game,Developer - indienova
-Video Game,Developer - isTom Games
-Video Game,Developer - it Matters Games
-Video Game,Developer - kaeru-san games
-Video Game,Developer - kido
-Video Game,Developer - lightUp
-Video Game,Developer - maJAJa
-Video Game,Developer - magicdweedoo
-Video Game,Developer - miHoYo
-Video Game,Developer - nDreams
-Video Game,Developer - nWay
-Video Game,Developer - namethemachine
-Video Game,Developer - naptime.games
-Video Game,Developer - neko.works
-Video Game,Developer - npckc
-Video Game,Developer - orange inc.
-Video Game,Developer - origamihero games
-Video Game,Developer - pixel.games
-Video Game,Developer - pocket.watch
-Video Game,Developer - puppet combo
-Video Game,Developer - rBorn Games
-Video Game,Developer - realities
-Video Game,Developer - roll7
-Video Game,Developer - roseVeRte
-Video Game,Developer - sakevisual
-Video Game,Developer - stillalive studios
-Video Game,Developer - tobyfox
-Video Game,Developer - ustwo
-Video Game,Developer - yeo
 Video Game,Developer -Gold Knights Studios
 Video Game,Developer -Veritable Joy Studios
 Video Game,Developer- West Connection Games
@@ -3845,18 +3847,11 @@ Video Game,Publisher - 8 Bit Pxl Games
 Video Game,Publisher - 8-4
 Video Game,Publisher - 8Floor
 Video Game,Publisher - A Tale of Games
-Video Game,"Publisher - ACTION SQUARE CO., LTD"
-Video Game,Publisher - AMATA K.K.
-Video Game,Publisher - AOE Plus
-Video Game,Publisher - ARTIFACTS
-Video Game,Publisher - ASHGAMES
-Video Game,Publisher - AUSCODERS
-Video Game,Publisher - AUTO SLAVIC d.o.o.
-Video Game,Publisher - AZAMATIKA
 Video Game,Publisher - Absorb Reality
 Video Game,Publisher - Abyzzmo Entertainment
 Video Game,Publisher - Accelerate Games
 Video Game,Publisher - Acram Digital
+Video Game,"Publisher - ACTION SQUARE CO., LTD"
 Video Game,Publisher - Active Gaming Media
 Video Game,Publisher - Activision
 Video Game,Publisher - Actoon Studio
@@ -3872,10 +3867,13 @@ Video Game,Publisher - Alientrap
 Video Game,Publisher - AlignmentSharp
 Video Game,Publisher - All in! Games
 Video Game,Publisher - Amanita Design
+Video Game,Publisher - AMATA K.K.
 Video Game,Publisher - Aniplex Inc.
 Video Game,Publisher - Annapurna Interactive
 Video Game,Publisher - Ant Workshop
+Video Game,Publisher - AOE Plus
 Video Game,Publisher - Applava
+Video Game,Publisher - aPriori Digital
 Video Game,Publisher - Aquiris Game Studio
 Video Game,Publisher - Arc System Works
 Video Game,Publisher - Arcade Distillery
@@ -3885,12 +3883,15 @@ Video Game,Publisher - Arrayansoft
 Video Game,Publisher - Art Games Studio
 Video Game,Publisher - Art Games Studio S.A.
 Video Game,Publisher - Arte Experience
+Video Game,Publisher - ARTIFACTS
 Video Game,Publisher - Artifex Mundi
 Video Game,Publisher - Arturo Buschmann
 Video Game,"Publisher - Arvore Immersive Experiences, LLC"
+Video Game,Publisher - ASHGAMES
 Video Game,Publisher - Asobism
 Video Game,Publisher - Aspyr
 Video Game,Publisher - Assemble Entertainment
+Video Game,Publisher - astragon
 Video Game,Publisher - Asylum Square Interactive
 Video Game,"Publisher - Atari, Inc."
 Video Game,Publisher - Atent Games
@@ -3898,18 +3899,18 @@ Video Game,Publisher - Atlus
 Video Game,Publisher - Atomicom
 Video Game,Publisher - Atypical Games
 Video Game,Publisher - Aurita Games
+Video Game,Publisher - AUSCODERS
+Video Game,Publisher - AUTO SLAVIC d.o.o.
 Video Game,Publisher - Awaken Realms Digital
 Video Game,Publisher - Axis Games
-Video Game,Publisher - BBG Entertainment GmbH
-Video Game,Publisher - BIGLOTGAMES
-Video Game,Publisher - BNW GAMES
-Video Game,Publisher - BRUTE FORCE
+Video Game,Publisher - AZAMATIKA
 Video Game,Publisher - BadLand Publishing
 Video Game,Publisher - Baltoro Games
 Video Game,Publisher - Baltoro Minis
 Video Game,Publisher - Bandai
 Video Game,Publisher - Bandai Namco Games
 Video Game,Publisher - BatFields
+Video Game,Publisher - BBG Entertainment GmbH
 Video Game,Publisher - Beautiful Glitch
 Video Game,Publisher - Behaviour Interactive
 Video Game,Publisher - BenjiSoft
@@ -3920,6 +3921,8 @@ Video Game,Publisher - Big Sugar
 Video Game,Publisher - Big Village Games
 Video Game,Publisher - Big Way
 Video Game,Publisher - Bigben Interactive
+Video Game,Publisher - BIGLOTGAMES
+Video Game,Publisher - bilibili
 Video Game,Publisher - Bimo Entertainment
 Video Game,Publisher - Binary Haze Interactive
 Video Game,Publisher - BitCake Studio
@@ -3931,6 +3934,7 @@ Video Game,Publisher - Bloober Team
 Video Game,Publisher - Blood Music
 Video Game,Publisher - Bloom Digital Media Inc.
 Video Game,Publisher - Blowfish Studios
+Video Game,Publisher - BNW GAMES
 Video Game,Publisher - Bolder Games
 Video Game,Publisher - Bonus Stage Publishing
 Video Game,Publisher - Bossa Studios
@@ -3941,22 +3945,20 @@ Video Game,Publisher - Breaking Walls
 Video Game,Publisher - Breakthrough Gaming LLC
 Video Game,Publisher - Broken Arms Games
 Video Game,Publisher - Brownies
+Video Game,Publisher - BRUTE FORCE
 Video Game,Publisher - Buka Entertainment
 Video Game,Publisher - Bungie
 Video Game,Publisher - Buschmann Studios
 Video Game,Publisher - ByteRockers' Games
+Video Game,"Publisher - Camouflaj, LLC"
+Video Game,Publisher - Capcom
 Video Game,Publisher - CC Games
 Video Game,Publisher - CD Projekt Red Studio
 Video Game,Publisher - CFK
-Video Game,Publisher - CHECK MATE SPOLKA Z OGRANICZONA ODPOWIEDZIALNOSCIA
-Video Game,Publisher - CI Games
-Video Game,Publisher - CIRCLE Entertainment
-Video Game,Publisher - COWCAT
-Video Game,"Publisher - Camouflaj, LLC"
-Video Game,Publisher - Capcom
 Video Game,Publisher - Chainsawesome Games
 Video Game,Publisher - Chameleon Games
 Video Game,Publisher - Check Mate Publishing
+Video Game,Publisher - CHECK MATE SPOLKA Z OGRANICZONA ODPOWIEDZIALNOSCIA
 Video Game,Publisher - CheckMate Publishing
 Video Game,Publisher - Chequered Ink Ltd.
 Video Game,Publisher - Chibig
@@ -3966,6 +3968,8 @@ Video Game,Publisher - Chorus Worldwide
 Video Game,Publisher - Chromatic Games
 Video Game,Publisher - Chubby Pixel
 Video Game,Publisher - Chuyan Inc.
+Video Game,Publisher - CI Games
+Video Game,Publisher - CIRCLE Entertainment
 Video Game,Publisher - City Connection
 Video Game,Publisher - Clear River Games
 Video Game,Publisher - Clever Plays
@@ -3982,6 +3986,7 @@ Video Game,Publisher - Console Labs
 Video Game,Publisher - Cooking & Publishing
 Video Game,Publisher - Cool Small Games
 Video Game,Publisher - Cosen
+Video Game,Publisher - COWCAT
 Video Game,Publisher - Craftshop Arts Inc.
 Video Game,Publisher - Cranky Watermelon Pty Ltd
 Video Game,Publisher - Crate Entertainment
@@ -4002,30 +4007,28 @@ Video Game,Publisher - Cute Cat LLC
 Video Game,Publisher - Cyan Worlds
 Video Game,Publisher - CyberConnect2
 Video Game,Publisher - Cyberstep
-Video Game,Publisher - D-Lo Games
 Video Game,Publisher - D3Publisher
-Video Game,Publisher - DANGEN Entertainment
-Video Game,Publisher - DCF Studios
-Video Game,Publisher - DELiGHTWORKS
-Video Game,Publisher - DOOD GAMES
-Video Game,Publisher - DYA Games
 Video Game,Publisher - Daedalic Entertainment
+Video Game,Publisher - DANGEN Entertainment
 Video Game,Publisher - Daniel Wengenroth
 Video Game,Publisher - DarkDes Labs
 Video Game,Publisher - David Grof s.p.
+Video Game,Publisher - DCF Studios
 Video Game,Publisher - Dead Drop Studios LLC
 Video Game,Publisher - Dear Villagers
 Video Game,Publisher - Deck 13
 Video Game,Publisher - Deep Silver
 Video Game,Publisher - Degica
+Video Game,Publisher - DELiGHTWORKS
 Video Game,Publisher - Denda Games
 Video Game,Publisher - Derin
+Video Game,Publisher - dev4play
 Video Game,Publisher - Devolver Digital
 Video Game,Publisher - Dhood Productions
 Video Game,Publisher - Digerati Distribution
 Video Game,Publisher - Diggidy.net
-Video Game,Publisher - DigiPen Game Studios
 Video Game,Publisher - Digiart Interactive
+Video Game,Publisher - DigiPen Game Studios
 Video Game,Publisher - Digital Dreams Entertainment LLC
 Video Game,Publisher - Digital Eclipse
 Video Game,Publisher - Digital Game Group
@@ -4037,9 +4040,11 @@ Video Game,Publisher - Disaster Box
 Video Game,Publisher - Disney Interactive Studios
 Video Game,Publisher - Dispatch Games
 Video Game,Publisher - Distractionware Limited
+Video Game,Publisher - D-Lo Games
 Video Game,Publisher - Doborog Games
 Video Game,Publisher - Dolores Entertainment
 Video Game,Publisher - Donkey Crew
+Video Game,Publisher - DOOD GAMES
 Video Game,Publisher - DotEmu
 Video Game,Publisher - Double Fine Productions
 Video Game,Publisher - Dovetail Games
@@ -4048,21 +4053,18 @@ Video Game,Publisher - Dragonest
 Video Game,Publisher - Draknek & Friends
 Video Game,Publisher - DrinkBox Studios
 Video Game,Publisher - DuckbearLab
+Video Game,Publisher - DYA Games
 Video Game,Publisher - Dynamic Voltage Games
-Video Game,Publisher - E-Home Entertainment
-Video Game,Publisher - E-Line Media
-Video Game,Publisher - EOK Labs
-Video Game,Publisher - EP Games
-Video Game,Publisher - ERIK GAMES
-Video Game,Publisher - EXOR Studios
 Video Game,Publisher - East2West Games
 Video Game,Publisher - EastAsiaSoft
 Video Game,Publisher - Eclipse Games
 Video Game,Publisher - Edia Co.
+Video Game,Publisher - E-Home Entertainment
 Video Game,Publisher - Elasto Mania Team
 Video Game,Publisher - Elden Pixels
 Video Game,Publisher - Electronic Arts
 Video Game,Publisher - Elefantopia LLC
+Video Game,Publisher - E-Line Media
 Video Game,Publisher - Emberlab
 Video Game,Publisher - Endeavor One Inc.
 Video Game,Publisher - Enhance Games
@@ -4070,21 +4072,21 @@ Video Game,Publisher - Entalto Studios
 Video Game,Publisher - Entergram
 Video Game,Publisher - Entity3
 Video Game,Publisher - Entwickler-X
-Video Game,Publisher - EpiXR Games
+Video Game,Publisher - EOK Labs
+Video Game,Publisher - EP Games
 Video Game,Publisher - Epic Games
 Video Game,Publisher - Epitasis Games
+Video Game,Publisher - EpiXR Games
 Video Game,Publisher - Epopeia Games
 Video Game,Publisher - Equilibrium Systems
 Video Game,Publisher - Erdem Sen
+Video Game,Publisher - ERIK GAMES
 Video Game,Publisher - Escape
 Video Game,Publisher - Estinb Labs
 Video Game,Publisher - Evil Tortilla Games Incorporated
+Video Game,Publisher - EXOR Studios
 Video Game,Publisher - Expansive Worlds
 Video Game,Publisher - EzeN Labs
-Video Game,Publisher - FDG Entertainment
-Video Game,Publisher - FEED
-Video Game,Publisher - FIVE-BN STUDIO
-Video Game,Publisher - FMV Interactive
 Video Game,Publisher - Fabraz
 Video Game,Publisher - Facepunch Studios
 Video Game,Publisher - Falling Squirrel
@@ -4092,6 +4094,8 @@ Video Game,Publisher - Fantastico Studio
 Video Game,Publisher - Farsight Studios
 Video Game,Publisher - Fast Travel Games
 Video Game,Publisher - Fatbot Games
+Video Game,Publisher - FDG Entertainment
+Video Game,Publisher - FEED
 Video Game,Publisher - Fellhuhn
 Video Game,Publisher - Fellow Traveller
 Video Game,"Publisher - Finite Reflection Studios, LLC"
@@ -4100,13 +4104,16 @@ Video Game,Publisher - Fireshine Games
 Video Game,Publisher - Firesprite
 Video Game,Publisher - Firestoke
 Video Game,Publisher - Five Aces Publishing Ltd.
+Video Game,Publisher - FIVE-BN STUDIO
 Video Game,Publisher - Flashbulb
 Video Game,Publisher - Flux Games
 Video Game,Publisher - Flyhigh Works
 Video Game,Publisher - Flying Islands Team
 Video Game,Publisher - Flynn's Arcade
+Video Game,Publisher - FMV Interactive
 Video Game,Publisher - Foam Punch
 Video Game,Publisher - Focus Home Interactive
+Video Game,Publisher - Forever Entertainment
 Video Game,Publisher - Forever Entertainment
 Video Game,Publisher - Forthright Entertainment
 Video Game,Publisher - FrameLine Network
@@ -4114,7 +4121,6 @@ Video Game,Publisher - Freedom Games
 Video Game,Publisher - Frogwares
 Video Game,Publisher - Frontier Developments
 Video Game,Publisher - Frontier Foundry
-Video Game,Publisher - FuRyu
 Video Game,Publisher - Fun Games LLC
 Video Game,Publisher - Funbox Media
 Video Game,Publisher - Funcom
@@ -4122,23 +4128,21 @@ Video Game,Publisher - Funky Can Creative
 Video Game,Publisher - Funky Punky Games
 Video Game,Publisher - Funselektor Labs Inc.
 Video Game,Publisher - FuriouSoftPhoenix
+Video Game,Publisher - FuRyu
 Video Game,Publisher - Future Friends Games
-Video Game,Publisher - G-mode
 Video Game,"Publisher - GAGEX Co.,Ltd."
-Video Game,Publisher - GAME NACIONAL
-Video Game,Publisher - GAMEDIA
-Video Game,Publisher - GGTECH Entertainment
-Video Game,Publisher - GS2 Games
-Video Game,Publisher - GS2 Games Inc.
 Video Game,Publisher - Gaijin Distribution
 Video Game,Publisher - Gaijin Entertainment
 Video Game,Publisher - Galdra Studios
 Video Game,Publisher - Game Mavericks
 Video Game,Publisher - Game Museum
-Video Game,Publisher - GameMill Entertainment
-Video Game,Publisher - GameParadiso
+Video Game,Publisher - GAME NACIONAL
+Video Game,Publisher - gamebra.in
+Video Game,Publisher - GAMEDIA
 Video Game,Publisher - Gamella Studios
 Video Game,Publisher - Gameloft
+Video Game,Publisher - GameMill Entertainment
+Video Game,Publisher - GameParadiso
 Video Game,Publisher - Gametry
 Video Game,Publisher - Gammera Nest
 Video Game,Publisher - Gamuzumi
@@ -4147,6 +4151,8 @@ Video Game,Publisher - Gearbox Software
 Video Game,Publisher - Gearhead Games
 Video Game,Publisher - Gemdrops
 Video Game,Publisher - GetAGame
+Video Game,Publisher - gFaUmNe
+Video Game,Publisher - GGTECH Entertainment
 Video Game,Publisher - Ghislain Avrillon
 Video Game,Publisher - Ghost Time Games
 Video Game,Publisher - Giant Door
@@ -4154,6 +4160,7 @@ Video Game,Publisher - Giants Software
 Video Game,Publisher - Gift Ten
 Video Game,Publisher - Giiku Games
 Video Game,Publisher - Glass Bottom Games
+Video Game,Publisher - G-mode
 Video Game,Publisher - Goblinz Studio
 Video Game,Publisher - Godbey Games LLC
 Video Game,Publisher - Good Shepherd Entertainment
@@ -4163,12 +4170,14 @@ Video Game,Publisher - Green Sauce Games
 Video Game,Publisher - Grey Alien Games
 Video Game,Publisher - GrimTalin
 Video Game,Publisher - Grinding Gear Games
+Video Game,Publisher - GS2 Games
+Video Game,Publisher - GS2 Games Inc.
 Video Game,Publisher - Guara Studios
 Video Game,Publisher - GungHo
-Video Game,"Publisher - HANGZHOU ELECTRONIC SOUL NETWORK TECHNOLOGY CO., LTD"
 Video Game,Publisher - Haemimont Games
 Video Game,Publisher - Hamster
 Video Game,Publisher - HandyGames
+Video Game,"Publisher - HANGZHOU ELECTRONIC SOUL NETWORK TECHNOLOGY CO., LTD"
 Video Game,Publisher - Happymagenta
 Video Game,Publisher - Haruneko
 Video Game,Publisher - Hatinh Interactive
@@ -4176,38 +4185,41 @@ Video Game,Publisher - Headup Games
 Video Game,Publisher - Hebi Lee
 Video Game,Publisher - Hero Concept
 Video Game,Publisher - HeroCraft
-Video Game,Publisher - Hi-Rez Studios
 Video Game,Publisher - Hidden Trap
 Video Game,Publisher - Higgs Games
-Video Game,"Publisher - Hit-Point Co., Ltd."
+Video Game,Publisher - Hi-Rez Studios
 Video Game,Publisher - Hitcents
+Video Game,"Publisher - Hit-Point Co., Ltd."
 Video Game,Publisher - Hook Games
 Video Game,Publisher - Hoplon Infotainment
 Video Game,Publisher - Huey Games
 Video Game,Publisher - Humble Games
 Video Game,Publisher - HuneX
 Video Game,Publisher - Hydra Games SA
-Video Game,Publisher - HypeTrain Digital
 Video Game,Publisher - Hypertrain Digital
+Video Game,Publisher - HypeTrain Digital
+Video Game,Publisher - iam8bit
 Video Game,Publisher - IBAR EZKERRAR IKASTOLA S. COOP.
-Video Game,Publisher - ININ Games
-Video Game,Publisher - INTERMARUM
-Video Game,Publisher - IV Productions
-Video Game,Publisher - Ice-Pick Lodge
 Video Game,Publisher - Iceberg Interactive
+Video Game,Publisher - Ice-Pick Lodge
+Video Game,Publisher - id Software
 Video Game,Publisher - Idea Factory
 Video Game,Publisher - Ikon Games
 Video Game,Publisher - IllFonic
 Video Game,Publisher - Ilya Chkoliar
 Video Game,Publisher - ImaginationOverflow
+Video Game,Publisher - iMel
 Video Game,Publisher - Improx Games
 Video Game,Publisher - Indie Remix Studios LLC
+Video Game,Publisher - indienova
 Video Game,Publisher - IndieRevo
+Video Game,Publisher - ININ Games
 Video Game,Publisher - Inlogic Software
 Video Game,Publisher - Innersloth
 Video Game,Publisher - Inpleron LTD
 Video Game,Publisher - Interabang Entertainment
 Video Game,Publisher - Interactive Dreams Limited
+Video Game,Publisher - INTERMARUM
 Video Game,Publisher - Interplay
 Video Game,Publisher - Intetic
 Video Game,Publisher - Inti Creates
@@ -4215,6 +4227,8 @@ Video Game,Publisher - IntraGames
 Video Game,Publisher - Invisible Walls ApS
 Video Game,Publisher - Io Interactive
 Video Game,Publisher - Isaias Game Dev
+Video Game,Publisher - isTom Games
+Video Game,Publisher - IV Productions
 Video Game,Publisher - J600
 Video Game,"Publisher - Jackbox Games, Inc."
 Video Game,Publisher - JanduSoft
@@ -4228,11 +4242,6 @@ Video Game,Publisher - Jujubee Games Studio
 Video Game,Publisher - Jupiter Corporation
 Video Game,Publisher - Just For Games
 Video Game,Publisher - Justdan
-Video Game,Publisher - KIMIDORI SOFT
-Video Game,Publisher - KLab Global Pte. Ltd.
-Video Game,Publisher - KR Games
-Video Game,Publisher - KUNOS-Simulazioni
-Video Game,Publisher - KURENTER
 Video Game,Publisher - Kadokawa
 Video Game,Publisher - Kairosoft Co. Ltd
 Video Game,Publisher - Kalypso
@@ -4240,23 +4249,26 @@ Video Game,Publisher - Kamel Benlahrech t/a neko.works
 Video Game,Publisher - Keinart Lobre
 Video Game,Publisher - Kelsam
 Video Game,Publisher - Kemco
+Video Game,Publisher - KIMIDORI SOFT
 Video Game,Publisher - Kimulator's Films inc.
 Video Game,Publisher - Kistler Benjamin
 Video Game,Publisher - Kitfox Games
+Video Game,Publisher - KLab Global Pte. Ltd.
 Video Game,Publisher - Klabater
 Video Game,Publisher - Klei Entertainment
 Video Game,Publisher - Kluge Interactive
 Video Game,Publisher - Koch Media
 Video Game,Publisher - Koei Tecmo Games
 Video Game,Publisher - Konami
+Video Game,Publisher - KR Games
 Video Game,Publisher - Krome Studios
 Video Game,Publisher - KrzysztofPodsada
 Video Game,Publisher - Kuato Studios
-Video Game,Publisher - LEAP Game Studios
-Video Game,Publisher - LKMAD
-Video Game,Publisher - LLC KURENTER
+Video Game,Publisher - KUNOS-Simulazioni
+Video Game,Publisher - KURENTER
 Video Game,Publisher - LandFall Games
 Video Game,Publisher - Last Dimension
+Video Game,Publisher - LEAP Game Studios
 Video Game,Publisher - Learn District
 Video Game,Publisher - LearnDistrict Inc.
 Video Game,Publisher - Leoful
@@ -4271,18 +4283,15 @@ Video Game,Publisher - Lince Works
 Video Game,Publisher - Lion Castle
 Video Game,Publisher - Lithic Entertainment Inc.
 Video Game,Publisher - Live Wire
+Video Game,Publisher - LKMAD
+Video Game,Publisher - LLC KURENTER
 Video Game,Publisher - Loneminded
 Video Game,Publisher - Lucasfilm Games
 Video Game,Publisher - Luna Wolf Studios
 Video Game,Publisher - Lunic Games
 Video Game,Publisher - M2H
-Video Game,Publisher - MD GAMES
-Video Game,Publisher - MEGAXUS
-Video Game,Publisher - META Publishing
-Video Game,Publisher - MLB AM
-Video Game,Publisher - MWM Interactive
-Video Game,Publisher - MY.GAMES
 Video Game,Publisher - Mages.
+Video Game,Publisher - magicdweedoo
 Video Game,Publisher - ManaVoid Entertainment Inc.
 Video Game,Publisher - Manekoware
 Video Game,Publisher - Mantisco
@@ -4295,11 +4304,14 @@ Video Game,Publisher - Maxim Ryadchik
 Video Game,Publisher - Maximum Games
 Video Game,Publisher - Maze Theory
 Video Game,Publisher - McPeppergames
+Video Game,Publisher - MD GAMES
 Video Game,Publisher - Mediascape
 Video Game,Publisher - Megame
+Video Game,Publisher - MEGAXUS
 Video Game,Publisher - Mental Drink
 Video Game,Publisher - Merge Games
 Video Game,Publisher - Meringue Interactive
+Video Game,Publisher - META Publishing
 Video Game,Publisher - Meteorbyte Studios
 Video Game,Publisher - Microids
 Video Game,Publisher - Microids Indie
@@ -4308,6 +4320,7 @@ Video Game,Publisher - Microsoft Corporation
 Video Game,Publisher - Microsoft Game Studios
 Video Game,Publisher - Midgar Studio
 Video Game,Publisher - Midnight Works
+Video Game,Publisher - miHoYo
 Video Game,Publisher - Mike Palotas
 Video Game,Publisher - Milestone S.r.l
 Video Game,Publisher - Milkstone Studios
@@ -4316,6 +4329,8 @@ Video Game,Publisher - Mindscape
 Video Game,Publisher - Misc Games
 Video Game,Publisher - Mischief
 Video Game,Publisher - Mixtvision
+Video Game,Publisher - mixtvision digital GmbH & Co.KG
+Video Game,Publisher - MLB AM
 Video Game,Publisher - Mode 7 Games
 Video Game,Publisher - Modern Storyteller
 Video Game,Publisher - Modus Games
@@ -4328,18 +4343,19 @@ Video Game,Publisher - MoonGlass
 Video Game,Publisher - Mossmouth
 Video Game,Publisher - Motion Twin
 Video Game,Publisher - Motorsport Games
+Video Game,Publisher - MWM Interactive
+Video Game,Publisher - MY.GAMES
 Video Game,Publisher - Myriad Games Studio
-Video Game,Publisher - N-Fusion Interactive
+Video Game,Publisher - Nacon
 Video Game,Publisher - NAISU
+Video Game,Publisher - Nakana.io
 Video Game,Publisher - NAMI TENTOU MUSHI
 Video Game,Publisher - NAPE GAMES
-Video Game,Publisher - NExT Studios
-Video Game,Publisher - NIS America
-Video Game,Publisher - NNG LAB
-Video Game,Publisher - Nacon
-Video Game,Publisher - Nakana.io
 Video Game,Publisher - Naps Team
+Video Game,Publisher - naptime.games
 Video Game,Publisher - Natsume
+Video Game,Publisher - nDreams
+Video Game,Publisher - neko.works
 Video Game,Publisher - Nellyvision
 Video Game,Publisher - Neon Doctrine
 Video Game,Publisher - Neon2
@@ -4347,10 +4363,14 @@ Video Game,Publisher - Neowiz
 Video Game,Publisher - Nerd Games
 Video Game,Publisher - Nerdvision Games
 Video Game,Publisher - New Blood Interactive
+Video Game,Publisher - NExT Studios
+Video Game,Publisher - N-Fusion Interactive
 Video Game,Publisher - Nicalis
 Video Game,Publisher - Night Dive Studios
 Video Game,Publisher - Nighthawk Interactive
 Video Game,Publisher - Nintendo
+Video Game,Publisher - NIS America
+Video Game,Publisher - NNG LAB
 Video Game,Publisher - No Gravity Games
 Video Game,Publisher - No Matter Studios
 Video Game,Publisher - Noahcode
@@ -4361,16 +4381,19 @@ Video Game,Publisher - Norsfell
 Video Game,Publisher - Northplay ApS
 Video Game,Publisher - Numskull Games
 Video Game,Publisher - NunoVicenteBarreto
+Video Game,Publisher - nWay
 Video Game,Publisher - O.Stogden
 Video Game,Publisher - Ocean Media
 Video Game,Publisher - Oddboy
 Video Game,Publisher - Oddworld Inhabitants
 Video Game,Publisher - Oink Games Inc.
-Video Game,Publisher - OnSkull Games
 Video Game,Publisher - One Earth Rising
 Video Game,Publisher - Onion Games
+Video Game,Publisher - OnSkull Games
 Video Game,Publisher - Onteca
+Video Game,Publisher - orange inc.
 Video Game,Publisher - Orange Pixel
+Video Game,Publisher - origamihero games
 Video Game,Publisher - Orube Game Studio
 Video Game,Publisher - Other Ocean Group
 Video Game,"Publisher - Otterrific Games, LLC"
@@ -4378,19 +4401,12 @@ Video Game,Publisher - Outright Games
 Video Game,Publisher - OverGamez
 Video Game,Publisher - OverPowered Team
 Video Game,Publisher - P2 Entertainment
-Video Game,Publisher - PARK ESM
-Video Game,Publisher - PERZIUR
-Video Game,Publisher - PID Games
-Video Game,Publisher - PLiCy
-Video Game,Publisher - PM Studios Inc.
-Video Game,"Publisher - POCKET PAIR, Inc."
-Video Game,Publisher - PQube
-Video Game,Publisher - PSR Outdoors
 Video Game,Publisher - Paleo Games LLC
 Video Game,Publisher - Pancake Games
 Video Game,Publisher - Paper Cult
 Video Game,Publisher - Paradox Interactive
 Video Game,Publisher - Parallel Circles
+Video Game,Publisher - PARK ESM
 Video Game,Publisher - Pathea Games
 Video Game,Publisher - Penguin Pop Games LLC
 Video Game,Publisher - Perfect World Entertainment
@@ -4398,10 +4414,12 @@ Video Game,Publisher - Perfect World Games
 Video Game,Publisher - Perp Games
 Video Game,Publisher - Perpetual
 Video Game,Publisher - Perpetual Games
+Video Game,Publisher - PERZIUR
 Video Game,Publisher - Phigames
 Video Game,Publisher - Phoenix Labs
 Video Game,Publisher - Phoenix Reborn Games
 Video Game,Publisher - Phoenixx Inc.
+Video Game,Publisher - PID Games
 Video Game,Publisher - PikPok
 Video Game,Publisher - Pineapple Works
 Video Game,Publisher - Pipetka Games
@@ -4410,19 +4428,23 @@ Video Game,Publisher - Pix Arts
 Video Game,Publisher - Pixehn
 Video Game,Publisher - Pixel Lantern
 Video Game,Publisher - Pixel Maniacs
+Video Game,Publisher - pixel.games
 Video Game,Publisher - Pixeland Games
 Video Game,Publisher - Pixelheart
 Video Game,Publisher - Pixelmob
 Video Game,Publisher - Pixmain
 Video Game,Publisher - PlatinumGames
-Video Game,Publisher - PlayStation Studios
-Video Game,Publisher - PlayWay
 Video Game,Publisher - Playism
 Video Game,Publisher - Playstack
+Video Game,Publisher - PlayStation Studios
 Video Game,Publisher - Playstige Interactive
 Video Game,Publisher - Playtonic Friends
+Video Game,Publisher - PlayWay
 Video Game,Publisher - Playwing
+Video Game,Publisher - PLiCy
 Video Game,Publisher - Plug In Digital
+Video Game,Publisher - PM Studios Inc.
+Video Game,"Publisher - POCKET PAIR, Inc."
 Video Game,Publisher - Polyarc
 Video Game,Publisher - Polyblock Studio
 Video Game,Publisher - Polygon Art Publishing
@@ -4432,6 +4454,7 @@ Video Game,Publisher - Poor Cat
 Video Game,Publisher - Porcelain Fortress
 Video Game,Publisher - Postmeta Games
 Video Game,Publisher - Postmeta Games Limited
+Video Game,Publisher - PQube
 Video Game,Publisher - Pretty Fly Games
 Video Game,Publisher - Prime Bit Games SA
 Video Game,Publisher - Prime Matter
@@ -4439,14 +4462,14 @@ Video Game,Publisher - Prison Games
 Video Game,Publisher - Private Division
 Video Game,Publisher - Project Lumina
 Video Game,Publisher - ProjectMoon
+Video Game,Publisher - PSR Outdoors
 Video Game,Publisher - Psytec Games Ltd
+Video Game,Publisher - puppet combo
 Video Game,Publisher - Purple Tree
 Video Game,Publisher - Purple Tree Studio
-Video Game,Publisher - QUByte Interactive
 Video Game,Publisher - QubicGames
+Video Game,Publisher - QUByte Interactive
 Video Game,Publisher - Qute
-Video Game,"Publisher - ROTU Entertainment & Media, Ltd."
-Video Game,Publisher - RUSLAN SALIKOV
 Video Game,Publisher - Rainbite
 Video Game,Publisher - Raiser Games
 Video Game,Publisher - Ramen VR
@@ -4456,8 +4479,9 @@ Video Game,Publisher - Ratalaika Games
 Video Game,Publisher - Ratloop Games Canada
 Video Game,Publisher - Ravenscourt
 Video Game,Publisher - Raw Fury
-Video Game,Publisher - RebelTwins
+Video Game,Publisher - realities.io
 Video Game,Publisher - Rebellion
+Video Game,Publisher - RebelTwins
 Video Game,Publisher - Red Art Games
 Video Game,Publisher - Red Ego Games
 Video Game,Publisher - RedDeerGames
@@ -4474,28 +4498,17 @@ Video Game,Publisher - Riot Games
 Video Game,Publisher - Ripstone
 Video Game,Publisher - Robot Entertainment
 Video Game,Publisher - Rock Pocket Games
-Video Game,Publisher - RockGame
-Video Game,Publisher - RockGame S.A.
 Video Game,Publisher - Rocket Panda Games
 Video Game,Publisher - Rocket Vulture
+Video Game,Publisher - RockGame
+Video Game,Publisher - RockGame S.A.
 Video Game,Publisher - Rockstar Games
 Video Game,Publisher - Rogue Games
+Video Game,"Publisher - ROTU Entertainment & Media, Ltd."
 Video Game,Publisher - RubberBandGames
 Video Game,Publisher - Ruben Alcaniz
 Video Game,Publisher - Run-Down Games
-Video Game,Publisher - SAT-BOX
-Video Game,Publisher - SCEE
-Video Game,Publisher - SFB Games
-Video Game,Publisher - SFS Studios
-Video Game,Publisher - SIE Spain
-Video Game,Publisher - SMOBILE INC
-Video Game,Publisher - SNK
-Video Game,Publisher - SNK Corporation
-Video Game,Publisher - SOFTSTAR Entertainment
-Video Game,Publisher - SOUETTE STUDIO SPC
-Video Game,Publisher - STP WORKS
-Video Game,Publisher - SUPER.COM
-Video Game,Publisher - SUPERHOT
+Video Game,Publisher - RUSLAN SALIKOV
 Video Game,Publisher - Sabec Limited
 Video Game,Publisher - Saber Interactive
 Video Game,Publisher - Sad Panda Studios
@@ -4503,7 +4516,9 @@ Video Game,Publisher - SadSquare Studio
 Video Game,Publisher - Samustai
 Video Game,Publisher - Samustai studio
 Video Game,Publisher - Sanuk Games
+Video Game,Publisher - SAT-BOX
 Video Game,Publisher - Sbug Games
+Video Game,Publisher - SCEE
 Video Game,Publisher - Schell Games
 Video Game,Publisher - Scott Games
 Video Game,Publisher - Screenwave Media
@@ -4514,12 +4529,15 @@ Video Game,Publisher - SegaSoft
 Video Game,Publisher - Sekai Project
 Video Game,Publisher - Serenity Forge
 Video Game,Publisher - Serious Brothers
+Video Game,Publisher - SFB Games
+Video Game,Publisher - SFS Studios
 Video Game,Publisher - Shadebob Games
 Video Game,Publisher - Shenzhen Leiting Information Technology Co.
 Video Game,"Publisher - Shenzhen Leiting Information Technology Co., Ltd."
 Video Game,Publisher - Shin'en
 Video Game,Publisher - Shinyuden
 Video Game,Publisher - Sidhe Interactive
+Video Game,Publisher - SIE Spain
 Video Game,Publisher - SilenGames
 Video Game,Publisher - Silesia Games
 Video Game,Publisher - Silesia Games Sp. z o.o.
@@ -4539,10 +4557,14 @@ Video Game,Publisher - Sloclap
 Video Game,Publisher - Smallrave Entertainment
 Video Game,Publisher - SmileBoom
 Video Game,Publisher - Smilegate
+Video Game,Publisher - SMOBILE INC
 Video Game,Publisher - Snapshot Games Inc.
 Video Game,Publisher - SneakyBox
+Video Game,Publisher - SNK
+Video Game,Publisher - SNK Corporation
 Video Game,Publisher - Snow Day Software
 Video Game,Publisher - Soedesco
+Video Game,Publisher - SOFTSTAR Entertainment
 Video Game,Publisher - Sold Out
 Video Game,Publisher - Solutions 2 GO
 Video Game,Publisher - Somequest Sp. z o. o.
@@ -4551,6 +4573,7 @@ Video Game,Publisher - Sometimes You
 Video Game,Publisher - Sony Interactive Entertainment
 Video Game,Publisher - Sony Interactive Entertainment Spain
 Video Game,Publisher - Sonzai Games
+Video Game,Publisher - SOUETTE STUDIO SPC
 Video Game,Publisher - South East Games
 Video Game,Publisher - Spellbind Studios
 Video Game,Publisher - Spike Chunsoft
@@ -4564,6 +4587,7 @@ Video Game,Publisher - Steel Arts Software LTD.
 Video Game,Publisher - Steel Wool Games
 Video Game,Publisher - Stonebot Studio
 Video Game,Publisher - Storybird
+Video Game,Publisher - STP WORKS
 Video Game,Publisher - Strange Games Studios
 Video Game,Publisher - Strange Scaffold
 Video Game,Publisher - Stray Fawn Studio
@@ -4574,25 +4598,18 @@ Video Game,Publisher - Studio Somewhere
 Video Game,Publisher - StudioInkyfox
 Video Game,Publisher - Stun Games
 Video Game,Publisher - Subliminal
+Video Game,Publisher - subSilico
 Video Game,Publisher - Sunlight Games
 Video Game,Publisher - Super PowerUp Games
 Video Game,Publisher - Super Rare Games
 Video Game,Publisher - Super Rare Shorts
-Video Game,Publisher - SuperPowerUpGames
+Video Game,Publisher - SUPER.COM
 Video Game,Publisher - Superbrothers
 Video Game,Publisher - Supergiant Games
+Video Game,Publisher - SUPERHOT
+Video Game,Publisher - SuperPowerUpGames
 Video Game,Publisher - Survios
 Video Game,Publisher - System Era Softworks
-Video Game,Publisher - T-Bull
-Video Game,Publisher - TERNOX
-Video Game,Publisher - TG999
-Video Game,Publisher - THOMAS CLAUS UND FRANK MENZEL
-Video Game,Publisher - THQ Nordic
-Video Game,Publisher - TIGAMES
-Video Game,"Publisher - TLM Partners, Inc"
-Video Game,Publisher - TREVA Entertainment
-Video Game,Publisher - TROOOZE
-Video Game,Publisher - TYPE EH STUDIOS
 Video Game,Publisher - Table Flip Games
 Video Game,Publisher - Taito Corporation
 Video Game,Publisher - Takacs Peter
@@ -4601,19 +4618,22 @@ Video Game,Publisher - Take-Two Interactive
 Video Game,Publisher - TapNice
 Video Game,Publisher - Tate Multimedia
 Video Game,Publisher - Tayanna Studios
+Video Game,Publisher - T-Bull
 Video Game,Publisher - Team Samoyed
 Video Game,Publisher - Team17
 Video Game,Publisher - Techland
 Video Game,Publisher - Tenbirds
+Video Game,Publisher - TERNOX
 Video Game,Publisher - Terrible Posture Games
+Video Game,Publisher - TG999
 Video Game,Publisher - Thalamus Digital Publishing Ltd.
 Video Game,Publisher - Thar Games
 Video Game,Publisher - The Arcade Crew
 Video Game,Publisher - The Digital Lounge
 Video Game,Publisher - The Farm 51
 Video Game,Publisher - The Irregular Corporation
-Video Game,Publisher - The MIX Games
 Video Game,Publisher - The Media Indie Exchange
+Video Game,Publisher - The MIX Games
 Video Game,Publisher - The Pokemon Company
 Video Game,Publisher - The Toolshed LLC
 Video Game,Publisher - The Voices Games
@@ -4621,14 +4641,20 @@ Video Game,Publisher - TheDollarGameStore
 Video Game,Publisher - Thermite Games
 Video Game,Publisher - ThiGames
 Video Game,Publisher - ThinkingStars
+Video Game,Publisher - THOMAS CLAUS UND FRANK MENZEL
 Video Game,Publisher - Thomas Young
 Video Game,Publisher - Those Awesome Guys
+Video Game,Publisher - THQ Nordic
 Video Game,Publisher - Thunderful
+Video Game,Publisher - TIGAMES
 Video Game,Publisher - Tikipod Limited
 Video Game,Publisher - Tin Man Games
 Video Game,Publisher - Tinimations
+Video Game,Publisher - tinyBuild
 Video Game,Publisher - Tipping Goat LLC
+Video Game,"Publisher - TLM Partners, Inc"
 Video Game,Publisher - ToastieLabs
+Video Game,Publisher - tobyfox
 Video Game,Publisher - Toge Productions
 Video Game,Publisher - Tom Happ
 Video Game,Publisher - Tony DE LUCIA
@@ -4636,35 +4662,38 @@ Video Game,Publisher - Top Hat Studios Inc
 Video Game,Publisher - Totalconsole
 Video Game,Publisher - Trebuchet
 Video Game,Publisher - TreeFall Studios L.L.C.
+Video Game,Publisher - TREVA Entertainment
 Video Game,Publisher - TribalWire Inc.
 Video Game,Publisher - Triple Scale Games
 Video Game,Publisher - Triple Topping Games
 Video Game,Publisher - Triple-I Games
 Video Game,Publisher - Tripwire Interactive
+Video Game,Publisher - TROOOZE
 Video Game,Publisher - Twice Circled
 Video Game,Publisher - Twin-Stick
 Video Game,Publisher - Two Dog Games
+Video Game,Publisher - TYPE EH STUDIOS
+Video Game,Publisher - Ubisoft
 Video Game,Publisher - UFO Interactive
 Video Game,Publisher - UIG Entertainment
 Video Game,Publisher - UKIYO PUBLISHING LIMITED
-Video Game,Publisher - UNIVERSITY OF ABERTAY DUNDEE
-Video Game,Publisher - USC Games
-Video Game,Publisher - Ubisoft
 Video Game,Publisher - Ultimate Games
 Video Game,Publisher - Unbalance
 Video Game,Publisher - Unbound Creations
 Video Game,Publisher - Unfinished Pixel
 Video Game,Publisher - United Games Entertainment GmbH
 Video Game,Publisher - United Label
+Video Game,Publisher - UNIVERSITY OF ABERTAY DUNDEE
 Video Game,Publisher - Unknown Worlds Entertainment
 Video Game,Publisher - Untold Games
 Video Game,Publisher - Untold Tales
 Video Game,Publisher - Uppercut Games Pty Ltd
+Video Game,Publisher - USC Games
+Video Game,Publisher - ustwo
 Video Game,Publisher - Utopos Games
-Video Game,Publisher - VDimension
-Video Game,Publisher - VOXEL LABS S.L.
 Video Game,"Publisher - Vague Scenario, LLC"
 Video Game,Publisher - Valiant Entertainment
+Video Game,Publisher - VDimension
 Video Game,Publisher - Vector Unit
 Video Game,Publisher - VerenigdeProducties
 Video Game,Publisher - Versus Evil
@@ -4674,9 +4703,8 @@ Video Game,Publisher - Visualnoveler
 Video Game,Publisher - Vlambeer
 Video Game,Publisher - Volkov Konstantin Sergeevich
 Video Game,Publisher - Voltage
+Video Game,Publisher - VOXEL LABS S.L.
 Video Game,Publisher - Vridge
-Video Game,Publisher - WISTONE ENTERTAINMENT
-Video Game,Publisher - WOWWOW Technology
 Video Game,Publisher - Wadjet Eye Games
 Video Game,Publisher - Wales Interactive
 Video Game,Publisher - Warcave
@@ -4703,22 +4731,24 @@ Video Game,Publisher - William Chyr Studio LLC
 Video Game,Publisher - Windstone Games
 Video Game,Publisher - Winking Entertainment
 Video Game,Publisher - Wired Productions
+Video Game,Publisher - WISTONE ENTERTAINMENT
 Video Game,Publisher - Witch Beam
 Video Game,Publisher - Wizard Games
 Video Game,Publisher - Wizards of the Coast
 Video Game,Publisher - Wobbly Tooth Ltd
+Video Game,Publisher - WOWWOW Technology
 Video Game,Publisher - X Plus
 Video Game,Publisher - X.D. Network Inc.
-Video Game,Publisher - XCOGAMES LLC
-Video Game,Publisher - XSEED Games
 Video Game,Publisher - Xbox Game Studios
+Video Game,Publisher - XCOGAMES LLC
 Video Game,Publisher - Xitilon
+Video Game,Publisher - XSEED Games
 Video Game,Publisher - Yacht Club Games
 Video Game,Publisher - Yahaha Games
 Video Game,Publisher - Yellow Dot
 Video Game,Publisher - Yellowcake Games
+Video Game,Publisher - yeo
 Video Game,Publisher - Yooreka Studio
-Video Game,Publisher - Z-Software
 Video Game,Publisher - ZA/UM
 Video Game,Publisher - Zakym s. r. o.
 Video Game,Publisher - Zeboyd Games
@@ -4726,34 +4756,7 @@ Video Game,Publisher - Zen Studios
 Video Game,Publisher - Ziggurat Interactive
 Video Game,Publisher - Zillion Whales
 Video Game,Publisher - Zordix
-Video Game,Publisher - aPriori Digital
-Video Game,Publisher - astragon
-Video Game,Publisher - bilibili
-Video Game,Publisher - dev4play
-Video Game,Publisher - gFaUmNe
-Video Game,Publisher - gamebra.in
-Video Game,Publisher - iMel
-Video Game,Publisher - iam8bit
-Video Game,Publisher - id Software
-Video Game,Publisher - indienova
-Video Game,Publisher - isTom Games
-Video Game,Publisher - magicdweedoo
-Video Game,Publisher - miHoYo
-Video Game,Publisher - mixtvision digital GmbH & Co.KG
-Video Game,Publisher - nDreams
-Video Game,Publisher - nWay
-Video Game,Publisher - naptime.games
-Video Game,Publisher - neko.works
-Video Game,Publisher - orange inc.
-Video Game,Publisher - origamihero games
-Video Game,Publisher - pixel.games
-Video Game,Publisher - puppet combo
-Video Game,Publisher - realities.io
-Video Game,Publisher - subSilico
-Video Game,Publisher - tinyBuild
-Video Game,Publisher - tobyfox
-Video Game,Publisher - ustwo
-Video Game,Publisher - yeo
+Video Game,Publisher - Z-Software
 Video Game,Rating - E
 Video Game,Rating - E10+
 Video Game,Rating - M
@@ -4763,23 +4766,24 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - 5 Lives Studios
 "Video Game, Video Game Publishers",Developer - 91Act
 "Video Game, Video Game Publishers",Developer - 989 Studios
-"Video Game, Video Game Publishers",Developer - A-Game Studios
-"Video Game, Video Game Publishers",Developer - AP Thomson
 "Video Game, Video Game Publishers",Developer - Accolade
 "Video Game, Video Game Publishers",Developer - Acke Hallgren
-"Video Game, Video Game Publishers",Developer - AdHoc Studio
 "Video Game, Video Game Publishers",Developer - Adglobe
+"Video Game, Video Game Publishers",Developer - AdHoc Studio
+"Video Game, Video Game Publishers",Developer - A-Game Studios
 "Video Game, Video Game Publishers",Developer - AggroCrab
 "Video Game, Video Game Publishers",Developer - Alkimia Interactive
 "Video Game, Video Game Publishers",Developer - Alt Shift
 "Video Game, Video Game Publishers",Developer - Amazing Seasun Games
-"Video Game, Video Game Publishers",Developer - AnKae Games
 "Video Game, Video Game Publishers",Developer - Ancient Forge
 "Video Game, Video Game Publishers",Developer - Andreil Game
 "Video Game, Video Game Publishers",Developer - Angel Studios
 "Video Game, Video Game Publishers",Developer - Anima Project
+"Video Game, Video Game Publishers",Developer - AnKae Games
 "Video Game, Video Game Publishers",Developer - Anshar Studios
 "Video Game, Video Game Publishers",Developer - Antimatter Games
+"Video Game, Video Game Publishers",Developer - AP Thomson
+"Video Game, Video Game Publishers",Developer - aquria
 "Video Game, Video Game Publishers",Developer - Arctic Hazard AS
 "Video Game, Video Game Publishers",Developer - ArenaNet
 "Video Game, Video Game Publishers",Developer - Asymmetric Publications
@@ -4787,8 +4791,8 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Auer Media & Entertainment
 "Video Game, Video Game Publishers",Developer - AuntyGames
 "Video Game, Video Game Publishers",Developer - Avalanche Studios
-"Video Game, Video Game Publishers",Developer - B-Alive
 "Video Game, Video Game Publishers",Developer - Bad Vices Games
+"Video Game, Video Game Publishers",Developer - B-Alive
 "Video Game, Video Game Publishers",Developer - Battlefield Studios
 "Video Game, Video Game Publishers",Developer - BeamNG GmbH
 "Video Game, Video Game Publishers",Developer - Beat games
@@ -4796,6 +4800,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Ben Esposito
 "Video Game, Video Game Publishers",Developer - BidOn Games Studio
 "Video Game, Video Game Publishers",Developer - Big Blue Box
+"Video Game, Video Game Publishers",Developer - bilibili
 "Video Game, Video Game Publishers",Developer - Black Forest Games
 "Video Game, Video Game Publishers",Developer - Blackmill Games
 "Video Game, Video Game Publishers",Developer - Blue Fang Games
@@ -4804,6 +4809,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Bonsai Collective
 "Video Game, Video Game Publishers",Developer - Borealys Games
 "Video Game, Video Game Publishers",Developer - Brimstone Games
+"Video Game, Video Game Publishers",Developer - btf
 "Video Game, Video Game Publishers",Developer - Byking
 "Video Game, Video Game Publishers",Developer - Callback
 "Video Game, Video Game Publishers",Developer - Cavalier Game Studios
@@ -4826,21 +4832,21 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - CyberFront
 "Video Game, Video Game Publishers",Developer - Cyberwave
 "Video Game, Video Game Publishers",Developer - Cygames
-"Video Game, Video Game Publishers",Developer - D-CELL GAMES
 "Video Game, Video Game Publishers",Developer - DALOAR
-"Video Game, Video Game Publishers",Developer - DINOGOD
-"Video Game, Video Game Publishers",Developer - DR Studios
 "Video Game, Video Game Publishers",Developer - Dark Point Games
 "Video Game, Video Game Publishers",Developer - David Wehle
+"Video Game, Video Game Publishers",Developer - D-CELL GAMES
 "Video Game, Video Game Publishers",Developer - Dead Mage
 "Video Game, Video Game Publishers",Developer - Deep Field Games
 "Video Game, Video Game Publishers",Developer - Digixart Entertainment
 "Video Game, Video Game Publishers",Developer - Dim Bulb Games
 "Video Game, Video Game Publishers",Developer - Dimps Corporation
+"Video Game, Video Game Publishers",Developer - DINOGOD
 "Video Game, Video Game Publishers",Developer - Distinctive Software
 "Video Game, Video Game Publishers",Developer - Doonutsaur
 "Video Game, Video Game Publishers",Developer - Double Eleven
 "Video Game, Video Game Publishers",Developer - Douze Dixiemes
+"Video Game, Video Game Publishers",Developer - DR Studios
 "Video Game, Video Game Publishers",Developer - Draw Distance
 "Video Game, Video Game Publishers",Developer - Duper Games
 "Video Game, Video Game Publishers",Developer - Dvora Studio
@@ -4863,9 +4869,9 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Evil Empire
 "Video Game, Video Game Publishers",Developer - Exkee
 "Video Game, Video Game Publishers",Developer - Eyes Out
-"Video Game, Video Game Publishers",Developer - FASA Interactive
 "Video Game, Video Game Publishers",Developer - Falcom
 "Video Game, Video Game Publishers",Developer - Fancy Fish Games
+"Video Game, Video Game Publishers",Developer - FASA Interactive
 "Video Game, Video Game Publishers",Developer - Feel Free Games
 "Video Game, Video Game Publishers",Developer - Fire & Frost
 "Video Game, Video Game Publishers",Developer - Firebrand Games
@@ -4909,10 +4915,9 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Hutch Games
 "Video Game, Video Game Publishers",Developer - Hypergryph
 "Video Game, Video Game Publishers",Developer - Hypixel Studios
-"Video Game, Video Game Publishers",Developer - I-play
-"Video Game, Video Game Publishers",Developer - IKINA Games
 "Video Game, Video Game Publishers",Developer - Iconik
 "Video Game, Video Game Publishers",Developer - Igor Krutov
+"Video Game, Video Game Publishers",Developer - IKINA Games
 "Video Game, Video Game Publishers",Developer - Imagitec Design
 "Video Game, Video Game Publishers",Developer - Implicit Conversions
 "Video Game, Video Game Publishers",Developer - Incognito Entertainment
@@ -4920,6 +4925,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Inresin
 "Video Game, Video Game Publishers",Developer - Intelligent Systems
 "Video Game, Video Game Publishers",Developer - Ion Storm
+"Video Game, Video Game Publishers",Developer - I-play
 "Video Game, Video Game Publishers",Developer - Iridium Studios
 "Video Game, Video Game Publishers",Developer - Iron Frog
 "Video Game, Video Game Publishers",Developer - Isoca Games
@@ -4941,9 +4947,6 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Little Sewing Machine
 "Video Game, Video Game Publishers",Developer - Lululu Entertainment
 "Video Game, Video Game Publishers",Developer - Lunar Software
-"Video Game, Video Game Publishers",Developer - MLMEDIA
-"Video Game, Video Game Publishers",Developer - MP2 Games
-"Video Game, Video Game Publishers",Developer - MY.GAMES
 "Video Game, Video Game Publishers",Developer - Mainframe_Industries
 "Video Game, Video Game Publishers",Developer - Malformation Games
 "Video Game, Video Game Publishers",Developer - Mantis Games
@@ -4963,6 +4966,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - MindFuel Games
 "Video Game, Video Game Publishers",Developer - Mipumi Games
 "Video Game, Video Game Publishers",Developer - Mirebound Interactive
+"Video Game, Video Game Publishers",Developer - MLMEDIA
 "Video Game, Video Game Publishers",Developer - Monolith Productions
 "Video Game, Video Game Publishers",Developer - Monolith Soft
 "Video Game, Video Game Publishers",Developer - Monomi Park
@@ -4970,9 +4974,11 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Mopeful Games
 "Video Game, Video Game Publishers",Developer - Moral Anxiety Studio
 "Video Game, Video Game Publishers",Developer - Morefun Studios
+"Video Game, Video Game Publishers",Developer - MP2 Games
+"Video Game, Video Game Publishers",Developer - MY.GAMES
 "Video Game, Video Game Publishers",Developer - Myrkur Games
-"Video Game, Video Game Publishers",Developer - NCS
 "Video Game, Video Game Publishers",Developer - Nano Games
+"Video Game, Video Game Publishers",Developer - NCS
 "Video Game, Video Game Publishers",Developer - Ndcube
 "Video Game, Video Game Publishers",Developer - Nerial
 "Video Game, Video Game Publishers",Developer - NetEase Games
@@ -4990,13 +4996,13 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Notorious Studios
 "Video Game, Video Game Publishers",Developer - Now Production
 "Video Game, Video Game Publishers",Developer - Nyamakop
-"Video Game, Video Game Publishers",Developer - OMOCAT
-"Video Game, Video Game Publishers",Developer - OMYOG
 "Video Game, Video Game Publishers",Developer - Obsidian Entertainment
 "Video Game, Video Game Publishers",Developer - Ocean Drive Studio
 "Video Game, Video Game Publishers",Developer - Office Create
 "Video Game, Video Game Publishers",Developer - Offworld Industries
 "Video Game, Video Game Publishers",Developer - Old Skull Games
+"Video Game, Video Game Publishers",Developer - OMOCAT
+"Video Game, Video Game Publishers",Developer - OMYOG
 "Video Game, Video Game Publishers",Developer - One Up Plus
 "Video Game, Video Game Publishers",Developer - Origin8 Technologies
 "Video Game, Video Game Publishers",Developer - Osmotic Studios
@@ -5028,7 +5034,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Quantumfrog
 "Video Game, Video Game Publishers",Developer - Quarter Up
 "Video Game, Video Game Publishers",Developer - Quite OK Games
-"Video Game, Video Game Publishers",Developer - RENGAME
+"Video Game, Video Game Publishers",Developer - qureate
 "Video Game, Video Game Publishers",Developer - Rain Games
 "Video Game, Video Game Publishers",Developer - Rare Ltd.
 "Video Game, Video Game Publishers",Developer - Rastrolabs Game Studio
@@ -5037,22 +5043,22 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Rebel Wolves
 "Video Game, Video Game Publishers",Developer - Red Games Co.
 "Video Game, Video Game Publishers",Developer - Relevo
+"Video Game, Video Game Publishers",Developer - RENGAME
 "Video Game, Video Game Publishers",Developer - Retroware
 "Video Game, Video Game Publishers",Developer - Right Nice Games
 "Video Game, Video Game Publishers",Developer - Robot House
 "Video Game, Video Game Publishers",Developer - Ryo Kobuchi
-"Video Game, Video Game Publishers",Developer - S-GAME
-"Video Game, Video Game Publishers",Developer - SCS Software
-"Video Game, Video Game Publishers",Developer - SIGONO INC.
-"Video Game, Video Game Publishers",Developer - SMG Studio
 "Video Game, Video Game Publishers",Developer - Sad Cat Studios
 "Video Game, Video Game Publishers",Developer - Saikat Deb
 "Video Game, Video Game Publishers",Developer - Sam Eng
 "Video Game, Video Game Publishers",Developer - San Diego Studio
 "Video Game, Video Game Publishers",Developer - Sanzaru Games
+"Video Game, Video Game Publishers",Developer - SCS Software
 "Video Game, Video Game Publishers",Developer - Sedleo
 "Video Game, Video Game Publishers",Developer - Serafini Productions
+"Video Game, Video Game Publishers",Developer - S-GAME
 "Video Game, Video Game Publishers",Developer - Shift
+"Video Game, Video Game Publishers",Developer - SIGONO INC.
 "Video Game, Video Game Publishers",Developer - Silver Lining Studio
 "Video Game, Video Game Publishers",Developer - Simon Lukasik
 "Video Game, Video Game Publishers",Developer - Singularity 6
@@ -5062,6 +5068,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Slightly Mad Studios
 "Video Game, Video Game Publishers",Developer - Sluggerfly
 "Video Game, Video Game Publishers",Developer - Smart Raven Studio
+"Video Game, Video Game Publishers",Developer - SMG Studio
 "Video Game, Video Game Publishers",Developer - Snoozy Kazoo
 "Video Game, Video Game Publishers",Developer - Sokpop Collective
 "Video Game, Video Game Publishers",Developer - SomaSim
@@ -5080,7 +5087,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Sundew Studios
 "Video Game, Video Game Publishers",Developer - Sunhead Games
 "Video Game, Video Game Publishers",Developer - Sunny Side Up
-"Video Game, Video Game Publishers",Developer - TVT Co. Ltd.
+"Video Game, Video Game Publishers",Developer - sunset visitor
 "Video Game, Video Game Publishers",Developer - Tactic Studios
 "Video Game, Video Game Publishers",Developer - Tako Boy Studios LLC
 "Video Game, Video Game Publishers",Developer - Tatsujin
@@ -5104,12 +5111,15 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Thunder Lotus Games
 "Video Game, Video Game Publishers",Developer - Timberline Studio
 "Video Game, Video Game Publishers",Developer - Tindalos Interactive
+"Video Game, Video Game Publishers",Developer - tiny Build GAMES
 "Video Game, Video Game Publishers",Developer - Toaplan
 "Video Game, Video Game Publishers",Developer - Toge Productions
 "Video Game, Video Game Publishers",Developer - TomorrowHead Studio
+"Video Game, Video Game Publishers",Developer - tose
 "Video Game, Video Game Publishers",Developer - Total Mayhem Games
 "Video Game, Video Game Publishers",Developer - Toukana Interactive
 "Video Game, Video Game Publishers",Developer - Treyarch
+"Video Game, Video Game Publishers","Developer - tri-Ace, Inc."
 "Video Game, Video Game Publishers",Developer - Tribute Games
 "Video Game, Video Game Publishers",Developer - Trigger Happy Interactive
 "Video Game, Video Game Publishers",Developer - Trinket Studios
@@ -5118,6 +5128,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - True Colors
 "Video Game, Video Game Publishers",Developer - TrueWorld Studios
 "Video Game, Video Game Publishers",Developer - Turn 10
+"Video Game, Video Game Publishers",Developer - TVT Co. Ltd.
 "Video Game, Video Game Publishers",Developer - Ubisoft Ivory Tower
 "Video Game, Video Game Publishers",Developer - United Front Games
 "Video Game, Video Game Publishers",Developer - Unity 3D
@@ -5136,16 +5147,8 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Developer - Xantera
 "Video Game, Video Game Publishers",Developer - Xeen
 "Video Game, Video Game Publishers","Developer - Young Horses, Inc"
-"Video Game, Video Game Publishers",Developer - Z-Software
 "Video Game, Video Game Publishers",Developer - ZDT Studio
-"Video Game, Video Game Publishers",Developer - aquria
-"Video Game, Video Game Publishers",Developer - bilibili
-"Video Game, Video Game Publishers",Developer - btf
-"Video Game, Video Game Publishers",Developer - qureate
-"Video Game, Video Game Publishers",Developer - sunset visitor
-"Video Game, Video Game Publishers",Developer - tiny Build GAMES
-"Video Game, Video Game Publishers",Developer - tose
-"Video Game, Video Game Publishers","Developer - tri-Ace, Inc."
+"Video Game, Video Game Publishers",Developer - Z-Software
 "Video Game, Video Game Publishers",Publisher - 1C Company
 "Video Game, Video Game Publishers",Publisher - Acke Hallgren
 "Video Game, Video Game Publishers",Publisher - Asymmetric Publishers
@@ -5155,6 +5158,7 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Publisher - Daniel Mullins Games
 "Video Game, Video Game Publishers",Publisher - Dark Point Games
 "Video Game, Video Game Publishers",Publisher - Echodog Games
+"Video Game, Video Game Publishers",Publisher - eFUSION X
 "Video Game, Video Game Publishers",Publisher - Everything Unlimited Ltd.
 "Video Game, Video Game Publishers",Publisher - Feel Free Games
 "Video Game, Video Game Publishers",Publisher - Flamebait Games
@@ -5172,8 +5176,9 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Publisher - Might and Delight
 "Video Game, Video Game Publishers",Publisher - Mipumi Games
 "Video Game, Video Game Publishers",Publisher - NetEase Games
-"Video Game, Video Game Publishers","Publisher - OMOCAT, LLC"
 "Video Game, Video Game Publishers",Publisher - Offworld Industries
+"Video Game, Video Game Publishers","Publisher - OMOCAT, LLC"
+"Video Game, Video Game Publishers",Publisher - qureate
 "Video Game, Video Game Publishers",Publisher - Ratalaika Games
 "Video Game, Video Game Publishers",Publisher - Singularity 6
 "Video Game, Video Game Publishers",Publisher - Sokpop Collective
@@ -5186,5 +5191,3 @@ Video Game,Rating - T
 "Video Game, Video Game Publishers",Publisher - ValuSoft
 "Video Game, Video Game Publishers",Publisher - Vector3 Studio
 "Video Game, Video Game Publishers",Publisher - Winged Cloud
-"Video Game, Video Game Publishers",Publisher - eFUSION X
-"Video Game, Video Game Publishers",Publisher - qureate

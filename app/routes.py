@@ -567,7 +567,21 @@ def process_taxonomy_bulk_file(
         bottom=Side(style="thin", color="E2E8F0")
     )
 
-    new_headers = headers + ["title_category", "title_sub_category"]
+    cat_idx = None
+    sub_idx = None
+    for idx, h in enumerate(headers):
+        h_lower = str(h).strip().lower()
+        if h_lower in {"title_category", "title category", "category"}:
+            cat_idx = idx
+        elif h_lower in {"title_sub_category", "title_subcategory", "title sub category", "title sub-category", "sub_category", "subcategory", "sub-category"}:
+            sub_idx = idx
+
+    inplace = (cat_idx is not None and sub_idx is not None)
+    if inplace:
+        new_headers = list(headers)
+    else:
+        new_headers = headers + ["title_category", "title_sub_category"]
+
     for col_idx, h in enumerate(new_headers, 1):
         cell = out_sheet.cell(row=1, column=col_idx)
         cell.value = h
@@ -588,7 +602,13 @@ def process_taxonomy_bulk_file(
             cell.font = data_font
             cell.border = thin_border
             
-        cat_col = len(row) + 1
+        if inplace:
+            cat_col = cat_idx + 1
+            sub_col = sub_idx + 1
+        else:
+            cat_col = len(row) + 1
+            sub_col = len(row) + 2
+
         cat_cell = out_sheet.cell(row=row_idx, column=cat_col)
         cat_cell.value = category_val
         cat_cell.font = badge_font
@@ -596,7 +616,6 @@ def process_taxonomy_bulk_file(
         cat_cell.border = thin_border
         cat_cell.alignment = Alignment(horizontal="center", vertical="center")
 
-        sub_col = len(row) + 2
         sub_cell = out_sheet.cell(row=row_idx, column=sub_col)
         sub_cell.value = subcategory_val
         sub_cell.font = data_font
@@ -676,15 +695,16 @@ async def download_taxonomy_template():
     ws.title = "Taxonomy Template"
     
     headers = [
-        "Entity Name", 
-        "Instagram Handle", 
-        "Facebook Page", 
-        "Twitter Handle", 
-        "TikTok User", 
-        "YouTube Channel", 
-        "Wikipedia URL", 
-        "Wikidata ID", 
-        "IMDb ID"
+        "title", 
+        "title_category", 
+        "title_sub_category", 
+        "facebook_page", 
+        "twitter_handle", 
+        "instagram_user", 
+        "youtube_channel_username", 
+        "tiktok_user", 
+        "wikipedia_page", 
+        "imdb_id"
     ]
     
     header_fill = PatternFill(start_color="1E293B", end_color="1E293B", fill_type="solid")
@@ -698,9 +718,9 @@ async def download_taxonomy_template():
         cell.alignment = Alignment(horizontal="center", vertical="center")
         
     examples = [
-        ["Christopher Nolan", "christophernolanofficial", "", "", "", "", "https://en.wikipedia.org/wiki/Christopher_Nolan", "Q25130", "nm0634289"],
-        ["Stranger Things", "strangerthingstv", "", "", "", "", "https://en.wikipedia.org/wiki/Stranger_Things", "Q19798734", "tt5074352"],
-        ["Minecraft", "minecraft", "", "", "", "", "https://en.wikipedia.org/wiki/Minecraft", "Q49028", "tt3560702"],
+        ["Christopher Nolan", "", "", "", "", "christophernolanofficial", "", "", "https://en.wikipedia.org/wiki/Christopher_Nolan", "nm0634289"],
+        ["Stranger Things", "", "", "", "", "strangerthingstv", "", "", "https://en.wikipedia.org/wiki/Stranger_Things", "tt5074352"],
+        ["Minecraft", "", "", "", "", "minecraft", "", "", "https://en.wikipedia.org/wiki/Minecraft", "tt3560702"],
     ]
     
     for row_idx, row in enumerate(examples, 2):
