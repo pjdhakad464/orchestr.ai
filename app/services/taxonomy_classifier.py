@@ -304,8 +304,22 @@ class TaxonomyClassifier:
         self.reference_map = self._load_reference_taxonomy()
 
     def _load_reference_taxonomy(self) -> dict[str, list[str]]:
-        ref_path = Path("data/title_taxonomy_reference.csv")
+        xlsx_path = Path("Title Category and Sub-Category Taxanomy.xlsx")
         mapping = {}
+        if xlsx_path.exists():
+            try:
+                import pandas as pd
+                df = pd.read_excel(xlsx_path)
+                for _, row in df.iterrows():
+                    cat = str(row.get("Title category", "")).strip()
+                    sub = str(row.get("Title Sub Category", "")).strip()
+                    if cat and sub and cat != "nan" and sub != "nan":
+                        mapping.setdefault(cat, []).append(sub)
+                return mapping
+            except Exception as e:
+                print(f"Failed to load Title Category and Sub-Category Taxanomy.xlsx: {e}")
+
+        ref_path = Path("data/title_taxonomy_reference.csv")
         if ref_path.exists():
             try:
                 with ref_path.open("r", encoding="utf-8-sig") as f:
