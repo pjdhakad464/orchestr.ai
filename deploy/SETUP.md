@@ -104,7 +104,7 @@ sudo useradd -r -m -d /var/www/orchestrai -s /bin/bash orchestrai
 ## Step 7 — Clone the Repository
 
 ```bash
-sudo -u orchestrai git clone https://github.com/pankaj759/OrchestrAI.git /var/www/orchestrai
+sudo -u orchestrai git clone https://github.com/pjdhakad464/orchestr.ai.git /var/www/orchestrai
 ```
 
 
