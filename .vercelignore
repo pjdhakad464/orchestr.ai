@@ -1,0 +1,13 @@
+data/
+validated_runs/
+.venv/
+venv/
+scratch/
+*.log
+*.sqlite3
+*.xlsx
+*.gz
+*.tsv
+*.egg-info
+.pytest_cache/
+tests/

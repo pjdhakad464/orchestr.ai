@@ -316,3 +316,88 @@ def _resolve_duckduckgo_url(raw_href: str) -> str | None:
 def _clean_html_text(value: str) -> str:
     text = re.sub(r"<[^>]+>", " ", value)
     return " ".join(html.unescape(text).split())
+
+
+class SerpApiSearchProvider:
+    def __init__(self, timeout_seconds: int, cache: TTLCache) -> None:
+        self.timeout_seconds = timeout_seconds
+        self.cache = cache
+        self.client = httpx.AsyncClient(
+            timeout=self.timeout_seconds,
+            limits=httpx.Limits(max_keepalive_connections=20, max_connections=40),
+        )
+
+    async def search(self, query: str, *, limit: int = 10) -> list[SearchResult]:
+        if not settings.serpapi_api_key:
+            raise SearchProviderUnavailableError(
+                "SerpApi is not configured. Add SERPAPI_API_KEY to your env."
+            )
+        cache_key = self._cache_key(query, limit)
+        cached = self.cache.get(cache_key)
+        if cached is not None:
+            return cached  # type: ignore[return-value]
+
+        params = {
+            "engine": settings.serpapi_engine or "google",
+            "q": query,
+            "api_key": settings.serpapi_api_key,
+            "num": str(limit),
+            "hl": "en",
+            "gl": "us",
+        }
+        try:
+            response = await self.client.get("https://serpapi.com/search.json", params=params)
+            response.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            raise SearchProviderUnavailableError(
+                f"SerpApi web search failed with HTTP {exc.response.status_code}."
+            ) from exc
+        except httpx.HTTPError as exc:
+            raise SearchProviderUnavailableError(
+                f"SerpApi web search failed: {exc.__class__.__name__}."
+            ) from exc
+
+        payload = response.json()
+        results: list[SearchResult] = []
+        knowledge_graph = payload.get("knowledge_graph") or {}
+        position = 1
+        for key in ("profiles", "social_profiles"):
+            for item in knowledge_graph.get(key) or []:
+                link = item.get("link")
+                if link:
+                    results.append(
+                        SearchResult(
+                            title=item.get("name") or item.get("title") or query,
+                            url=link,
+                            snippet="Google knowledge graph social profile",
+                            source_domain=urlparse(link).netloc.lower(),
+                            position=position,
+                            metadata={"knowledge_graph": "true"},
+                        )
+                    )
+                    position += 1
+
+        for result in payload.get("organic_results", []):
+            link = result.get("link")
+            if link:
+                results.append(
+                    SearchResult(
+                        title=result.get("title") or "",
+                        url=link,
+                        snippet=result.get("snippet") or "",
+                        source_domain=urlparse(link).netloc.lower(),
+                        position=position,
+                        metadata={},
+                    )
+                )
+                position += 1
+                if position > limit:
+                    break
+
+        self.cache.set(cache_key, results)
+        return results
+
+    def _cache_key(self, query: str, limit: int) -> str:
+        digest = hashlib.sha1(f"serpapi:{query}:{limit}".encode("utf-8")).hexdigest()
+        return f"serpapi:{digest}"
+

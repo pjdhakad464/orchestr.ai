@@ -308,13 +308,27 @@ class TaxonomyClassifier:
         mapping = {}
         if xlsx_path.exists():
             try:
-                import pandas as pd
-                df = pd.read_excel(xlsx_path)
-                for _, row in df.iterrows():
-                    cat = str(row.get("Title category", "")).strip()
-                    sub = str(row.get("Title Sub Category", "")).strip()
-                    if cat and sub and cat != "nan" and sub != "nan":
-                        mapping.setdefault(cat, []).append(sub)
+                from openpyxl import load_workbook
+                wb = load_workbook(xlsx_path, read_only=True, data_only=True)
+                sheet = wb.active
+                # Find column indices for "Title category" and "Title Sub Category"
+                header_row = next(sheet.iter_rows(max_row=1, values_only=True), None)
+                if header_row:
+                    header = [str(cell).strip() if cell is not None else "" for cell in header_row]
+                    try:
+                        cat_idx = header.index("Title category")
+                        sub_idx = header.index("Title Sub Category")
+                    except ValueError:
+                        cat_idx = 0
+                        sub_idx = 1
+
+                    for row in sheet.iter_rows(min_row=2, values_only=True):
+                        if row and len(row) > max(cat_idx, sub_idx):
+                            cat = str(row[cat_idx]).strip() if row[cat_idx] is not None else ""
+                            sub = str(row[sub_idx]).strip() if row[sub_idx] is not None else ""
+                            if cat and sub and cat != "nan" and sub != "nan":
+                                mapping.setdefault(cat, []).append(sub)
+                wb.close()
                 return mapping
             except Exception as e:
                 print(f"Failed to load Title Category and Sub-Category Taxanomy.xlsx: {e}")

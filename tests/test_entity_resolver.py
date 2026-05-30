@@ -68,3 +68,48 @@ async def test_search_requires_disambiguation_for_close_entity_scores():
     assert response.disambiguation_required is True
     assert len(response.entity_candidates) >= 2
     assert response.entity_candidates[0].label != response.entity_candidates[1].label
+
+
+from unittest.mock import AsyncMock, patch
+from app.services.search_provider import SerpApiSearchProvider
+
+@pytest.mark.asyncio
+async def test_serpapi_search_provider():
+    from app.config import settings
+    settings.serpapi_api_key = "test_key"
+    settings.serpapi_engine = "google"
+
+    mock_payload = {
+        "knowledge_graph": {
+            "profiles": [
+                {"name": "Twitter", "link": "https://twitter.com/openai", "title": "Twitter"}
+            ]
+        },
+        "organic_results": [
+            {
+                "title": "OpenAI Website",
+                "link": "https://openai.com",
+                "snippet": "Artificial intelligence research laboratory"
+            }
+        ]
+    }
+
+    provider = SerpApiSearchProvider(timeout_seconds=5, cache=TTLCache(900))
+    
+    with patch.object(provider.client, "get", new_callable=AsyncMock) as mock_get:
+        mock_get.return_value = AsyncMock(
+            status_code=200,
+            json=lambda: mock_payload,
+            raise_for_status=lambda: None
+        )
+
+        results = await provider.search("OpenAI", limit=5)
+        
+        assert len(results) == 2
+        assert results[0].title == "Twitter"
+        assert results[0].url == "https://twitter.com/openai"
+        assert results[0].snippet == "Google knowledge graph social profile"
+        assert results[1].title == "OpenAI Website"
+        assert results[1].url == "https://openai.com"
+        assert results[1].snippet == "Artificial intelligence research laboratory"
+

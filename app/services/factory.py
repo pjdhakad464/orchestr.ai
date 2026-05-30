@@ -4,15 +4,21 @@ from app.services.entity_resolver import EntityResolver
 from app.services.media_resolver import MediaResolver
 from app.services.official_link_resolver import OfficialLinkResolver
 from app.services.scoring import HeuristicScoringEngine
-from app.services.search_provider import WikimediaSearchProvider
+from app.services.search_provider import WikimediaSearchProvider, SerpApiSearchProvider
 from app.services.tmdb_client import TmdbClient
 
 
 def build_entity_resolver(cache: TTLCache) -> EntityResolver:
-    provider = WikimediaSearchProvider(
-        timeout_seconds=settings.request_timeout_seconds,
-        cache=cache,
-    )
+    if settings.serpapi_api_key:
+        provider = SerpApiSearchProvider(
+            timeout_seconds=settings.request_timeout_seconds,
+            cache=cache,
+        )
+    else:
+        provider = WikimediaSearchProvider(
+            timeout_seconds=settings.request_timeout_seconds,
+            cache=cache,
+        )
     official_link_resolver = OfficialLinkResolver(
         timeout_seconds=settings.request_timeout_seconds,
         cache=cache,

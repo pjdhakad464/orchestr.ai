@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     tmdb_api_key: str = ""
     tmdb_read_access_token: str = ""
     omdb_api_key: str = ""
+    serpapi_api_key: str = ""
+    serpapi_engine: str = "google"
     imdb_title_basics_url: str = "https://datasets.imdbws.com/title.basics.tsv.gz"
     imdb_name_basics_url: str = "https://datasets.imdbws.com/name.basics.tsv.gz"
     imdb_dataset_dir: str = ""
