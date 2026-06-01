@@ -58,10 +58,133 @@ class ImdbTitleMatch:
 
 class ImdbDatasetLookupService:
     def lookup_title(self, query: TitleLookupQuery) -> list[ImdbTitleMatch]:
-        db_path = self._ensure_imdb_dataset_index()
-        with sqlite3.connect(db_path) as connection:
-            connection.row_factory = sqlite3.Row
-            return self._lookup_title_matches(connection, query)
+        db_available = True
+        try:
+            db_path = self._ensure_imdb_dataset_index()
+        except Exception:
+            db_available = False
+
+        if db_available:
+            try:
+                with sqlite3.connect(db_path) as connection:
+                    connection.row_factory = sqlite3.Row
+                    return self._lookup_title_matches(connection, query)
+            except Exception:
+                pass
+
+        # Fallback to TMDB and OMDB API
+        return self._lookup_title_via_api(query)
+
+    def _lookup_title_via_api(self, query: TitleLookupQuery) -> list[ImdbTitleMatch]:
+        results: list[ImdbTitleMatch] = []
+        timeout = httpx.Timeout(10.0, connect=5.0)
+
+        # 1. Try OMDB Search API
+        if settings.omdb_api_key:
+            try:
+                omdb_type = ""
+                if query.title_type == "tv":
+                    omdb_type = "series"
+                elif query.title_type == "movie":
+                    omdb_type = "movie"
+
+                params = {"apikey": settings.omdb_api_key, "s": query.title}
+                if omdb_type:
+                    params["type"] = omdb_type
+                if query.year:
+                    params["y"] = query.year
+
+                with httpx.Client(timeout=timeout) as client:
+                    resp = client.get("https://www.omdbapi.com/", params=params)
+                    if resp.status_code == 200:
+                        payload = resp.json()
+                        if payload.get("Response") != "False":
+                            for item in payload.get("Search") or []:
+                                imdb_id = item.get("imdbID")
+                                if imdb_id:
+                                    t_type = "tvSeries" if item.get("Type") == "series" else "movie"
+                                    display_title = item.get("Title") or ""
+                                    year_val = (item.get("Year") or "").split("–")[0].strip()
+                                    results.append(
+                                        ImdbTitleMatch(
+                                            imdb_id=imdb_id,
+                                            url=f"https://www.imdb.com/title/{imdb_id}/",
+                                            display_title=display_title,
+                                            original_title=display_title,
+                                            title_type=t_type,
+                                            start_year=year_val,
+                                            end_year="",
+                                            score=180.0,  # Definite match score threshold is 150
+                                            matched_on=["omdb_api_fallback"],
+                                        )
+                                    )
+                            if results:
+                                return results
+            except Exception as e:
+                print(f"OMDB API fallback failed: {e}")
+
+        # 2. Try TMDB Search API
+        if settings.tmdb_api_key:
+            try:
+                headers = {}
+                if settings.tmdb_read_access_token:
+                    headers["Authorization"] = f"Bearer {settings.tmdb_read_access_token}"
+
+                media_types = []
+                if query.title_type == "tv":
+                    media_types = ["tv"]
+                elif query.title_type == "movie":
+                    media_types = ["movie"]
+                else:
+                    media_types = ["tv", "movie"]
+
+                with httpx.Client(timeout=timeout) as client:
+                    for media_type in media_types:
+                        url = f"https://api.themoviedb.org/3/search/{media_type}"
+                        params = {"query": query.title}
+                        if not settings.tmdb_read_access_token:
+                            params["api_key"] = settings.tmdb_api_key
+                        if query.year:
+                            date_key = "first_air_date_year" if media_type == "tv" else "year"
+                            params[date_key] = query.year
+
+                        resp = client.get(url, params=params, headers=headers)
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            for item in (data.get("results") or [])[:5]:
+                                tmdb_id = item.get("id")
+                                ext_url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}/external_ids"
+                                ext_params = {}
+                                if not settings.tmdb_read_access_token:
+                                    ext_params["api_key"] = settings.tmdb_api_key
+                                ext_resp = client.get(ext_url, params=ext_params, headers=headers)
+                                imdb_id = ""
+                                if ext_resp.status_code == 200:
+                                    imdb_id = ext_resp.json().get("imdb_id") or ""
+
+                                if imdb_id:
+                                    display_name = item.get("name") if media_type == "tv" else item.get("title")
+                                    date_val = item.get("first_air_date") if media_type == "tv" else item.get("release_date")
+                                    year_val = (date_val or "")[:4]
+                                    results.append(
+                                        ImdbTitleMatch(
+                                            imdb_id=imdb_id,
+                                            url=f"https://www.imdb.com/title/{imdb_id}/",
+                                            display_title=display_name,
+                                            original_title=item.get("original_name") if media_type == "tv" else item.get("original_title"),
+                                            title_type="tvSeries" if media_type == "tv" else "movie",
+                                            start_year=year_val,
+                                            end_year="",
+                                            score=175.0,  # Definite match score threshold is 150
+                                            matched_on=["tmdb_api_fallback"],
+                                        )
+                                    )
+                    if results:
+                        return results
+            except Exception as e:
+                print(f"TMDB API fallback failed: {e}")
+
+        return []
 
     def _lookup_title_matches(self, connection: sqlite3.Connection, query: TitleLookupQuery) -> list[ImdbTitleMatch]:
         normalized = _normalize_lookup_text(query.title)

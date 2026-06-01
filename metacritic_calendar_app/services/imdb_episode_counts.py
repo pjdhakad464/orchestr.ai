@@ -249,8 +249,8 @@ class ImdbEpisodeCountService:
         )
 
     def _lookup_counts(self, imdb_id: str) -> tuple[int, int | None, int, int]:
-        db_path = self._ensure_episode_counts_index()
         try:
+            db_path = self._ensure_episode_counts_index()
             with sqlite3.connect(db_path) as connection:
                 row = connection.execute(
                     """
@@ -260,13 +260,93 @@ class ImdbEpisodeCountService:
                     """,
                     (imdb_id,),
                 ).fetchone()
-        except sqlite3.DatabaseError as exc:
-            raise ImdbEpisodeCountError(f"could not read episode count index: {exc}") from exc
+                if row is not None:
+                    latest_season_number = int(row[1]) if row[1] is not None else None
+                    return int(row[0] or 0), latest_season_number, int(row[2] or 0), int(row[3] or 0)
+        except Exception as exc:
+            print(f"SQLite episode counts query failed, falling back to API lookup: {exc}")
 
-        if row is None:
-            return 0, None, 0, 0
-        latest_season_number = int(row[1]) if row[1] is not None else None
-        return int(row[0] or 0), latest_season_number, int(row[2] or 0), int(row[3] or 0)
+        return self._lookup_counts_via_api(imdb_id)
+
+    def _lookup_counts_via_api(self, imdb_id: str) -> tuple[int, int | None, int, int]:
+        from title_url_lookup_app.config import settings as title_settings
+        timeout = httpx.Timeout(10.0, connect=5.0)
+
+        # 1. Try TMDB API using Find endpoint
+        if title_settings.tmdb_api_key:
+            try:
+                headers = {}
+                if title_settings.tmdb_read_access_token:
+                    headers["Authorization"] = f"Bearer {title_settings.tmdb_read_access_token}"
+
+                find_url = f"https://api.themoviedb.org/3/find/{imdb_id}"
+                find_params = {"external_source": "imdb_id"}
+                if not title_settings.tmdb_read_access_token:
+                    find_params["api_key"] = title_settings.tmdb_api_key
+
+                with httpx.Client(timeout=timeout) as client:
+                    resp = client.get(find_url, params=find_params, headers=headers)
+                    if resp.status_code == 200:
+                        find_data = resp.json()
+                        tv_results = find_data.get("tv_results") or []
+                        if tv_results:
+                            tmdb_id = tv_results[0].get("id")
+
+                            # Get full TV show details
+                            tv_url = f"https://api.themoviedb.org/3/tv/{tmdb_id}"
+                            tv_params = {}
+                            if not title_settings.tmdb_read_access_token:
+                                tv_params["api_key"] = title_settings.tmdb_api_key
+
+                            tv_resp = client.get(tv_url, params=tv_params, headers=headers)
+                            if tv_resp.status_code == 200:
+                                tv_data = tv_resp.json()
+                                season_count = tv_data.get("number_of_seasons") or 0
+                                seasons = tv_data.get("seasons") or []
+                                valid_seasons = [s for s in seasons if s.get("season_number", 0) > 0]
+                                if valid_seasons:
+                                    latest_season = max(valid_seasons, key=lambda s: s.get("season_number"))
+                                    latest_season_number = latest_season.get("season_number")
+                                    latest_season_episode_count = latest_season.get("episode_count") or 0
+                                else:
+                                    latest_season_number = None
+                                    latest_season_episode_count = 0
+
+                                episode_count = tv_data.get("number_of_episodes") or 0
+                                return season_count, latest_season_number, latest_season_episode_count, episode_count
+            except Exception as e:
+                print(f"TMDB counts API fallback failed: {e}")
+
+        # 2. Try OMDB API
+        if title_settings.omdb_api_key:
+            try:
+                url = "https://www.omdbapi.com/"
+                params = {"apikey": title_settings.omdb_api_key, "i": imdb_id}
+                with httpx.Client(timeout=timeout) as client:
+                    resp = client.get(url, params=params)
+                    if resp.status_code == 200:
+                        payload = resp.json()
+                        if payload.get("Response") != "False":
+                            total_seasons_str = payload.get("totalSeasons")
+                            if total_seasons_str and total_seasons_str != "N/A":
+                                season_count = int(total_seasons_str)
+                                latest_season_number = season_count
+
+                                # Query latest season episodes
+                                s_params = {"apikey": title_settings.omdb_api_key, "i": imdb_id, "Season": str(latest_season_number)}
+                                s_resp = client.get(url, params=s_params)
+                                latest_season_episode_count = 0
+                                if s_resp.status_code == 200:
+                                    s_payload = s_resp.json()
+                                    if s_payload.get("Response") != "False":
+                                        episodes = s_payload.get("Episodes") or []
+                                        latest_season_episode_count = len(episodes)
+
+                                return season_count, latest_season_number, latest_season_episode_count, season_count * latest_season_episode_count
+            except Exception as e:
+                print(f"OMDB counts API fallback failed: {e}")
+
+        return 0, None, 0, 0
 
     def _lookup_latest_season_window(
         self,
