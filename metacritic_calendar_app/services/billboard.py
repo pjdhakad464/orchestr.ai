@@ -88,21 +88,112 @@ class BillboardService:
                 raise RuntimeError(f"Billboard returned status code {r.status_code}")
             
             html_content = r.text
-            # Regex to match: href="https://www.billboard.com/artist/taylor-swift/" or similar
-            pattern = re.compile(
-                r'href="https://www\.billboard\.com/artist/(?P<slug>[^/"]+)/?"[^>]*>\s*(?P<name>[^\n\r\t<>]+)\s*</a>', 
-                re.IGNORECASE
-            )
-            matches = pattern.findall(html_content)
+            rows = html_content.split('o-chart-results-list-row-container')
             
             seen = set()
             artists = []
-            for slug, name in matches:
-                unescaped_name = html.unescape(name).strip()
-                if unescaped_name and unescaped_name.lower() not in seen:
-                    seen.add(unescaped_name.lower())
-                    artists.append((unescaped_name, slug))
+            for part in rows[1:101]:  # The first 100 rows
+                match = re.search(r'<h3[^>]+class="[^"]*c-title[^"]*"[^>]*>(.*?)</h3>', part, re.DOTALL)
+                if match:
+                    h3_content = match.group(1).strip()
+                    a_match = re.search(r'<a[^>]*>(.*?)</a>', h3_content, re.DOTALL)
+                    if a_match:
+                        name = a_match.group(1).strip()
+                    else:
+                        name = h3_content
+                    
+                    name = re.sub(r'<[^>]+>', '', name).strip()
+                    unescaped_name = html.unescape(name).strip()
+                    if not unescaped_name:
+                        continue
+                        
+                    slug = ""
+                    link_match = re.search(r'href="[^"]*/artist/([^/"]+)', h3_content)
+                    if link_match:
+                        slug = link_match.group(1).strip()
+                    else:
+                        slug = unescaped_name.lower().replace(" ", "-").replace("&", "and").replace(".", "")
+                        slug = "".join(c for c in slug if c.isalnum() or c == "-")
+                    
+                    if unescaped_name.lower() not in seen:
+                        seen.add(unescaped_name.lower())
+                        artists.append((unescaped_name, slug))
             return artists
+
+    async def _make_wikidata_request(self, client: httpx.AsyncClient, params: dict) -> dict | None:
+        max_retries = 5
+        backoff = 1.5
+        for attempt in range(max_retries):
+            try:
+                r = await client.get(self.WIKIDATA_API, params=params)
+                if r.status_code == 429:
+                    print(f"Wikidata rate limit (429) hit for {params.get('search') or params.get('ids')}. Retrying in {backoff}s...")
+                    await asyncio.sleep(backoff)
+                    backoff *= 2.0
+                    continue
+                if r.status_code != 200:
+                    print(f"Wikidata request failed with status {r.status_code}")
+                    return None
+                return r.json()
+            except (httpx.HTTPError, asyncio.TimeoutError) as exc:
+                print(f"Wikidata request exception: {exc}. Retrying in {backoff}s...")
+                await asyncio.sleep(backoff)
+                backoff *= 2.0
+        return None
+
+    def _select_best_qid(self, search_hits: list[dict], artist_name: str) -> str | None:
+        if not search_hits:
+            return None
+            
+        best_qid = None
+        best_score = -9999
+        
+        artist_keywords = [
+            "singer", "rapper", "musician", "band", "music group", "musical group", 
+            "composer", "songwriter", "vocalist", "disc jockey", "dj", "boy band", 
+            "girl group", "orchestra", "duo", "trio", "quartet", "quintet", "music project", 
+            "performing arts group", "rock group", "metal group", "pop group", "hip hop group", 
+            "indie group"
+        ]
+        negative_keywords = [
+            "album by", "song by", "single by", "track by", "discography", "tour by", 
+            "given name", "family name", "disambiguation page", "surname", "chemical compound", 
+            "film by", "novel by", "book by"
+        ]
+        other_positive_keywords = [
+            "actor", "actress", "celebrity", "entertainer", "human", "person", 
+            "music", "musical", "album", "song", "single"
+        ]
+        
+        for hit in search_hits:
+            qid = hit.get("id")
+            label = hit.get("label", "").lower()
+            desc = hit.get("description", "").lower()
+            
+            score = 0
+            if label == artist_name.lower():
+                score += 5
+                
+            for kw in artist_keywords:
+                if kw in desc:
+                    score += 10
+                    break
+                    
+            for kw in other_positive_keywords:
+                if kw in desc:
+                    score += 2
+                    break
+                    
+            for kw in negative_keywords:
+                if kw in desc:
+                    score -= 15
+                    break
+                    
+            if score > best_score:
+                best_score = score
+                best_qid = qid
+                
+        return best_qid
 
     async def resolve_artist_details(self, name: str, slug: str) -> dict:
         """Resolves gender, profession, IMDb ID and Wikipedia URL for an artist name, using cache when available."""
@@ -131,18 +222,19 @@ class BillboardService:
                     "limit": 3,
                     "search": name
                 }
-                r_search = await client.get(self.WIKIDATA_API, params=search_params)
-                if r_search.status_code != 200:
+                search_data = await self._make_wikidata_request(client, search_params)
+                if not search_data:
                     return result
                 
-                search_data = r_search.json()
                 search_hits = search_data.get("search", [])
                 if not search_hits:
                     cache_artist(name, slug, result["gender"], result["profession"], result["imdb_id"], result["wikipedia_url"])
                     return result
                 
-                # Take top result
-                qid = search_hits[0].get("id")
+                # Take best result using disambiguation scoring
+                qid = self._select_best_qid(search_hits, name)
+                if not qid:
+                    qid = search_hits[0].get("id")
                 
                 # 2. Get claims and sitelinks
                 entity_params = {
@@ -152,11 +244,10 @@ class BillboardService:
                     "props": "claims|sitelinks",
                     "languages": "en"
                 }
-                r_entity = await client.get(self.WIKIDATA_API, params=entity_params)
-                if r_entity.status_code != 200:
+                entity_data = await self._make_wikidata_request(client, entity_params)
+                if not entity_data:
                     return result
                 
-                entity_data = r_entity.json()
                 entity = entity_data.get("entities", {}).get(qid, {})
                 
                 # Sitelinks
@@ -195,9 +286,9 @@ class BillboardService:
                         "props": "labels",
                         "languages": "en"
                     }
-                    r_resolve = await client.get(self.WIKIDATA_API, params=resolve_params)
-                    if r_resolve.status_code == 200:
-                        resolved_entities = r_resolve.json().get("entities", {})
+                    resolved_data = await self._make_wikidata_request(client, resolve_params)
+                    if resolved_data:
+                        resolved_entities = resolved_data.get("entities", {})
                         
                         if gender_qid:
                             result["gender"] = resolved_entities.get(gender_qid, {}).get("labels", {}).get("en", {}).get("value", "Unknown")

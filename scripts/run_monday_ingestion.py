@@ -15,8 +15,8 @@ from metacritic_calendar_app.services.billboard import BillboardService
 from metacritic_calendar_app.services.imdb_episode_counts import TvImdbEpisodeCountService
 from imdb_lookup_app.services.lookup import ImdbLookupService
 
-BILLBOARD_FILE = Path("Billboard_Top_Artists.xlsx")
-TV_FILE = Path("TV-Seasons-and-Episodes.xlsx")
+BILLBOARD_FILE = Path(__file__).resolve().parent.parent / "Billboard_Top_Artists.xlsx"
+TV_FILE = Path(__file__).resolve().parent.parent / "TV-Seasons-and-Episodes.xlsx"
 
 def format_date_dd_mm_yyyy(date_str: str) -> str:
     if not date_str or date_str == "-":
@@ -42,7 +42,7 @@ def format_imdb_profession(prof: str) -> str:
 async def run_billboard_ingestion():
     print("\n--- Starting Billboard Artist 100 Ingestion ---")
     if not BILLBOARD_FILE.exists():
-        print(f"Error: {BILLBOARD_FILE} does not exist!")
+        print(f"Error: {BILLBOARD_FILE} does not exist at {BILLBOARD_FILE}!")
         return
 
     # Fetch top artists and resolve their details
@@ -55,6 +55,11 @@ async def run_billboard_ingestion():
     wb = openpyxl.load_workbook(BILLBOARD_FILE)
     sheet = wb.active
     print(f"Loaded workbook {BILLBOARD_FILE}. Active sheet: {sheet.title}. Max row before: {sheet.max_row}")
+
+    # Truncate sheet back to 8 rows to clear previous run data (keeping header + 7 original example rows)
+    if sheet.max_row > 8:
+        print(f"Truncating spreadsheet from {sheet.max_row} rows down to 8 rows to clear previous run data...")
+        sheet.delete_rows(9, sheet.max_row - 8)
 
     imdb_service = ImdbLookupService()
 
