@@ -195,6 +195,67 @@ class BillboardService:
                 
         return best_qid
 
+    async def _resolve_imdb_id_via_serpapi(self, name: str) -> dict | None:
+        """Resolves IMDb ID and Wikipedia URL using SerpApi search."""
+        from app.config import settings
+        if not settings.serpapi_api_key:
+            return None
+            
+        import httpx
+        import re
+        
+        type_filter = "site:imdb.com"
+        queries = [
+            f"{name} music artist {type_filter}",
+            f"{name} IMDb",
+            name
+        ]
+        
+        res = {"imdb_id": "", "wikipedia_url": ""}
+        
+        async with httpx.AsyncClient(timeout=10, headers=self.headers) as client:
+            for query in queries:
+                params = {
+                    "engine": settings.serpapi_engine or "google",
+                    "q": query,
+                    "api_key": settings.serpapi_api_key,
+                    "num": "5",
+                    "hl": "en",
+                    "gl": "us",
+                }
+                try:
+                    resp = await client.get("https://serpapi.com/search.json", params=params)
+                    if resp.status_code == 200:
+                        payload = resp.json()
+                        
+                        # Check knowledge graph profiles
+                        kg = payload.get("knowledge_graph", {})
+                        for key in ("profiles", "social_profiles"):
+                            for item in kg.get(key) or []:
+                                link = item.get("link", "")
+                                match = re.search(r"/name/(nm\d+)", link)
+                                if match:
+                                    res["imdb_id"] = match.group(1)
+                                    break
+                            if res["imdb_id"]:
+                                break
+                                
+                        # Scan organic results
+                        for result in payload.get("organic_results", []):
+                            link = result.get("link", "")
+                            if not res["imdb_id"]:
+                                match = re.search(r"/name/(nm\d+)", link)
+                                if match:
+                                    res["imdb_id"] = match.group(1)
+                            if not res["wikipedia_url"] and "en.wikipedia.org/wiki/" in link:
+                                res["wikipedia_url"] = link
+                                
+                        if res["imdb_id"]:
+                            return res
+                except Exception as e:
+                    print(f"SerpApi query failed for '{query}': {e}")
+        return None if not res["imdb_id"] else res
+
     async def resolve_artist_details(self, name: str, slug: str) -> dict:
         """Resolves gender, profession, IMDb ID and Wikipedia URL for an artist name, using cache when available."""
         cached = get_cached_artist(name)
@@ -224,10 +285,21 @@ class BillboardService:
                 }
                 search_data = await self._make_wikidata_request(client, search_params)
                 if not search_data:
+                    # Try SerpApi fallback
+                    serp_res = await self._resolve_imdb_id_via_serpapi(name)
+                    if serp_res:
+                        result["imdb_id"] = serp_res["imdb_id"]
+                        result["wikipedia_url"] = serp_res["wikipedia_url"]
+                    cache_artist(name, slug, result["gender"], result["profession"], result["imdb_id"], result["wikipedia_url"])
                     return result
                 
                 search_hits = search_data.get("search", [])
                 if not search_hits:
+                    # Try SerpApi fallback
+                    serp_res = await self._resolve_imdb_id_via_serpapi(name)
+                    if serp_res:
+                        result["imdb_id"] = serp_res["imdb_id"]
+                        result["wikipedia_url"] = serp_res["wikipedia_url"]
                     cache_artist(name, slug, result["gender"], result["profession"], result["imdb_id"], result["wikipedia_url"])
                     return result
                 
@@ -246,6 +318,12 @@ class BillboardService:
                 }
                 entity_data = await self._make_wikidata_request(client, entity_params)
                 if not entity_data:
+                    # Try SerpApi fallback
+                    serp_res = await self._resolve_imdb_id_via_serpapi(name)
+                    if serp_res:
+                        result["imdb_id"] = serp_res["imdb_id"]
+                        result["wikipedia_url"] = serp_res["wikipedia_url"]
+                    cache_artist(name, slug, result["gender"], result["profession"], result["imdb_id"], result["wikipedia_url"])
                     return result
                 
                 entity = entity_data.get("entities", {}).get(qid, {})
@@ -300,6 +378,14 @@ class BillboardService:
                                 prof_labels.append(pl)
                         if prof_labels:
                             result["profession"] = ", ".join(prof_labels)
+                            
+                # Fallback to SerpApi if IMDb ID is still missing
+                if not result["imdb_id"]:
+                    serp_res = await self._resolve_imdb_id_via_serpapi(name)
+                    if serp_res:
+                        result["imdb_id"] = serp_res["imdb_id"]
+                        if not result["wikipedia_url"] and serp_res["wikipedia_url"]:
+                            result["wikipedia_url"] = serp_res["wikipedia_url"]
             
             # Cache the result
             cache_artist(name, slug, result["gender"], result["profession"], result["imdb_id"], result["wikipedia_url"])

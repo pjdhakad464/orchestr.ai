@@ -111,6 +111,11 @@ def run_tv_ingestion():
     sheet = wb["Export"] if "Export" in wb.sheetnames else wb.active
     print(f"Loaded workbook {TV_FILE}. Sheet name: {sheet.title}. Max row before: {sheet.max_row}")
 
+    # Truncate sheet back to 18 rows to clear previous run data (keeping header + 17 original example rows)
+    if sheet.max_row > 18:
+        print(f"Truncating spreadsheet from {sheet.max_row} rows down to 18 rows to clear previous run data...")
+        sheet.delete_rows(19, sheet.max_row - 18)
+
     appended_count = 0
     for item in snapshot.items:
         row_data = [
