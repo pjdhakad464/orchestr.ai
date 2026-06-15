@@ -26,7 +26,10 @@ class BillboardArtistItem(BaseModel):
     gender: str = ""
     profession: str = ""
     imdb_id: str = ""
+    imdb_url: str = ""
+    imdb_primary_profession: str = ""
     wikipedia_url: str = ""
+    billboard_url: str = ""
     last_week: str = ""
     is_new_entry: bool = False
     in_reference: bool = False
@@ -156,6 +159,14 @@ class BillboardService:
     @staticmethod
     def _is_new_entry(last_week: str) -> bool:
         return last_week.strip().lower() in NEW_ENTRY_TOKENS
+
+    @staticmethod
+    def _imdb_url(imdb_id: str) -> str:
+        return f"https://www.imdb.com/name/{imdb_id}/" if imdb_id else ""
+
+    @staticmethod
+    def _billboard_url(slug: str) -> str:
+        return f"https://www.billboard.com/artist/{slug}/" if slug else ""
 
     async def _make_wikidata_request(self, client: httpx.AsyncClient, params: dict) -> dict | None:
         max_retries = 5
@@ -494,6 +505,42 @@ class BillboardService:
             print(f"Failed to load Billboard reference workbook: {e}")
         return reference
 
+    NEW_ENTRY_EXPORT_HEADERS = [
+        "Rank", "Artist Name", "IMDb nmcode", "IMDb URL",
+        "IMDb Primary Profession", "Wikipedia URL", "Gender",
+        "Occupations", "Billboard Artist URL",
+    ]
+
+    @classmethod
+    def export_new_entries_xlsx(cls, snapshot: "BillboardArtistSnapshot") -> bytes:
+        """Render the new-entries snapshot as an xlsx workbook matching the
+        9-column reference schema (Rank / Artist Name / IMDb nmcode / IMDb URL /
+        IMDb Primary Profession / Wikipedia URL / Gender / Occupations /
+        Billboard Artist URL).
+        """
+        from io import BytesIO
+        from openpyxl import Workbook
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Billboard New Entries"
+        ws.append(cls.NEW_ENTRY_EXPORT_HEADERS)
+        for item in snapshot.items:
+            ws.append([
+                item.rank,
+                item.name,
+                item.imdb_id,
+                item.imdb_url,
+                item.imdb_primary_profession,
+                item.wikipedia_url,
+                item.gender,
+                item.profession,
+                item.billboard_url,
+            ])
+        buf = BytesIO()
+        wb.save(buf)
+        return buf.getvalue()
+
     @staticmethod
     def _fuzzy_match(name: str, reference: dict[str, dict]) -> tuple[dict | None, float]:
         if not reference:
@@ -528,15 +575,19 @@ class BillboardService:
             is_new = self._is_new_entry(entry["last_week"])
             if is_new:
                 new_count += 1
+            imdb_id = res["imdb_id"] or (ref_row["imdb_id"] if ref_row else "")
             items.append(
                 BillboardArtistItem(
                     rank=entry["rank"],
                     name=res["name"],
                     slug=res["slug"],
-                    gender=res["gender"],
-                    profession=res["profession"],
-                    imdb_id=res["imdb_id"],
-                    wikipedia_url=res["wikipedia_url"],
+                    gender=res["gender"] or (ref_row["gender"] if ref_row else ""),
+                    profession=res["profession"] or (ref_row["occupations"] if ref_row else ""),
+                    imdb_id=imdb_id,
+                    imdb_url=self._imdb_url(imdb_id),
+                    imdb_primary_profession=(ref_row["profession"] if ref_row else ""),
+                    wikipedia_url=res["wikipedia_url"] or (ref_row["wikipedia_url"] if ref_row else ""),
+                    billboard_url=self._billboard_url(res["slug"]),
                     last_week=entry["last_week"],
                     is_new_entry=is_new,
                     in_reference=ref_row is not None,
@@ -580,7 +631,8 @@ class BillboardService:
         for entry, res in zip(new_raw, resolved_results):
             ref_row, score = self._fuzzy_match(entry["name"], reference)
             gender = res["gender"] or (ref_row["gender"] if ref_row else "")
-            profession = res["profession"] or (ref_row["occupations"] or ref_row["profession"] if ref_row else "")
+            occupations = res["profession"] or (ref_row["occupations"] if ref_row else "")
+            imdb_primary = ref_row["profession"] if ref_row else ""
             imdb_id = res["imdb_id"] or (ref_row["imdb_id"] if ref_row else "")
             wikipedia_url = res["wikipedia_url"] or (ref_row["wikipedia_url"] if ref_row else "")
             items.append(
@@ -589,9 +641,12 @@ class BillboardService:
                     name=res["name"],
                     slug=res["slug"],
                     gender=gender,
-                    profession=profession,
+                    profession=occupations,
                     imdb_id=imdb_id,
+                    imdb_url=self._imdb_url(imdb_id),
+                    imdb_primary_profession=imdb_primary,
                     wikipedia_url=wikipedia_url,
+                    billboard_url=self._billboard_url(res["slug"]),
                     last_week=entry["last_week"],
                     is_new_entry=True,
                     in_reference=ref_row is not None,

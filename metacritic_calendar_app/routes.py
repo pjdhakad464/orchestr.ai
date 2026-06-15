@@ -417,6 +417,23 @@ async def export_billboard_csv(export_id: str):
     )
 
 
+@router.get("/billboard/new-entries/xlsx")
+async def billboard_new_entries_xlsx():
+    """Download an xlsx of this week's NEW Billboard Artist 100 entries (Last
+    Week = '-') in the 9-column reference schema: Rank / Artist Name /
+    IMDb nmcode / IMDb URL / IMDb Primary Profession / Wikipedia URL / Gender /
+    Occupations / Billboard Artist URL.
+    """
+    snapshot = await billboard_service.get_new_entries_snapshot()
+    data = billboard_service.export_new_entries_xlsx(snapshot)
+    filename = f"billboard_new_entries_{snapshot.generated_at.strftime('%Y%m%d')}.xlsx"
+    return StreamingResponse(
+        io.BytesIO(data),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
 @router.get("/calendar/search", response_class=HTMLResponse)
 async def calendar_search_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "index.html", build_context(request))
