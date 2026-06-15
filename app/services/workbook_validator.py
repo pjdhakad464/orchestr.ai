@@ -1317,6 +1317,42 @@ def _evaluate_rule(
         category = "Suspected Incorrect"
         confidence = "High"
         reason = "Cell value is not in the list of approved classification tags."
+    elif "genre_mismatch" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "Genre array does not align with IMDb/TMDB genre classifications."
+    elif "date_mismatch" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "Release date year does not match official premiere or release timelines."
+    elif "network_mismatch" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "Network or distributor does not match TMDB network/production data."
+    elif "wikipedia_mismatch" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "Wikipedia URL resolves to a page whose title does not match this entity."
+    elif "imdb_mismatch" in message_lower:
+        category = "Suspected Incorrect"
+        confidence = "High"
+        reason = "IMDb record title does not match this entity."
+    elif "format_error" in message_lower:
+        category = "Formatting Error"
+        confidence = "High"
+        reason = "The value does not conform to the expected format (e.g. trailing newlines, invalid URL/date format)."
+    elif "placeholder" in message_lower:
+        category = "Placeholder Found"
+        confidence = "High"
+        reason = "The field contains a placeholder or blank space instead of actual metadata."
+    elif "missing_wikipedia" in message_lower:
+        category = "Missing Data"
+        confidence = "High"
+        reason = "Wikipedia URL is missing or empty."
+    elif "missing_imdb" in message_lower:
+        category = "Missing Data"
+        confidence = "High"
+        reason = "IMDb ID is missing or empty."
     
     return False, message, category, confidence, reason
 
@@ -1525,6 +1561,36 @@ def _evaluate_rule_core(
         if detail:
             return False, detail
         return False, rule.message or f"{rule.column} could not be verified."
+
+    if rule.check == "genre_taxonomy_audit":
+        passed, detail = _validate_genre_taxonomy(value, row_context or {}, movie_release_cache or {})
+        if passed:
+            return True, ""
+        return False, detail
+
+    if rule.check == "date_cross_check":
+        passed, detail = _validate_date_cross_check(value, row_context or {}, movie_release_cache or {})
+        if passed:
+            return True, ""
+        return False, detail
+
+    if rule.check == "network_platform_audit":
+        passed, detail = _validate_network_platform(value, row_context or {}, movie_release_cache or {})
+        if passed:
+            return True, ""
+        return False, detail
+
+    if rule.check == "wikipedia_url_audit":
+        passed, detail = _validate_wikipedia_url_audit(value, row_context or {}, movie_release_cache or {}, social_client)
+        if passed:
+            return True, ""
+        return False, detail
+
+    if rule.check == "imdb_url_audit":
+        passed, detail = _validate_imdb_url_audit(value, row_context or {}, movie_release_cache or {}, social_client)
+        if passed:
+            return True, ""
+        return False, detail
 
     raise WorkbookValidationConfigError(f"Unsupported rule type: {rule.check}")
 
@@ -4048,3 +4114,422 @@ def _perform_duplicate_conflict_scan(worksheet_context, worksheet, issues):
                             confidence_reason="Same social handle or external ID is assigned to multiple distinct title names."
                         )
                     )
+
+
+def _get_tmdb_metadata_by_imdb_id(imdb_id: str, client: httpx.Client) -> dict[str, Any] | None:
+    url = f"https://api.themoviedb.org/3/find/{imdb_id}"
+    params = {"external_source": "imdb_id"}
+    headers = {}
+    if settings.tmdb_read_access_token:
+        headers["Authorization"] = f"Bearer {settings.tmdb_read_access_token}"
+    else:
+        params["api_key"] = settings.tmdb_api_key
+
+    try:
+        response = client.get(url, params=params, headers=headers)
+        response.raise_for_status()
+        payload = response.json()
+    except Exception:
+        return None
+
+    movies = payload.get("movie_results") or []
+    tvs = payload.get("tv_results") or []
+
+    if movies:
+        movie_id = movies[0].get("id")
+        if movie_id:
+            try:
+                details_payload = _tmdb_get(client, f"/movie/{movie_id}")
+                release_payload = _tmdb_get(client, f"/movie/{movie_id}/release_dates")
+                us_entries: list[dict[str, Any]] = []
+                for result in release_payload.get("results", []):
+                    if result.get("iso_3166_1") == "US":
+                        us_entries.extend(result.get("release_dates", []))
+                us_release_date = _preferred_us_release_date(us_entries)
+                fallback_release_date = _normalize_tmdb_date(details_payload.get("release_date"))
+                genres = [genre.get("name") for genre in details_payload.get("genres", []) if genre.get("name")]
+                companies = [c.get("name") for c in details_payload.get("production_companies", []) if c.get("name")]
+                return {
+                    "type": "movie",
+                    "title": details_payload.get("title") or details_payload.get("original_title") or "",
+                    "release_date": us_release_date or fallback_release_date,
+                    "release_type": _infer_movie_release_type(us_entries),
+                    "genres": genres,
+                    "networks": [],
+                    "companies": companies,
+                }
+            except Exception:
+                pass
+
+    if tvs:
+        tv_id = tvs[0].get("id")
+        if tv_id:
+            try:
+                details_payload = _tmdb_get(client, f"/tv/{tv_id}")
+                genres = [genre.get("name") for genre in details_payload.get("genres", []) if genre.get("name")]
+                networks = [net.get("name") for net in details_payload.get("networks", []) if net.get("name")]
+                first_air_date = _normalize_tmdb_date(details_payload.get("first_air_date"))
+                return {
+                    "type": "tvSeries",
+                    "title": details_payload.get("name") or details_payload.get("original_name") or "",
+                    "release_date": first_air_date,
+                    "release_type": "",
+                    "genres": genres,
+                    "networks": networks,
+                    "companies": [],
+                }
+            except Exception:
+                pass
+
+    return None
+
+
+def _get_tv_metadata(
+    row_context: dict[str, Any],
+    cache: dict[str, tuple[bool, dict[str, Any] | None, str]],
+) -> tuple[bool, dict[str, Any] | None, str]:
+    title = _normalize_movie_lookup_title(row_context.get("title"))
+    if not title:
+        return False, None, "title is missing, so the tv metadata cannot be checked"
+
+    air_year = _tv_lookup_air_year(row_context)
+    lookup_key = f"tv|{title.casefold()}|{air_year or ''}"
+    if lookup_key not in cache:
+        cache[lookup_key] = _lookup_tv_metadata(title, air_year=air_year)
+
+    return cache[lookup_key]
+
+
+def _tv_lookup_air_year(row_context: dict[str, Any]) -> int | None:
+    first_date = _as_date(row_context.get("released_on")) or _as_date(row_context.get("street_date")) or _as_date(row_context.get("latest_season_start_date"))
+    if first_date is not None:
+        return first_date.year
+    return None
+
+
+def _lookup_tv_metadata(title: str, air_year: int | None = None) -> tuple[bool, dict[str, Any] | None, str]:
+    if not (settings.tmdb_api_key or settings.tmdb_read_access_token):
+        return False, None, "TMDB is not configured"
+
+    try:
+        with _build_tmdb_http_client() as client:
+            selected_tv = _search_tmdb_tv(client, title, air_year=air_year)
+            if not selected_tv:
+                return False, None, "tv show not found in TMDB"
+
+            tv_id = selected_tv.get("id")
+            if not tv_id:
+                return False, None, "tv id missing in TMDB search results"
+
+            details_payload = _tmdb_get(client, f"/tv/{tv_id}")
+    except httpx.HTTPError as exc:
+        return False, None, f"TMDB lookup failed: {exc.__class__.__name__}"
+
+    genres = [genre.get("name") for genre in details_payload.get("genres", []) if genre.get("name")]
+    networks = [net.get("name") for net in details_payload.get("networks", []) if net.get("name")]
+    first_air_date = _normalize_tmdb_date(details_payload.get("first_air_date"))
+    metadata = {
+        "release_date": first_air_date,
+        "genres": genres,
+        "networks": networks,
+        "companies": [],
+    }
+    return True, metadata, ""
+
+
+def _search_tmdb_tv(client: httpx.Client, title: str, air_year: int | None = None) -> dict[str, Any] | None:
+    fallback_result: dict[str, Any] | None = None
+    attempted: set[tuple[str, int | None]] = set()
+
+    search_years: list[int | None] = [air_year] if air_year is not None else [None]
+    if air_year is not None:
+        search_years.append(None)
+
+    for year in search_years:
+        for query in _movie_lookup_queries(title):
+            query_key = (query.casefold(), year)
+            if query_key in attempted:
+                continue
+            attempted.add(query_key)
+
+            params: dict[str, Any] = {"query": query}
+            if year is not None:
+                params["first_air_date_year"] = year
+
+            search_payload = _tmdb_get(client, "/search/tv", params)
+            results = search_payload.get("results", [])
+            if not results:
+                continue
+
+            fallback_result = fallback_result or results[0]
+            matched = _select_tmdb_tv_search_result(title, results, air_year=air_year)
+            if matched is not None:
+                return matched
+
+    return fallback_result
+
+
+def _select_tmdb_tv_search_result(
+    query_title: str,
+    results: list[dict[str, Any]],
+    air_year: int | None = None,
+) -> dict[str, Any] | None:
+    matched_results: list[dict[str, Any]] = []
+    for item in results:
+        candidate_titles = [item.get("name"), item.get("original_name")]
+        if any(_titles_loosely_match(query_title, str(candidate)) for candidate in candidate_titles if candidate):
+            matched_results.append(item)
+
+    if not matched_results:
+        return None
+
+    if air_year is not None:
+        year_matches = [item for item in matched_results if _tmdb_result_tv_air_year(item) == air_year]
+        if year_matches:
+            matched_results = year_matches
+
+    matched_results.sort(
+        key=lambda item: (
+            0 if _tmdb_result_tv_exact_name_match(query_title, item) else 1,
+            -float(item.get("popularity") or 0),
+        )
+    )
+    return matched_results[0]
+
+
+def _tmdb_result_tv_exact_name_match(query_title: str, result: dict[str, Any]) -> bool:
+    normalized_query = _normalize_lookup_title(query_title)
+    for candidate in (result.get("name"), result.get("original_name")):
+        if candidate and _normalize_lookup_title(str(candidate)) == normalized_query:
+            return True
+    return False
+
+
+def _tmdb_result_tv_air_year(result: dict[str, Any]) -> int | None:
+    normalized_date = _normalize_tmdb_date(result.get("first_air_date"))
+    if not normalized_date:
+        return None
+    try:
+        return int(normalized_date[:4])
+    except ValueError:
+        return None
+
+
+def _get_entity_metadata(
+    row_context: dict[str, Any],
+    cache: dict[str, tuple[bool, dict[str, Any] | None, str]],
+) -> tuple[bool, dict[str, Any] | None, str]:
+    title_category = _normalize_value(row_context.get("title_category"))
+    imdb_id = _extract_imdb_identifier(row_context.get("imdb_id"))
+
+    if imdb_id:
+        lookup_key = f"imdb_id|{imdb_id}"
+        if lookup_key not in cache:
+            if not (settings.tmdb_api_key or settings.tmdb_read_access_token):
+                cache[lookup_key] = (False, None, "TMDB is not configured")
+            else:
+                try:
+                    with _build_tmdb_http_client() as client:
+                        meta = _get_tmdb_metadata_by_imdb_id(imdb_id, client)
+                        if meta:
+                            cache[lookup_key] = (True, meta, "")
+                        else:
+                            cache[lookup_key] = (False, None, f"No TMDB metadata found for IMDb ID {imdb_id}")
+                except Exception as exc:
+                    cache[lookup_key] = (False, None, f"TMDB lookup failed: {exc}")
+        return cache[lookup_key]
+
+    # Fallback to title-based lookup
+    if title_category == "movies":
+        return _get_movie_metadata(row_context, cache)
+    elif title_category == "tv shows":
+        return _get_tv_metadata(row_context, cache)
+
+    title = _normalize_movie_lookup_title(row_context.get("title"))
+    if not title:
+        return False, None, "title is missing"
+
+    lookup_key = f"auto|{title.casefold()}"
+    if lookup_key not in cache:
+        movie_success, movie_meta, movie_err = _get_movie_metadata(row_context, cache)
+        if movie_success and movie_meta:
+            cache[lookup_key] = (True, movie_meta, "")
+        else:
+            tv_success, tv_meta, tv_err = _get_tv_metadata(row_context, cache)
+            if tv_success and tv_meta:
+                cache[lookup_key] = (True, tv_meta, "")
+            else:
+                cache[lookup_key] = (False, None, f"Entity not found in TMDB: movie_err={movie_err}, tv_err={tv_err}")
+    return cache[lookup_key]
+
+
+def _validate_genre_taxonomy(
+    genre_value: Any,
+    row_context: dict[str, Any],
+    cache: dict[str, tuple[bool, dict[str, Any] | None, str]],
+) -> tuple[bool, str]:
+    if _is_blank(genre_value):
+        return False, "PLACEHOLDER: Genre is blank"
+    
+    val_str = str(genre_value)
+    if val_str.strip() in {"-", "N/A", "#NA", "null", "none"}:
+        return False, "PLACEHOLDER: Genre contains placeholder"
+    if val_str.endswith("\n") or val_str.strip() != val_str:
+        return False, "FORMAT_ERROR: Genre has trailing newlines or whitespace"
+
+    success, metadata, detail = _get_entity_metadata(row_context, cache)
+    if not success:
+        return False, detail
+
+    expected_genres = (metadata or {}).get("genres", [])
+    if not expected_genres:
+        return False, "TMDB did not return any genres"
+
+    actual_genres = {_normalize_genre_name(item) for item in _split_multi_value(genre_value)}
+    recommended_genres = {_normalize_genre_name(item) for item in expected_genres}
+
+    mismatched = actual_genres - recommended_genres
+    if mismatched:
+        recommended_text = ", ".join(expected_genres)
+        return False, f"GENRE_MISMATCH: Genre(s) {', '.join(mismatched)} not found in TMDB data (expected: {recommended_text})"
+
+    return True, ""
+
+
+def _validate_date_cross_check(
+    date_value: Any,
+    row_context: dict[str, Any],
+    cache: dict[str, tuple[bool, dict[str, Any] | None, str]],
+) -> tuple[bool, str]:
+    if _is_blank(date_value):
+        return False, "PLACEHOLDER: Date is blank"
+
+    val_str = str(date_value)
+    if val_str.strip() in {"-", "N/A", "#NA"}:
+        return False, "PLACEHOLDER: Date contains placeholder"
+    if val_str.endswith("\n") or val_str.strip() != val_str:
+        return False, "FORMAT_ERROR: Date has trailing newlines or whitespace"
+
+    actual_date = _as_date(date_value)
+    if actual_date is None:
+        return False, f"FORMAT_ERROR: Date '{date_value}' is not in a valid format"
+
+    # TYPO CHECK
+    if actual_date.year < 1920 or actual_date.year > 2035:
+        return False, f"FORMAT_ERROR: Year {actual_date.year} is an anomalous year (suspected typo)"
+
+    success, metadata, detail = _get_entity_metadata(row_context, cache)
+    if not success:
+        return False, detail
+
+    expected_date_str = (metadata or {}).get("release_date")
+    if not expected_date_str:
+        return False, "TMDB did not return a release date"
+
+    expected_year = int(expected_date_str[:4])
+    if actual_date.year != expected_year:
+        return False, f"DATE_MISMATCH: Year {actual_date.year} does not match TMDB year {expected_year} (expected date: {expected_date_str})"
+
+    return True, ""
+
+
+def _validate_network_platform(
+    network_value: Any,
+    row_context: dict[str, Any],
+    cache: dict[str, tuple[bool, dict[str, Any] | None, str]],
+) -> tuple[bool, str]:
+    if _is_blank(network_value):
+        return False, "PLACEHOLDER: Network/Platform is blank"
+
+    val_str = str(network_value)
+    if val_str.strip() in {"-", "N/A", "#NA"}:
+        return False, "PLACEHOLDER: Network contains placeholder"
+    if val_str.endswith("\n") or val_str.strip() != val_str:
+        return False, "FORMAT_ERROR: Network has trailing newlines or whitespace"
+
+    success, metadata, detail = _get_entity_metadata(row_context, cache)
+    if not success:
+        return False, detail
+
+    expected_networks = (metadata or {}).get("networks", [])
+    expected_companies = (metadata or {}).get("companies", [])
+    all_expected = expected_networks + expected_companies
+    if not all_expected:
+        return False, "TMDB did not return any network/production company"
+
+    actual = _normalize_value(network_value)
+    normalized_expected = {_normalize_value(item) for item in all_expected}
+
+    match_found = False
+    for exp in normalized_expected:
+        if actual in exp or exp in actual:
+            match_found = True
+            break
+
+    if not match_found:
+        expected_text = ", ".join(all_expected)
+        return False, f"NETWORK_MISMATCH: Network/Distributor '{network_value}' does not match TMDB data (expected: {expected_text})"
+
+    return True, ""
+
+
+def _validate_wikipedia_url_audit(
+    wikipedia_url_value: Any,
+    row_context: dict[str, Any],
+    cache: dict[str, tuple[bool, dict[str, Any] | None, str]],
+    client: httpx.Client | None,
+) -> tuple[bool, str]:
+    if _is_blank(wikipedia_url_value):
+        return False, "MISSING_WIKIPEDIA: Wikipedia URL is missing"
+
+    val_str = str(wikipedia_url_value).strip()
+    if not _looks_like_url(val_str) or "wikipedia.org" not in val_str:
+        return False, "FORMAT_ERROR: Value is not a valid Wikipedia URL"
+
+    row_title = row_context.get("title") or ""
+    if not row_title:
+        return False, "title is missing in row context"
+
+    success, wiki_metadata, detail = _lookup_wikipedia_record(val_str, client)
+    if not success:
+        return False, detail
+
+    page_title = (wiki_metadata or {}).get("title") or ""
+    if not page_title:
+        return False, "Could not extract page title from Wikipedia page"
+
+    if not _titles_loosely_match(row_title, page_title):
+        return False, f"WIKIPEDIA_MISMATCH: Wikipedia article title '{page_title}' does not match BDR title '{row_title}'"
+
+    return True, ""
+
+
+def _validate_imdb_url_audit(
+    imdb_id_value: Any,
+    row_context: dict[str, Any],
+    cache: dict[str, tuple[bool, dict[str, Any] | None, str]],
+    client: httpx.Client | None,
+) -> tuple[bool, str]:
+    if _is_blank(imdb_id_value):
+        return False, "MISSING_IMDB: IMDb ID is missing"
+
+    imdb_id = _extract_imdb_identifier(imdb_id_value)
+    if not imdb_id:
+        return False, "FORMAT_ERROR: Value is not a valid IMDb ID or URL"
+
+    row_title = row_context.get("title") or ""
+    if not row_title:
+        return False, "title is missing in row context"
+
+    success, imdb_metadata, detail = _lookup_imdb_record(imdb_id, client)
+    if not success:
+        return False, detail
+
+    page_title = (imdb_metadata or {}).get("title") or ""
+    if not page_title:
+        return False, "Could not extract title from IMDb record"
+
+    if not _titles_loosely_match(row_title, page_title):
+        return False, f"IMDB_MISMATCH: IMDb title '{page_title}' does not match BDR title '{row_title}'"
+
+    return True, ""

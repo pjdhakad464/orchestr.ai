@@ -169,6 +169,11 @@ class ValidationRule(BaseModel):
         "reference_lookup_match",
         "social_reference_format",
         "social_reference_reachable",
+        "genre_taxonomy_audit",
+        "date_cross_check",
+        "network_platform_audit",
+        "wikipedia_url_audit",
+        "imdb_url_audit",
     ]
     platform: Literal["facebook", "twitter", "instagram", "youtube", "tiktok", "wikipedia", "wikidata", "imdb"] | None = None
     value: Any = None

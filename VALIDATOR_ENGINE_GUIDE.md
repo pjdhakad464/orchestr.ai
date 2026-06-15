@@ -88,3 +88,31 @@ Issues are graded by confidence tiers to prioritize manual reviews:
 - **Cross-Platform Cross-Linking**: Check if social accounts link to each other or back to the official site.
 - **Inactive/Deprecated Accounts**: Flag accounts that have been inactive or have had no postings for more than 12 months.
 - **Deduplication**: Scan handles and IDs globally to find duplicated profiles.
+
+---
+
+## 8. BDR Metadata QA Checks
+The Workbook Validation Engine includes specialized audit rules to perform row-level metadata quality assurance of Brand Definition Reports (BDRs):
+
+| Check Name | Target Column | What It Does | Flag Codes |
+| :--- | :--- | :--- | :--- |
+| `genre_taxonomy_audit` | `primary_genre`, `genre` | Validates genre arrays against TMDB/IMDb genre data for the title. Flags trailing newlines (`\n`), leading/trailing whitespace, blank placeholder spaces, and mismatches. | `GENRE_MISMATCH`, `FORMAT_ERROR`, `PLACEHOLDER` |
+| `date_cross_check` | `released_on`, `street_date` | Cross-checks release dates against TMDB premiere/release date. Flags anomalous years (historical typos), blanks, and mismatches. | `DATE_MISMATCH`, `FORMAT_ERROR`, `PLACEHOLDER` |
+| `network_platform_audit` | `network` | Validates network/distributor name against TMDB networks (for TV shows) and production companies (for movies). | `NETWORK_MISMATCH`, `FORMAT_ERROR`, `PLACEHOLDER` |
+| `wikipedia_url_audit` | `wikipedia_url` | Resolves the Wikipedia article URL and validates that the resolved page title loosely matches the BDR title. | `WIKIPEDIA_MISMATCH`, `FORMAT_ERROR`, `MISSING_WIKIPEDIA` |
+| `imdb_url_audit` | `imdb_id` | Resolves the IMDb ID or URL against dataset/TMDB find API and validates that the record title matches the BDR title. | `IMDB_MISMATCH`, `FORMAT_ERROR`, `MISSING_IMDB` |
+
+### Running the BDR QA Script
+A dedicated CLI script is provided to audit a workbook against BDR rules:
+```bash
+python scripts/validate_bdr.py <path-to-bdr.xlsx>
+```
+
+Options:
+- `--rules <path>`: Custom rules JSON file (defaults to `data/bdr_qa_rules.json`).
+- `--output <path>`: Save location of the output QA spreadsheet (defaults to `validated_runs/BrandDefinitionReport_QA.xlsx`).
+
+The generated QA workbook contains three tabs:
+1. **QA Findings**: Detailed row-by-row issues with categories, messages, and confidence levels.
+2. **Clean Rows**: Rows from the original workbook that passed all validations.
+3. **Summary Metrics**: Counts of clean vs. flagged rows, along with an issue code breakdown.
