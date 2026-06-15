@@ -31,6 +31,8 @@ class BillboardArtistItem(BaseModel):
     wikipedia_url: str = ""
     billboard_url: str = ""
     last_week: str = ""
+    peak_position: str = ""
+    weeks_on_chart: str = ""
     is_new_entry: bool = False
     in_reference: bool = False
     reference_match: str = ""
@@ -130,31 +132,46 @@ class BillboardService:
                     slug = unescaped_name.lower().replace(" ", "-").replace("&", "and").replace(".", "")
                     slug = "".join(c for c in slug if c.isalnum() or c == "-")
 
-                last_week = self._extract_last_week(part)
+                last_week = self._extract_chart_metric(part, ("LW", "LAST WEEK"))
+                peak_position = self._extract_chart_metric(part, ("PEAK", "PEAK POS", "PEAK POSITION"))
+                weeks_on_chart = self._extract_chart_metric(part, ("WEEKS", "WKS ON CHART", "WEEKS ON CHART"))
 
                 if unescaped_name.lower() in seen:
                     continue
                 seen.add(unescaped_name.lower())
-                artists.append({"rank": rank, "name": unescaped_name, "slug": slug, "last_week": last_week})
+                artists.append({
+                    "rank": rank,
+                    "name": unescaped_name,
+                    "slug": slug,
+                    "last_week": last_week,
+                    "peak_position": peak_position,
+                    "weeks_on_chart": weeks_on_chart,
+                })
             return artists
 
     @staticmethod
-    def _extract_last_week(row_html: str) -> str:
-        """Extract the 'Last Week' value from a Billboard chart row.
+    def _extract_chart_metric(row_html: str, label_aliases: tuple[str, ...]) -> str:
+        """Extract a labeled chart metric (LW / PEAK / WEEKS) from a row.
 
-        Billboard renders the metric labels in a ``c-span`` (e.g. ``LW``)
-        followed by an ``<li>`` whose first ``c-label`` carries the value
-        ("3", "-" for a new entry, etc.).
+        Billboard renders each metric as a ``c-span`` label (e.g. ``LW`` or
+        ``PEAK``) followed by an ``<li>`` whose first ``c-label`` carries the
+        value. The value is "-" for a new entry on LW, otherwise the numeric
+        position or weeks-on-chart count.
         """
-        lw_match = re.search(
-            r'<span[^>]*class="c-span[^"]*"[^>]*>\s*(?:LW|LAST\s*WEEK)\s*</span>'
-            r'.*?<span[^>]*class="c-label[^"]*"[^>]*>\s*([^<]+?)\s*</span>',
-            row_html,
-            re.DOTALL | re.IGNORECASE,
+        # Build an alternation of escaped aliases with flexible whitespace,
+        # so "PEAK POS" matches "PEAK<br>POS." or "PEAK POS." in the HTML.
+        alts = "|".join(
+            r"\s*".join(re.escape(token) for token in alias.split())
+            for alias in label_aliases
         )
-        if not lw_match:
+        pattern = (
+            r'<span[^>]*class="c-span[^"]*"[^>]*>\s*(?:' + alts + r')\s*\.?\s*</span>'
+            r'.*?<span[^>]*class="c-label[^"]*"[^>]*>\s*([^<]+?)\s*</span>'
+        )
+        m = re.search(pattern, row_html, re.DOTALL | re.IGNORECASE)
+        if not m:
             return ""
-        return html.unescape(lw_match.group(1)).strip()
+        return html.unescape(m.group(1)).strip()
 
     @staticmethod
     def _is_new_entry(last_week: str) -> bool:
@@ -506,17 +523,19 @@ class BillboardService:
         return reference
 
     NEW_ENTRY_EXPORT_HEADERS = [
-        "Rank", "Artist Name", "IMDb nmcode", "IMDb URL",
+        "Rank", "Last Week", "Peak", "Weeks on Chart",
+        "Artist Name", "IMDb nmcode", "IMDb URL",
         "IMDb Primary Profession", "Wikipedia URL", "Gender",
         "Occupations", "Billboard Artist URL",
     ]
 
     @classmethod
     def export_new_entries_xlsx(cls, snapshot: "BillboardArtistSnapshot") -> bytes:
-        """Render the new-entries snapshot as an xlsx workbook matching the
-        9-column reference schema (Rank / Artist Name / IMDb nmcode / IMDb URL /
-        IMDb Primary Profession / Wikipedia URL / Gender / Occupations /
-        Billboard Artist URL).
+        """Render the new-entries snapshot as an xlsx workbook.
+
+        Columns (in order): Rank, Last Week, Peak, Weeks on Chart, Artist Name,
+        IMDb nmcode, IMDb URL, IMDb Primary Profession, Wikipedia URL, Gender,
+        Occupations, Billboard Artist URL.
         """
         from io import BytesIO
         from openpyxl import Workbook
@@ -528,6 +547,9 @@ class BillboardService:
         for item in snapshot.items:
             ws.append([
                 item.rank,
+                item.last_week,
+                item.peak_position,
+                item.weeks_on_chart,
                 item.name,
                 item.imdb_id,
                 item.imdb_url,
@@ -589,6 +611,8 @@ class BillboardService:
                     wikipedia_url=res["wikipedia_url"] or (ref_row["wikipedia_url"] if ref_row else ""),
                     billboard_url=self._billboard_url(res["slug"]),
                     last_week=entry["last_week"],
+                    peak_position=entry["peak_position"],
+                    weeks_on_chart=entry["weeks_on_chart"],
                     is_new_entry=is_new,
                     in_reference=ref_row is not None,
                     reference_match=ref_row["name"] if ref_row else "",
@@ -648,6 +672,8 @@ class BillboardService:
                     wikipedia_url=wikipedia_url,
                     billboard_url=self._billboard_url(res["slug"]),
                     last_week=entry["last_week"],
+                    peak_position=entry["peak_position"],
+                    weeks_on_chart=entry["weeks_on_chart"],
                     is_new_entry=True,
                     in_reference=ref_row is not None,
                     reference_match=ref_row["name"] if ref_row else "",
