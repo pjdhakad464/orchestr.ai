@@ -7,10 +7,10 @@ import sqlite3
 from urllib.parse import quote, urlparse
 from pathlib import Path
 import httpx
-from app.config import settings
+from app.config import BASE_DIR, is_vercel, settings
 from app.cache import TTLCache
 
-DB_PATH = Path("data/taxonomy_cache.sqlite3")
+DB_PATH = Path("/tmp/taxonomy_cache.sqlite3") if is_vercel else BASE_DIR / "data" / "taxonomy_cache.sqlite3"
 
 def _init_db():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -304,7 +304,7 @@ class TaxonomyClassifier:
         self.reference_map = self._load_reference_taxonomy()
 
     def _load_reference_taxonomy(self) -> dict[str, list[str]]:
-        xlsx_path = Path("Title Category and Sub-Category Taxanomy.xlsx")
+        xlsx_path = BASE_DIR / "Title Category and Sub-Category Taxanomy.xlsx"
         mapping = {}
         if xlsx_path.exists():
             try:
@@ -333,7 +333,7 @@ class TaxonomyClassifier:
             except Exception as e:
                 print(f"Failed to load Title Category and Sub-Category Taxanomy.xlsx: {e}")
 
-        ref_path = Path("data/title_taxonomy_reference.csv")
+        ref_path = BASE_DIR / "data" / "title_taxonomy_reference.csv"
         if ref_path.exists():
             try:
                 with ref_path.open("r", encoding="utf-8-sig") as f:

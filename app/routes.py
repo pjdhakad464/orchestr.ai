@@ -537,18 +537,7 @@ def process_taxonomy_bulk_file(
         await asyncio.gather(*tasks)
         return results
 
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-    if loop.is_running():
-        import concurrent.futures
-        future = asyncio.run_coroutine_threadsafe(run_classification(), loop)
-        classification_results = future.result()
-    else:
-        classification_results = loop.run_until_complete(run_classification())
+    classification_results = asyncio.run(run_classification())
 
     out_wb = openpyxl.Workbook()
     out_sheet = out_wb.active

@@ -3,6 +3,7 @@ import html
 import time
 import sqlite3
 import asyncio
+import difflib
 from pathlib import Path
 from urllib.parse import quote
 import httpx
@@ -11,9 +12,12 @@ from datetime import datetime
 
 import os
 
-# Database path (synchronized via sync_db.py)
-is_vercel = os.environ.get("VERCEL") == "1"
-DB_PATH = Path("/tmp/wikipedia_cache.sqlite3") if is_vercel else Path("data/wikipedia_cache/wikipedia_cache.sqlite3")
+from app.config import BASE_DIR, is_vercel
+
+DB_PATH = Path("/tmp/wikipedia_cache.sqlite3") if is_vercel else BASE_DIR / "data" / "wikipedia_cache" / "wikipedia_cache.sqlite3"
+REFERENCE_XLSX = BASE_DIR / "Billboard_Top_Artists.xlsx"
+NEW_ENTRY_TOKENS = {"-", "--", "—", "–", "", "new", "n/a"}
+FUZZY_MATCH_THRESHOLD = 0.85
 
 class BillboardArtistItem(BaseModel):
     rank: int
@@ -23,12 +27,18 @@ class BillboardArtistItem(BaseModel):
     profession: str = ""
     imdb_id: str = ""
     wikipedia_url: str = ""
+    last_week: str = ""
+    is_new_entry: bool = False
+    in_reference: bool = False
+    reference_match: str = ""
+    reference_match_score: float = 0.0
 
 class BillboardArtistSnapshot(BaseModel):
     generated_at: datetime
     export_id: str | None = None
     items: list[BillboardArtistItem] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
+    new_entry_count: int = 0
 
 def ensure_cache_table():
     try:
@@ -80,45 +90,72 @@ class BillboardService:
         }
         ensure_cache_table()
 
-    async def fetch_billboard_artists(self) -> list[tuple[str, str]]:
-        """Scrapes the Billboard Artist 100 page and returns a list of (name, slug) tuples."""
+    async def fetch_billboard_artists(self) -> list[dict]:
+        """Scrapes the Billboard Artist 100 chart.
+
+        Returns a list of dicts with keys: rank, name, slug, last_week.
+        ``last_week`` is the raw token from the LW column ("-" for new entries,
+        otherwise the prior week's position as a string).
+        """
         async with httpx.AsyncClient(headers=self.headers, timeout=self.timeout, follow_redirects=True) as client:
             r = await client.get(self.CHART_URL)
             if r.status_code != 200:
                 raise RuntimeError(f"Billboard returned status code {r.status_code}")
-            
+
             html_content = r.text
             rows = html_content.split('o-chart-results-list-row-container')
-            
+
             seen = set()
-            artists = []
-            for part in rows[1:101]:  # The first 100 rows
+            artists: list[dict] = []
+            for rank, part in enumerate(rows[1:101], start=1):
                 match = re.search(r'<h3[^>]+class="[^"]*c-title[^"]*"[^>]*>(.*?)</h3>', part, re.DOTALL)
-                if match:
-                    h3_content = match.group(1).strip()
-                    a_match = re.search(r'<a[^>]*>(.*?)</a>', h3_content, re.DOTALL)
-                    if a_match:
-                        name = a_match.group(1).strip()
-                    else:
-                        name = h3_content
-                    
-                    name = re.sub(r'<[^>]+>', '', name).strip()
-                    unescaped_name = html.unescape(name).strip()
-                    if not unescaped_name:
-                        continue
-                        
-                    slug = ""
-                    link_match = re.search(r'href="[^"]*/artist/([^/"]+)', h3_content)
-                    if link_match:
-                        slug = link_match.group(1).strip()
-                    else:
-                        slug = unescaped_name.lower().replace(" ", "-").replace("&", "and").replace(".", "")
-                        slug = "".join(c for c in slug if c.isalnum() or c == "-")
-                    
-                    if unescaped_name.lower() not in seen:
-                        seen.add(unescaped_name.lower())
-                        artists.append((unescaped_name, slug))
+                if not match:
+                    continue
+                h3_content = match.group(1).strip()
+                a_match = re.search(r'<a[^>]*>(.*?)</a>', h3_content, re.DOTALL)
+                name = a_match.group(1).strip() if a_match else h3_content
+                name = re.sub(r'<[^>]+>', '', name).strip()
+                unescaped_name = html.unescape(name).strip()
+                if not unescaped_name:
+                    continue
+
+                slug = ""
+                link_match = re.search(r'href="[^"]*/artist/([^/"]+)', h3_content)
+                if link_match:
+                    slug = link_match.group(1).strip()
+                else:
+                    slug = unescaped_name.lower().replace(" ", "-").replace("&", "and").replace(".", "")
+                    slug = "".join(c for c in slug if c.isalnum() or c == "-")
+
+                last_week = self._extract_last_week(part)
+
+                if unescaped_name.lower() in seen:
+                    continue
+                seen.add(unescaped_name.lower())
+                artists.append({"rank": rank, "name": unescaped_name, "slug": slug, "last_week": last_week})
             return artists
+
+    @staticmethod
+    def _extract_last_week(row_html: str) -> str:
+        """Extract the 'Last Week' value from a Billboard chart row.
+
+        Billboard renders the metric labels in a ``c-span`` (e.g. ``LW``)
+        followed by an ``<li>`` whose first ``c-label`` carries the value
+        ("3", "-" for a new entry, etc.).
+        """
+        lw_match = re.search(
+            r'<span[^>]*class="c-span[^"]*"[^>]*>\s*(?:LW|LAST\s*WEEK)\s*</span>'
+            r'.*?<span[^>]*class="c-label[^"]*"[^>]*>\s*([^<]+?)\s*</span>',
+            row_html,
+            re.DOTALL | re.IGNORECASE,
+        )
+        if not lw_match:
+            return ""
+        return html.unescape(lw_match.group(1)).strip()
+
+    @staticmethod
+    def _is_new_entry(last_week: str) -> bool:
+        return last_week.strip().lower() in NEW_ENTRY_TOKENS
 
     async def _make_wikidata_request(self, client: httpx.AsyncClient, params: dict) -> dict | None:
         max_retries = 5
@@ -394,39 +431,183 @@ class BillboardService:
             
         return result
 
+    @staticmethod
+    def _load_reference_artists() -> dict[str, dict]:
+        """Load the reference Billboard artist roster from the workbook at the repo root.
+
+        Returns a mapping of normalized lowercase name -> reference row dict with
+        keys: name, imdb_id, imdb_url, profession, wikipedia_url, gender,
+        occupations, billboard_url.
+        """
+        reference: dict[str, dict] = {}
+        if not REFERENCE_XLSX.exists():
+            return reference
+        try:
+            from openpyxl import load_workbook
+            wb = load_workbook(REFERENCE_XLSX, read_only=True, data_only=True)
+            sheet = wb.active
+            header_row = next(sheet.iter_rows(max_row=1, values_only=True), None)
+            if not header_row:
+                wb.close()
+                return reference
+            header = [str(c).strip().lower() if c is not None else "" for c in header_row]
+
+            def idx_of(*candidates: str) -> int:
+                for cand in candidates:
+                    if cand in header:
+                        return header.index(cand)
+                return -1
+
+            i_name = idx_of("artist name", "name")
+            i_imdb = idx_of("imdb nmcode", "imdb id")
+            i_imdb_url = idx_of("imdb url")
+            i_prof = idx_of("imdb primary profession", "profession")
+            i_wiki = idx_of("wikipedia url", "wikipedia")
+            i_gender = idx_of("gender")
+            i_occ = idx_of("occupations", "occupation")
+            i_billboard = idx_of("billboard artist url", "billboard url")
+
+            for row in sheet.iter_rows(min_row=2, values_only=True):
+                if not row or i_name < 0 or i_name >= len(row):
+                    continue
+                name = str(row[i_name]).strip() if row[i_name] is not None else ""
+                if not name:
+                    continue
+
+                def cell(i: int) -> str:
+                    if i < 0 or i >= len(row) or row[i] is None:
+                        return ""
+                    return str(row[i]).strip()
+
+                reference[name.lower()] = {
+                    "name": name,
+                    "imdb_id": cell(i_imdb),
+                    "imdb_url": cell(i_imdb_url),
+                    "profession": cell(i_prof),
+                    "wikipedia_url": cell(i_wiki),
+                    "gender": cell(i_gender),
+                    "occupations": cell(i_occ),
+                    "billboard_url": cell(i_billboard),
+                }
+            wb.close()
+        except Exception as e:
+            print(f"Failed to load Billboard reference workbook: {e}")
+        return reference
+
+    @staticmethod
+    def _fuzzy_match(name: str, reference: dict[str, dict]) -> tuple[dict | None, float]:
+        if not reference:
+            return None, 0.0
+        target = name.strip().lower()
+        if target in reference:
+            return reference[target], 1.0
+        candidates = list(reference.keys())
+        match = difflib.get_close_matches(target, candidates, n=1, cutoff=FUZZY_MATCH_THRESHOLD)
+        if not match:
+            return None, 0.0
+        score = difflib.SequenceMatcher(None, target, match[0]).ratio()
+        return reference[match[0]], score
+
     async def get_top_artists_snapshot(self) -> BillboardArtistSnapshot:
         """Fetch Billboard Artist 100 and resolve detail profiles for all artists in parallel."""
         raw_artists = await self.fetch_billboard_artists()
-        
-        # Limit concurrency using semaphore to avoid overwhelming Wikidata
+        reference = self._load_reference_artists()
+
         semaphore = asyncio.Semaphore(10)
-        
-        async def resolve_with_sem(name, slug):
+
+        async def resolve_with_sem(entry):
             async with semaphore:
-                return await self.resolve_artist_details(name, slug)
-        
-        tasks = [resolve_with_sem(name, slug) for name, slug in raw_artists]
-        resolved_results = await asyncio.gather(*tasks)
-        
-        items = []
-        for idx, res in enumerate(resolved_results, start=1):
+                return await self.resolve_artist_details(entry["name"], entry["slug"])
+
+        resolved_results = await asyncio.gather(*[resolve_with_sem(e) for e in raw_artists])
+
+        items: list[BillboardArtistItem] = []
+        new_count = 0
+        for entry, res in zip(raw_artists, resolved_results):
+            ref_row, score = self._fuzzy_match(entry["name"], reference)
+            is_new = self._is_new_entry(entry["last_week"])
+            if is_new:
+                new_count += 1
             items.append(
                 BillboardArtistItem(
-                    rank=idx,
+                    rank=entry["rank"],
                     name=res["name"],
                     slug=res["slug"],
                     gender=res["gender"],
                     profession=res["profession"],
                     imdb_id=res["imdb_id"],
-                    wikipedia_url=res["wikipedia_url"]
+                    wikipedia_url=res["wikipedia_url"],
+                    last_week=entry["last_week"],
+                    is_new_entry=is_new,
+                    in_reference=ref_row is not None,
+                    reference_match=ref_row["name"] if ref_row else "",
+                    reference_match_score=round(score, 3),
                 )
             )
-        
+
         return BillboardArtistSnapshot(
             generated_at=datetime.now().astimezone(),
             items=items,
+            new_entry_count=new_count,
             notes=[
                 "Source: Billboard Artist 100 Chart.",
-                "Artist gender, professions, IMDb ID, and Wikipedia URLs resolved dynamically via Wikidata API."
-            ]
+                "Artist gender, professions, IMDb ID, and Wikipedia URLs resolved dynamically via Wikidata API.",
+                f"{new_count} of {len(items)} entries are new this week (Last Week = '-').",
+            ],
+        )
+
+    async def get_new_entries_snapshot(self) -> BillboardArtistSnapshot:
+        """Fetch only new entries on the current Artist 100 chart with full metadata.
+
+        A 'new entry' is a row whose Last Week column is '-' (or equivalent
+        placeholder). Each new entry is fuzzy-matched against the local
+        reference workbook so callers can tell which new chart entries are
+        genuinely new to the company's tracked roster.
+        """
+        raw_artists = await self.fetch_billboard_artists()
+        new_raw = [e for e in raw_artists if self._is_new_entry(e["last_week"])]
+        reference = self._load_reference_artists()
+
+        semaphore = asyncio.Semaphore(10)
+
+        async def resolve_with_sem(entry):
+            async with semaphore:
+                return await self.resolve_artist_details(entry["name"], entry["slug"])
+
+        resolved_results = await asyncio.gather(*[resolve_with_sem(e) for e in new_raw])
+
+        items: list[BillboardArtistItem] = []
+        for entry, res in zip(new_raw, resolved_results):
+            ref_row, score = self._fuzzy_match(entry["name"], reference)
+            gender = res["gender"] or (ref_row["gender"] if ref_row else "")
+            profession = res["profession"] or (ref_row["occupations"] or ref_row["profession"] if ref_row else "")
+            imdb_id = res["imdb_id"] or (ref_row["imdb_id"] if ref_row else "")
+            wikipedia_url = res["wikipedia_url"] or (ref_row["wikipedia_url"] if ref_row else "")
+            items.append(
+                BillboardArtistItem(
+                    rank=entry["rank"],
+                    name=res["name"],
+                    slug=res["slug"],
+                    gender=gender,
+                    profession=profession,
+                    imdb_id=imdb_id,
+                    wikipedia_url=wikipedia_url,
+                    last_week=entry["last_week"],
+                    is_new_entry=True,
+                    in_reference=ref_row is not None,
+                    reference_match=ref_row["name"] if ref_row else "",
+                    reference_match_score=round(score, 3),
+                )
+            )
+
+        return BillboardArtistSnapshot(
+            generated_at=datetime.now().astimezone(),
+            items=items,
+            new_entry_count=len(items),
+            notes=[
+                "Source: Billboard Artist 100 Chart - new entries only.",
+                f"{len(items)} new entries detected this week (Last Week = '-').",
+                f"{sum(1 for i in items if not i.in_reference)} of those are not yet in the reference roster.",
+                "Gender/profession/IMDb/Wikipedia resolved via Wikidata with reference workbook fallback.",
+            ],
         )
