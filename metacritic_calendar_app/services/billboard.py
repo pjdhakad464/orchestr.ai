@@ -16,7 +16,11 @@ from app.config import BASE_DIR, is_vercel
 
 DB_PATH = Path("/tmp/wikipedia_cache.sqlite3") if is_vercel else BASE_DIR / "data" / "wikipedia_cache" / "wikipedia_cache.sqlite3"
 REFERENCE_XLSX = BASE_DIR / "Billboard_Top_Artists.xlsx"
-NEW_ENTRY_TOKENS = {"-", "--", "—", "–", "", "new", "n/a"}
+# A "new entry" on Billboard is rendered with a literal "-" in the LW column.
+# We intentionally do NOT treat empty strings, em/en dashes, or "NEW"/"N/A"
+# placeholders as new entries - an empty value usually means the LW regex
+# failed to capture rather than a genuine new-entry signal.
+NEW_ENTRY_TOKENS = {"-"}
 FUZZY_MATCH_THRESHOLD = 0.85
 
 class BillboardArtistItem(BaseModel):
