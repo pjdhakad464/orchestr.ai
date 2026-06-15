@@ -309,7 +309,7 @@ async def run_task(
 
     try:
         if task == "billboard":
-            billboard_snapshot = await billboard_service.get_top_artists_snapshot()
+            billboard_snapshot = await billboard_service.get_new_entries_snapshot()
             store_billboard_snapshot(billboard_snapshot)
         elif task == "review_release":
             box_office_snapshot = await run_in_threadpool(box_office_mojo_service.fetch_upcoming_12_months_snapshot)
