@@ -971,6 +971,8 @@ def parse_imdb_episode_dates(payload: str) -> list[date]:
 
 
 def _date_window_from_episode_dates(episode_dates: list[date], latest_season_episode_count: int) -> tuple[str, str]:
+    if not episode_dates:
+        return "", ""
     start_date = min(episode_dates)
     end_date = max(episode_dates)
     if latest_season_episode_count <= 1 or start_date == end_date:

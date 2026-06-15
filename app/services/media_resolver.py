@@ -87,18 +87,22 @@ class MediaResolver:
         ]
 
         if media_kind == "movie":
-            details, external_ids, release_dates = await asyncio.gather(
+            results = await asyncio.gather(
                 self.tmdb_client.movie_details(media_id or ""),
                 self.tmdb_client.movie_external_ids(media_id or ""),
                 self.tmdb_client.movie_release_dates(media_id or ""),
+                return_exceptions=True,
             )
+            details, external_ids, release_dates = (r if not isinstance(r, BaseException) else {} for r in results)
             self._apply_movie_metadata(entity, details, release_dates)
             raw_links = await self._build_media_links(entity, details, external_ids, media_kind)
         elif media_kind == "tv":
-            details, external_ids = await asyncio.gather(
+            results = await asyncio.gather(
                 self.tmdb_client.tv_details(media_id or ""),
                 self.tmdb_client.tv_external_ids(media_id or ""),
+                return_exceptions=True,
             )
+            details, external_ids = (r if not isinstance(r, BaseException) else {} for r in results)
             self._apply_tv_metadata(entity, details)
             raw_links = await self._build_media_links(entity, details, external_ids, media_kind)
         elif media_kind == "company":

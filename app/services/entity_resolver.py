@@ -121,7 +121,14 @@ class EntityResolver:
 
         async def run(query: EntityQuery) -> BulkLookupResult:
             async with semaphore:
-                return await self._bulk_lookup(query)
+                try:
+                    return await self._bulk_lookup(query)
+                except Exception as exc:
+                    return BulkLookupResult(
+                        query=query,
+                        resolution_status="not_found",
+                        notes=[f"Lookup failed: {exc.__class__.__name__}: {exc}"],
+                    )
 
         results = await asyncio.gather(*(run(query) for query in queries))
         return BulkSearchResponse(
@@ -147,11 +154,14 @@ class EntityResolver:
         search_queries = [f'"{query.name}"{qualifier_suffix}', query.name]
 
         result_sets = await asyncio.gather(
-            *(self.search_provider.search(search_query, limit=6) for search_query in search_queries)
+            *(self.search_provider.search(search_query, limit=6) for search_query in search_queries),
+            return_exceptions=True,
         )
         candidates: dict[str, EntityCandidate] = {}
 
         for results in result_sets:
+            if isinstance(results, BaseException):
+                continue
             for result in results:
                 candidate = self._candidate_from_result(query, result)
                 key = self._candidate_key(candidate)
