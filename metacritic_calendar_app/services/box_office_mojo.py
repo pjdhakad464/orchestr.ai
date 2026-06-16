@@ -67,6 +67,36 @@ class BoxOfficeMojoCalendarService:
             window_end=window_end,
         )
 
+    def fetch_custom_range_snapshot(
+        self,
+        months: int | None = None,
+        start: date | None = None,
+        end: date | None = None,
+        today: date | None = None,
+    ) -> BoxOfficeMojoReleaseWindowSnapshot:
+        reference_day = today or datetime.now().astimezone().date()
+        if start and end:
+            window_start = start
+            window_end = end
+            label = f"USA {window_start.isoformat()} to {window_end.isoformat()}"
+            key = "usa_custom_range"
+        elif months:
+            window_start = reference_day
+            window_end = self._add_months(reference_day, months)
+            label = f"USA upcoming {months} months"
+            key = f"usa_upcoming_{months}_months"
+        else:
+            window_start = reference_day
+            window_end = self._add_months(reference_day, 6)
+            label = "USA upcoming 6 months"
+            key = "usa_upcoming_6_months"
+        return self.fetch_release_window_snapshot(
+            report_key=key,
+            report_label=label,
+            window_start=window_start,
+            window_end=window_end,
+        )
+
     def fetch_release_window_snapshot(
         self,
         *,

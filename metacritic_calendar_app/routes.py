@@ -308,7 +308,22 @@ async def run_task(
     billboard_error_message = ""
 
     try:
-        if task == "billboard":
+        if task == "upcoming_releases":
+            form_data = await request.form()
+            months_val = str(form_data.get("months", "") or "")
+            start_val = str(form_data.get("custom_start_date", "") or "")
+            end_val = str(form_data.get("custom_end_date", "") or "")
+            months_int = int(months_val) if months_val and months_val.isdigit() else None
+            start_parsed = date.fromisoformat(start_val) if start_val else None
+            end_parsed = date.fromisoformat(end_val) if end_val else None
+            box_office_snapshot = await run_in_threadpool(
+                box_office_mojo_service.fetch_custom_range_snapshot,
+                months_int,
+                start_parsed,
+                end_parsed,
+            )
+            store_box_office_snapshot(box_office_snapshot)
+        elif task == "billboard":
             billboard_snapshot = await billboard_service.get_new_entries_snapshot()
             store_billboard_snapshot(billboard_snapshot)
         elif task == "review_release":
@@ -353,7 +368,7 @@ async def run_task(
         traceback.print_exc()
         if task == "billboard":
             billboard_error_message = str(exc)
-        elif task in ("review_release", "box_office"):
+        elif task in ("review_release", "box_office", "upcoming_releases"):
             box_office_error_message = str(exc)
         elif task == "tv_metadata":
             tv_imdb_error_message = str(exc)

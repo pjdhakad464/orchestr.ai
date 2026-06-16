@@ -398,6 +398,26 @@
   .task-info-box a:hover {
     text-decoration: underline;
   }
+  .preset-btn {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .preset-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+  }
+  .preset-btn.active {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4f46e5;
+  }
 </style>
 
 <div class="task-accordion">
@@ -773,6 +793,163 @@
                     <a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #eab308;">IMDb</a>
                     <a href="https://pro.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color: #06b6d4;">IMDbPro</a>
                     {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 2b. Upcoming Release Calendar -->
+  <div class="task-card">
+    <div class="task-header" id="upcoming_releases-header" onclick="togglePanel('upcoming_releases')">
+      <div class="task-title-group">
+        <span class="task-title">2b. Upcoming Release Calendar</span>
+        <span class="task-desc">Pull Box Office Mojo domestic releases for any date range. Filter by genre, scale, type, distributor.</span>
+      </div>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="task-panel-content" id="upcoming_releases-content" style="display: none;">
+      <div class="task-info-box">
+        <h4>Task Details</h4>
+        <p><strong>Frequency:</strong> On demand</p>
+        <p><strong>Scraping URL:</strong> <a href="https://www.boxofficemojo.com/calendar/" target="_blank" rel="noreferrer">https://www.boxofficemojo.com/calendar/</a></p>
+        <p><strong>Steps Followed:</strong></p>
+        <ul>
+          <li>Fetch domestic theatrical releases from Box Office Mojo for any selected date range.</li>
+          <li>Parse release dates, titles, distributors, release scales, runtimes, genres, and cast.</li>
+          <li>Resolve IMDb IDs. Filter client-side by any column. Export to CSV or Excel.</li>
+        </ul>
+      </div>
+      <form method="post" action="/calendar/run-task">
+        <input type="hidden" name="task" value="upcoming_releases" />
+        <input type="hidden" name="months" id="upcoming-months-input" value="6" />
+        <input type="hidden" name="custom_start_date" id="upcoming-start-hidden" value="" />
+        <input type="hidden" name="custom_end_date" id="upcoming-end-hidden" value="" />
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 8px;">Quick Presets</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="preset-btn active" id="preset-6m" onclick="setPreset(6)">Next 6 months</button>
+            <button type="button" class="preset-btn" id="preset-12m" onclick="setPreset(12)">Next 12 months</button>
+            <button type="button" class="preset-btn" id="preset-18m" onclick="setPreset(18)">Next 18 months</button>
+            <button type="button" class="preset-btn" id="preset-custom" onclick="showCustomDates()">Custom range</button>
+          </div>
+        </div>
+        <div id="upcoming-custom-dates" style="display: none; margin-bottom: 16px;">
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <label style="flex: 1; min-width: 160px;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #475569; text-transform: uppercase; display: block; margin-bottom: 6px;">Start Date</span>
+              <input type="date" id="upcoming-start-date-picker" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;" oninput="syncCustomDates()" />
+            </label>
+            <label style="flex: 1; min-width: 160px;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #475569; text-transform: uppercase; display: block; margin-bottom: 6px;">End Date</span>
+              <input type="date" id="upcoming-end-date-picker" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;" oninput="syncCustomDates()" />
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Fetch releases</button>
+      </form>
+
+      {% if selected_task == 'upcoming_releases' and box_office_error_message %}
+      <div class="error-panel" style="margin-top: 16px;">
+        <strong>Box Office Mojo Error</strong>
+        <p>{{ box_office_error_message }}</p>
+      </div>
+      {% endif %}
+
+      {% if selected_task == 'upcoming_releases' and box_office_snapshot %}
+      <div class="results-wrapper">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Upcoming Domestic Movie Releases ({{ box_office_snapshot.report_label }})</p>
+            <h2>{{ box_office_snapshot.items | length }} movies found</h2>
+          </div>
+          <p class="meta">Generated: {{ box_office_snapshot.generated_at.strftime("%d %b %Y, %I:%M %p") }}</p>
+        </div>
+        {% if box_office_snapshot.notes %}
+        <div class="notes-panel" style="margin-top: 12px; margin-bottom: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569;">
+          {% for note in box_office_snapshot.notes %}<p style="margin: 4px 0;">{{ note }}</p>{% endfor %}
+        </div>
+        {% endif %}
+        <div class="kpi-grid">
+          <div class="kpi-card"><span class="kpi-title">Total Movies</span><span class="kpi-val" id="upcoming_releases-kpi-total">{{ box_office_snapshot.items | length }}</span></div>
+          <div class="kpi-card"><span class="kpi-title">Wide Releases</span><span class="kpi-val" id="upcoming_releases-kpi-wide">{{ box_office_snapshot.items | selectattr("scale", "equalto", "Wide") | list | length }}</span></div>
+          <div class="kpi-card"><span class="kpi-title">Limited Releases</span><span class="kpi-val" id="upcoming_releases-kpi-limited">{{ box_office_snapshot.items | selectattr("scale", "ne", "Wide") | list | length }}</span></div>
+          <div class="kpi-card"><span class="kpi-title">Date Span</span><span class="kpi-sub" id="upcoming_releases-kpi-range">{{ box_office_snapshot.window_start.strftime("%Y-%m-%d") }} to {{ box_office_snapshot.window_end.strftime("%Y-%m-%d") }}</span></div>
+        </div>
+        <div class="filters-row">
+          <div class="filter-group search"><label>Search</label><input type="text" id="upcoming_releases-search-input" placeholder="Filter titles..." oninput="applyFilters('upcoming_releases')" /></div>
+          <div class="filter-group"><label>Genre</label><details class="multi-select-dropdown" id="upcoming_releases-genres-dropdown" data-default-label="All genres"><summary>All genres</summary><div class="multi-select-menu" id="upcoming_releases-genres-menu"></div></details></div>
+          <div class="filter-group"><label>Release scale</label><details class="multi-select-dropdown" id="upcoming_releases-scale-dropdown" data-default-label="All scales"><summary>All scales</summary><div class="multi-select-menu" id="upcoming_releases-scale-menu"></div></details></div>
+          <div class="filter-group"><label>Release type</label><details class="multi-select-dropdown" id="upcoming_releases-type-dropdown" data-default-label="All types"><summary>All types</summary><div class="multi-select-menu" id="upcoming_releases-type-menu"></div></details></div>
+          <div class="filter-group"><label>Distributor / Network</label><details class="multi-select-dropdown" id="upcoming_releases-distributor-dropdown" data-default-label="All distributors"><summary>All distributors</summary><div class="multi-select-menu" id="upcoming_releases-distributor-menu"></div></details></div>
+          <div class="filter-actions">
+            <button type="button" class="btn-filter-secondary" onclick="resetMojoFilters('upcoming_releases')">Reset filters</button>
+            <button type="button" class="btn-filter-primary" onclick="exportFilteredCSV('upcoming_releases', 'upcoming_releases')">Export CSV</button>
+            {% if box_office_snapshot.export_id %}
+            <a href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/csv" class="btn-filter-primary" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Download CSV</a>
+            <a href="/box-office-mojo/export/{{ box_office_snapshot.export_id }}/xlsx" class="btn-filter-secondary" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Download Excel</a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="table-shell" style="overflow-x: auto; border: 1px solid rgba(15, 23, 42, 0.08); border-radius: 12px;">
+          <table class="results-table" id="upcoming_releases-results-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f8fafc; border-bottom: 1px solid rgba(15, 23, 42, 0.08);">
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Release date</th>
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Movie and IMDb</th>
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Distributor / Network</th>
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Genre</th>
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Release type</th>
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Cast</th>
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Runtime</th>
+                <th style="padding:12px;font-weight:700;text-align:left;font-size:0.8rem;text-transform:uppercase;color:#475569;">Links</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in box_office_snapshot.items %}
+              <tr class="upcoming_releases-row"
+                  data-title="{{ item.title | lower }}"
+                  data-scale="{{ item.scale | lower if item.scale else 'limited' }}"
+                  data-genres="{{ item.genres | lower }}"
+                  data-type="{{ item.release_notes | lower if item.release_notes else '' }}"
+                  data-distributor="{{ item.distributor | lower if item.distributor else '' }}"
+                  data-date="{{ item.release_date }}">
+                <td style="padding:12px;font-size:0.85rem;color:#334155;font-weight:500;white-space:nowrap;">{{ item.release_date }}</td>
+                <td style="padding:12px;">
+                  <div class="movie-title-cell">
+                    {% if item.imdb_id %}<img class="movie-poster-thumb" src="/calendar/api/poster/{{ item.imdb_id }}" alt="Poster" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 34\' width=\'48\' height=\'72\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-size=\'14\' fill=\'%2394a3b8\'>🎬</text></svg>'" />
+                    {% else %}<div class="movie-poster-thumb" style="display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:1.2rem;">🎬</div>{% endif %}
+                    <div class="movie-title-info">
+                      <span class="movie-title-bold">{{ item.title }}</span>
+                      {% if item.imdb_id %}<a class="movie-imdb-id-link" href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer">imdb: {{ item.imdb_id }}</a>
+                      {% else %}<span style="font-size:0.75rem;color:#94a3b8;">no imdb resolved</span>{% endif %}
+                    </div>
+                  </div>
+                </td>
+                <td style="padding:12px;font-size:0.85rem;color:#334155;"><div class="distributor-bold">{{ item.distributor or "-" }}</div></td>
+                <td style="padding:12px;">
+                  <div style="display:flex;flex-wrap:wrap;gap:4px;max-width:180px;">
+                    {% if item.genres %}{% for g in item.genres.split(",") %}<span class="genre-tag">{{ g.strip() }}</span>{% endfor %}{% else %}-{% endif %}
+                  </div>
+                </td>
+                <td style="padding:12px;">
+                  {% if item.scale == "Wide" %}<span class="badge-pill badge-scale-wide">Wide</span>
+                  {% elif item.scale == "Limited" %}<span class="badge-pill badge-scale-limited">Limited</span>
+                  {% elif item.scale %}<span class="badge-pill badge-scale-other">{{ item.scale }}</span>{% else %}-{% endif %}
+                  {% if item.release_notes %}<div style="font-size:0.7rem;color:#94a3b8;margin-top:3px;">{{ item.release_notes }}</div>{% endif %}
+                </td>
+                <td style="padding:12px;font-size:0.8rem;color:#475569;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ item.cast }}">{{ item.cast or "-" }}</td>
+                <td style="padding:12px;font-size:0.85rem;color:#475569;white-space:nowrap;">{{ item.runtime or "-" }}</td>
+                <td style="padding:12px;">
+                  <div class="links-stack">
+                    {% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noreferrer" style="color:#4f46e5;">BOM</a>{% endif %}
+                    {% if item.imdb_id %}<a href="https://www.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color:#eab308;">IMDb</a><a href="https://pro.imdb.com/title/{{ item.imdb_id }}/" target="_blank" rel="noreferrer" style="color:#06b6d4;">IMDbPro</a>{% endif %}
                   </div>
                 </td>
               </tr>
@@ -2358,6 +2535,38 @@
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  function setPreset(months) {
+    document.getElementById('upcoming-months-input').value = months;
+    document.getElementById('upcoming-start-hidden').value = '';
+    document.getElementById('upcoming-end-hidden').value = '';
+    document.getElementById('upcoming-custom-dates').style.display = 'none';
+    ['6', '12', '18'].forEach(m => {
+      const btn = document.getElementById('preset-' + m + 'm');
+      if (btn) btn.classList.toggle('active', parseInt(m) === months);
+    });
+    const customBtn = document.getElementById('preset-custom');
+    if (customBtn) customBtn.classList.remove('active');
+  }
+
+  function showCustomDates() {
+    document.getElementById('upcoming-months-input').value = '';
+    document.getElementById('upcoming-custom-dates').style.display = 'flex';
+    ['6m', '12m', '18m'].forEach(id => {
+      const btn = document.getElementById('preset-' + id);
+      if (btn) btn.classList.remove('active');
+    });
+    const customBtn = document.getElementById('preset-custom');
+    if (customBtn) customBtn.classList.add('active');
+  }
+
+  function syncCustomDates() {
+    const s = document.getElementById('upcoming-start-date-picker');
+    const e = document.getElementById('upcoming-end-date-picker');
+    document.getElementById('upcoming-start-hidden').value = s ? s.value : '';
+    document.getElementById('upcoming-end-hidden').value = e ? e.value : '';
+    document.getElementById('upcoming-months-input').value = '';
   }
 
   document.addEventListener('click', function(e) {
