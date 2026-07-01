@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Workbook Sheet Validator & Taxonomy Bulk Identifier{% endblock %}
+{% block title %}Workbook Sheet Validator{% endblock %}
 
 {% block content %}
-<div class="validator-split-container">
+<div class="validator-single-container" style="max-width: 1080px; margin: 0 auto;">
   {% include "_validator_panel.html" %}
-  {% include "_taxonomy_panel.html" %}
 </div>
 
-<div class="results-workspaces-container" style="max-width: 1440px; margin: 32px auto 0 auto; display: flex; flex-direction: column; gap: 24px;">
+<div class="results-workspaces-container" style="max-width: 1080px; margin: 24px auto 0 auto; display: flex; flex-direction: column; gap: 24px;">
   <section id="validation-workspace" class="workspace"></section>
-  <section id="taxonomy-workspace" class="workspace"></section>
 </div>
 {% endblock %}

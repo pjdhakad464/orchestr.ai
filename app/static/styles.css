@@ -925,3 +925,69 @@ button:active,
     font-size: 0.8rem;
   }
 }
+
+/* ─── Validator source inputs (restored validator) ─── */
+.validator-single-container {
+  width: 100%;
+}
+.validator-source-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+@media (max-width: 640px) {
+  .validator-source-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.file-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.file-picker > span {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #475569;
+}
+.file-picker input {
+  font: inherit;
+  font-weight: 500;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.file-picker input[type="file"] {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.file-picker input:hover {
+  border-color: #94a3b8;
+}
+.file-picker input:focus-visible {
+  outline: none;
+  border-color: #673de6;
+  box-shadow: 0 0 0 3px rgba(103, 61, 230, 0.25);
+}
+.output-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #475569;
+  background: #f1f5f9;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.output-chip svg {
+  color: #16a34a;
+  flex-shrink: 0;
+}
