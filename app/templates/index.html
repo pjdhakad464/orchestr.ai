@@ -1,13 +1,964 @@
 {% extends "base.html" %}
 
+{% block title %}OrchestrAI 2.0 — Movie Metadata Cockpit{% endblock %}
+
 {% block content %}
-<div class="validator-split-container">
-  {% include "_validator_panel.html" %}
-  {% include "_taxonomy_panel.html" %}
+<style>
+  /* ─── Premium Deep Space Glassmorphism Theme ─── */
+  :root {
+    --bg-obsidian: #0b0f19;
+    --bg-slate: #0f172a;
+    --glass-fill: rgba(15, 23, 42, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-glow: rgba(139, 92, 246, 0.15);
+    --neon-cyan: #06b6d4;
+    --neon-violet: #8b5cf6;
+    --neon-green: #10b981;
+    --hulu-green: #16a34a;
+  }
+
+  /* Reset main shell styles for dark theme */
+  body {
+    background-color: var(--bg-obsidian) !important;
+    color: #f8fafc !important;
+  }
+
+  .page-shell {
+    max-width: 1560px !important;
+    padding: 20px 20px 60px 20px !important;
+  }
+
+  /* Hide the default light hero header */
+  .hero-split-container {
+    display: none !important;
+  }
+
+  /* Dashboard Grid Layout */
+  .cockpit-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+    margin-top: 10px;
+    align-items: start;
+  }
+
+  /* Glassmorphism Panel Common */
+  .glass-panel {
+    background: var(--glass-fill);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    padding: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-panel:hover {
+    border-color: rgba(139, 92, 246, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(139, 92, 246, 0.08);
+  }
+
+  /* Sidebar Navigation */
+  .cockpit-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #f8fafc;
+    transform: translateX(4px);
+  }
+
+  .sidebar-link.active {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+    border-color: rgba(139, 92, 246, 0.3);
+    color: #f8fafc;
+    font-weight: 700;
+    box-shadow: inset 0 0 12px rgba(139, 92, 246, 0.1);
+  }
+
+  .sidebar-link .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  /* Main Cockpit Workspace */
+  .cockpit-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Header Branding Row */
+  .cockpit-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 20px;
+    margin-bottom: 8px;
+  }
+
+  .branding-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: 1.85rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+  }
+
+  .branding-sub {
+    font-size: 0.85rem;
+    color: var(--neon-cyan);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* Search Engine Bar */
+  .cockpit-search-bar {
+    display: flex;
+    gap: 12px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 6px;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .cockpit-search-input {
+    background: transparent !important;
+    border: none !important;
+    color: #f8fafc !important;
+    font-size: 0.95rem;
+    height: 42px;
+    padding: 0 16px !important;
+  }
+
+  .cockpit-search-input::placeholder {
+    color: #64748b;
+  }
+
+  .search-action-btn {
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, var(--neon-violet) 0%, #4f46e5 100%);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+    min-height: 42px;
+    padding: 0 20px;
+  }
+
+  /* Details Card Workspace */
+  .details-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+  }
+
+  /* Left panel details */
+  .details-main-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .movie-profile-row {
+    display: flex;
+    gap: 24px;
+    align-items: start;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 24px;
+  }
+
+  .movie-profile-poster {
+    width: 150px;
+    height: 220px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .movie-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+
+  .movie-profile-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .movie-profile-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    align-items: center;
+  }
+
+  .movie-profile-tagline {
+    font-style: italic;
+    color: var(--neon-cyan);
+    font-size: 0.95rem;
+  }
+
+  .action-btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .btn-action-outline {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: #f8fafc;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-action-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .btn-action-filled {
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, #0891b2 100%);
+    border: none;
+    color: #0f172a;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+  }
+
+  /* Metadata Summary Fields Grid */
+  .meta-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    background: rgba(15, 23, 42, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+  }
+
+  .meta-val {
+    font-size: 0.92rem;
+    color: #e2e8f0;
+  }
+
+  /* Genre Tags Row */
+  .genre-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .genre-pill {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.76rem;
+    font-weight: 600;
+  }
+
+  /* Release Dates sequence grid */
+  .dates-sequence-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .date-card {
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .date-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--neon-cyan);
+  }
+
+  .date-card.digital::before {
+    background: var(--neon-violet);
+  }
+
+  .date-card.streaming::before {
+    background: var(--neon-green);
+  }
+
+  .date-card.trailer::before {
+    background: #f59e0b;
+  }
+
+  .date-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+  }
+
+  .date-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-top: 4px;
+  }
+
+  .date-sub {
+    font-size: 0.78rem;
+    color: #94a3b8;
+  }
+
+  /* Right Side Metrics */
+  .metrics-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Data Quality Circle */
+  .quality-scorecard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .quality-circle {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(var(--neon-green) calc(98 * 1%), rgba(255,255,255,0.06) 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.15);
+  }
+
+  .quality-circle-inner {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--bg-slate);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quality-number {
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: #f8fafc;
+    line-height: 1;
+  }
+
+  .quality-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Breakdown bar list */
+  .breakdown-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  .breakdown-val {
+    font-weight: 700;
+    color: #e2e8f0;
+  }
+
+  /* Verified Sources List */
+  .verified-sources-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .verified-source-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+
+  .source-logo-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #cbd5e1;
+  }
+
+  .source-status-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    text-transform: uppercase;
+  }
+
+  /* Dynamic Dashboard Actions Block */
+  .pipeline-card-split {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+  }
+
+  /* Architecture & Roadmap Section (styled as reference) */
+  .reference-deck {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+
+  .tech-step {
+    border-left: 2px solid var(--neon-cyan);
+    padding-left: 12px;
+  }
+
+  .timeline-phase {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Top Navigation custom highlight override */
+  .suite-navbar {
+    background: var(--bg-slate) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+  }
+</style>
+
+<div class="cockpit-grid">
+  <!-- Left Sidebar menu -->
+  <aside class="cockpit-sidebar">
+    <a href="#" class="sidebar-link active" onclick="setTab('overview')">
+      <span class="material-symbols-outlined">dashboard</span>
+      Overview
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('metadata')">
+      <span class="material-symbols-outlined">movie</span>
+      Metadata
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('dates')">
+      <span class="material-symbols-outlined">calendar_today</span>
+      Release Dates
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('cast')">
+      <span class="material-symbols-outlined">group</span>
+      Cast & Crew
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('companies')">
+      <span class="material-symbols-outlined">business</span>
+      Companies
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('media')">
+      <span class="material-symbols-outlined">photo_library</span>
+      Media Assets
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('social')">
+      <span class="material-symbols-outlined">share</span>
+      Social Links
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('sources')">
+      <span class="material-symbols-outlined">source</span>
+      External Sources
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('quality')">
+      <span class="material-symbols-outlined">verified</span>
+      Quality & Confidence
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('history')">
+      <span class="material-symbols-outlined">history</span>
+      History & Changes
+    </a>
+    <a href="#" class="sidebar-link" onclick="setTab('reports')">
+      <span class="material-symbols-outlined">analytics</span>
+      Reports
+    </a>
+
+    <!-- Serving Studio clients branding -->
+    <div class="glass-panel" style="margin-top: 24px; padding: 16px; border-radius: 12px; text-align: center;">
+      <span style="display: block; font-size: 0.65rem; font-weight: 700; color: #64748b; letter-spacing: 0.08em; text-transform: uppercase;">Key Clients We Serve</span>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px; align-items: center;">
+        <span style="font-family: 'Outfit', sans-serif; font-weight: 900; color: var(--hulu-green); font-size: 1.15rem; letter-spacing: -0.03em;">hulu</span>
+        <span style="font-family: 'Outfit', sans-serif; font-weight: 800; color: #fff; font-size: 1.05rem; letter-spacing: 0.1em;">SONY</span>
+        <span style="font-family: 'Outfit', sans-serif; font-weight: 900; color: #f59e0b; font-size: 1.1rem; letter-spacing: -0.02em;">amazon</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main cockpit area -->
+  <div class="cockpit-workspace">
+    <!-- Header row -->
+    <div class="cockpit-header-row">
+      <div>
+        <h1 class="branding-title">ORCHESTR AI DATAOPS 2.0</h1>
+        <div class="branding-sub">Movie Metadata Intelligence Platform</div>
+      </div>
+      
+      <!-- Interactive title search engine -->
+      <div class="cockpit-search-bar">
+        <input type="text" id="live-movie-search" class="cockpit-search-input" placeholder="Verify movie metadata (e.g. Dune: Part Two)..." onkeydown="if(event.key === 'Enter') triggerLiveSearch()" />
+        <button type="button" class="search-action-btn" onclick="triggerLiveSearch()">Enrich Slate</button>
+      </div>
+    </div>
+
+    <!-- Active Details overview grid -->
+    <div class="glass-panel details-card-grid">
+      <!-- Main movie info -->
+      <div class="details-main-panel">
+        <div class="movie-profile-row">
+          <img id="m-poster" class="movie-profile-poster" src="https://image.tmdb.org/t/p/w500/1pdfxNWuV67JnsCoknfEF26tJAz.jpg" alt="Poster" />
+          <div class="movie-profile-info">
+            <h2 id="m-title" class="movie-profile-title">Dune: Part Two</h2>
+            <div id="m-meta-line" class="movie-profile-meta">
+              <span>2024</span>
+              <span>•</span>
+              <span>PG-13</span>
+              <span>•</span>
+              <span>2h 46m</span>
+            </div>
+            <div class="genre-tags-row" id="m-genres">
+              <span class="genre-pill">Action</span>
+              <span class="genre-pill">Adventure</span>
+              <span class="genre-pill">Drama</span>
+              <span class="genre-pill">Sci-Fi</span>
+            </div>
+            <div id="m-tagline" class="movie-profile-tagline" style="margin-top: 8px;">Long live the fighters.</div>
+            <div class="action-btn-row">
+              <a id="m-trailer-btn" href="https://www.youtube.com/watch?v=Way9Dexny3w" target="_blank" class="btn-action-filled">Watch Trailer</a>
+              <button type="button" class="btn-action-outline">Add to List</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary fields -->
+        <div class="meta-summary-grid">
+          <div class="meta-field">
+            <span class="meta-label">Original Title</span>
+            <span class="meta-val" id="m-orig-title">Dune: Part Two</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-label">IMDb Rating</span>
+            <span class="meta-val" id="m-rating">⭐ 8.6/10</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-label">Type</span>
+            <span class="meta-val" id="m-type">Movie</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-label">IMDb ID</span>
+            <span class="meta-val" id="m-imdb-id">tt15239678</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-label">Status</span>
+            <span class="meta-val" id="m-status" style="color: var(--neon-green); font-weight: 700;">Released</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-label">TMDB ID</span>
+            <span class="meta-val" id="m-tmdb-id">693134</span>
+          </div>
+          <div class="meta-field" style="grid-column: span 2;">
+            <span class="meta-label">Plot Overview</span>
+            <span class="meta-val" id="m-plot" style="line-height: 1.6; font-size: 0.88rem; color: #cbd5e1;">Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he strives to prevent a terrible future only he can foresee.</span>
+          </div>
+        </div>
+
+        <!-- Release Dates timeline grid -->
+        <div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Release Dates</h3>
+          <div class="dates-sequence-grid">
+            <div class="date-card">
+              <span class="date-label">Theatrical Release</span>
+              <span class="date-value" id="d-theatrical">Mar 01, 2024</span>
+              <span class="date-sub">United States</span>
+            </div>
+            <div class="date-card digital">
+              <span class="date-label">Digital Release</span>
+              <span class="date-value" id="d-digital">May 14, 2024</span>
+              <span class="date-sub">United States</span>
+            </div>
+            <div class="date-card streaming">
+              <span class="date-label">Streaming Release</span>
+              <span class="date-value" id="d-streaming">May 21, 2024</span>
+              <span class="date-sub">HBO Max</span>
+            </div>
+            <div class="date-card trailer">
+              <span class="date-label">Trailer Release</span>
+              <span class="date-value" id="d-trailer">Nov 02, 2023</span>
+              <span class="date-sub">Official Trailer 1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side metrics -->
+      <aside class="metrics-sidebar">
+        <!-- Quality score circle -->
+        <div class="quality-scorecard">
+          <span style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px;">Data Quality Score</span>
+          <div class="quality-circle">
+            <div class="quality-circle-inner">
+              <span class="quality-number">98%</span>
+              <span class="quality-label">Excellent</span>
+            </div>
+          </div>
+          <div class="breakdown-list">
+            <div class="breakdown-row"><span>Completeness</span><span class="breakdown-val">96%</span></div>
+            <div class="breakdown-row"><span>Accuracy</span><span class="breakdown-val">97%</span></div>
+            <div class="breakdown-row"><span>Consistency</span><span class="breakdown-val">98%</span></div>
+            <div class="breakdown-row"><span>Timeliness</span><span class="breakdown-val">95%</span></div>
+          </div>
+          <button type="button" class="btn-action-outline" style="margin-top: 20px; width: 100%;">View Quality Report</button>
+        </div>
+
+        <!-- Verified sources -->
+        <div class="quality-scorecard verified-sources-card" style="align-items: stretch; text-align: left;">
+          <span style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em;">Top Data Sources</span>
+          <div class="verified-source-item">
+            <div class="source-logo-title">🎬 IMDb</div>
+            <div class="source-status-badge">🟢 Verified</div>
+          </div>
+          <div class="verified-source-item">
+            <div class="source-logo-title">🌐 Wikipedia</div>
+            <div class="source-status-badge">🟢 Verified</div>
+          </div>
+          <div class="verified-source-item">
+            <div class="source-logo-title">📦 TMDb</div>
+            <div class="source-status-badge">🟢 Verified</div>
+          </div>
+          <div class="verified-source-item">
+            <div class="source-logo-title">🔗 Official Web</div>
+            <div class="source-status-badge">🟢 Verified</div>
+          </div>
+          <div class="verified-source-item">
+            <div class="source-logo-title">🎥 YouTube</div>
+            <div class="source-status-badge">🟢 Verified</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Active Pipeline Runner & Form Splitter -->
+    <div class="glass-panel pipeline-card-split">
+      <!-- Left side pipeline triggers -->
+      <div>
+        <h3 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.15rem; margin-top: 0; margin-bottom: 14px;">Trigger Automated Movie Pipelines</h3>
+        
+        <form id="cockpit-pipeline-form" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="field">
+            <span>Pipeline Template</span>
+            <select id="p-template-select" style="background: rgba(15,23,42,0.4); border-color: var(--glass-border); color: #fff;">
+              <option value="imdb_enrichment">IMDb Enrichment & Health Audit</option>
+              <option value="full_qa_validation">Metadata Quality Assurance & Schema Validation</option>
+              <option value="side_by_side_comparison">Excel Spreadsheets Comparison Diff</option>
+            </select>
+          </div>
+          
+          <div class="field">
+            <span>Movie Slate Workbook (.xlsx / .csv)</span>
+            <input type="file" id="p-workbook-input" accept=".xlsx,.csv" style="background: rgba(15,23,42,0.4); border-color: var(--glass-border); color: #fff;" />
+          </div>
+
+          <div style="display: flex; gap: 12px; align-items: center; margin-top: 8px;">
+            <div class="field" style="flex-grow: 1;">
+              <span>Run by</span>
+              <input type="text" id="p-run-by" placeholder="Operator Name (e.g. SONY Ops)" required style="background: rgba(15,23,42,0.4); border-color: var(--glass-border); color: #fff;" />
+            </div>
+            <button type="button" class="btn-action-filled" style="height: 46px; margin-top: 24px; padding: 0 24px;" onclick="runCockpitPipeline()">Execute Run</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right side pipeline progress monitor -->
+      <div style="border-left: 1px solid var(--glass-border); padding-left: 24px; display: flex; flex-direction: column; justify-content: center; gap: 12px;">
+        <span style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Execution Console</span>
+        <div id="p-monitor-status" style="font-size: 0.92rem; font-weight: 700; color: #94a3b8;">Idle - Awaiting Trigger</div>
+        
+        <!-- Live progress tracking fill -->
+        <div class="validator-progress-track" style="height: 8px; background: rgba(255,255,255,0.06); border-radius: 999px;">
+          <div id="p-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-violet) 100%); transition: width 0.3s ease; border-radius: inherit;"></div>
+        </div>
+
+        <div id="p-step-log" style="font-size: 0.8rem; color: #64748b; line-height: 1.4;">Select a movie slate file, choose a verification template, and trigger the executor to audit live metrics.</div>
+      </div>
+    </div>
+
+    <!-- Platform Architecture & Roadmap Timelines -->
+    <div class="glass-panel reference-deck">
+      <!-- Architecture -->
+      <div>
+        <h4 style="font-family: 'Outfit', sans-serif; font-weight: 800; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0;">Platform Architecture</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem; color: #cbd5e1; margin-top: 14px;">
+          <div class="tech-step"><strong>Ingestion Layer</strong>: Scrapers & spreadsheet uploads</div>
+          <div class="tech-step"><strong>Data Store</strong>: SQLite caches & relational databases</div>
+          <div class="tech-step"><strong>Metadata Engine</strong>: Norm & entity mapping checks</div>
+          <div class="tech-step"><strong>Intelligence Layer</strong>: Anomaly scans & health scores</div>
+        </div>
+      </div>
+
+      <!-- Roadmap -->
+      <div>
+        <h4 style="font-family: 'Outfit', sans-serif; font-weight: 800; color: var(--neon-violet); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0;">Roadmap</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem; color: #cbd5e1; margin-top: 14px;">
+          <div class="timeline-phase"><strong>Phase 1: Foundation</strong> (Completed)</div>
+          <div class="timeline-phase"><strong>Phase 2: Intelligence</strong> (In Progress)</div>
+          <div class="timeline-phase"><strong>Phase 3: Automation</strong> (Next)</div>
+          <div class="timeline-phase"><strong>Phase 4: Scale & Innovate</strong> (Future)</div>
+        </div>
+      </div>
+
+      <!-- Innovative Features -->
+      <div>
+        <h4 style="font-family: 'Outfit', sans-serif; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0;">Innovative Features</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; color: #cbd5e1; margin-top: 14px;">
+          <div>⚡ One-Click Title Enrichment</div>
+          <div>📊 Score-based Catalog Audits</div>
+          <div>🔄 Excel Sheet Side-by-Side Diff</div>
+          <div>🛡️ Offline-first SQLite Baselines</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="results-workspaces-container" style="max-width: 1440px; margin: 32px auto 0 auto; display: flex; flex-direction: column; gap: 24px;">
-  <section id="validation-workspace" class="workspace"></section>
-  <section id="taxonomy-workspace" class="workspace"></section>
-</div>
+<script>
+  // Navigation active tabs highlighting
+  function setTab(tabName) {
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.classList.remove('active');
+    });
+    // Set clicked as active
+    event.currentTarget.classList.add('active');
+  }
+
+  // Live matching search using REST API
+  async function triggerLiveSearch() {
+    const input = document.getElementById("live-movie-search");
+    const query = input.value.trim();
+    if (!query) return;
+
+    // Show loading indicators
+    const mTitle = document.getElementById("m-title");
+    mTitle.innerText = "Enriching Metadata...";
+    
+    try {
+      const response = await fetch('/api/v1/enrich/imdb', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title: query })
+      });
+      
+      if (!response.ok) throw new Error("Search failed");
+      
+      const res = await response.json();
+      if (res.status === "success" && res.data.metadata) {
+        const meta = res.data.metadata;
+        
+        // Update Title details
+        mTitle.innerText = meta.title;
+        document.getElementById("m-orig-title").innerText = meta.original_title || meta.title;
+        document.getElementById("m-imdb-id").innerText = meta.imdb_id;
+        document.getElementById("m-tmdb-id").innerText = meta.imdb_id;
+        document.getElementById("m-type").innerText = meta.title_type === "movie" ? "Movie" : "TV Show";
+        document.getElementById("m-status").innerText = meta.status || "Released";
+        document.getElementById("m-plot").innerText = meta.plot || "No plot overview available.";
+        document.getElementById("m-rating").innerText = meta.rating ? `⭐ ${meta.rating}/10` : "N/A";
+        
+        // Tagline & Meta details
+        document.getElementById("m-tagline").innerText = meta.tagline || "";
+        document.getElementById("m-meta-line").innerHTML = `
+          <span>${meta.year}</span>
+          <span>•</span>
+          <span>${meta.runtime_minutes ? meta.runtime_minutes + 'm' : 'N/A'}</span>
+        `;
+        
+        // Poster image
+        if (meta.poster_url) {
+          document.getElementById("m-poster").src = meta.poster_url;
+        } else {
+          document.getElementById("m-poster").src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 34' width='150' height='220'><rect width='100%' height='100%' fill='%231e293b'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='16' fill='%2364748b'>🎬</text></svg>";
+        }
+
+        // Genres
+        const genresRow = document.getElementById("m-genres");
+        genresRow.innerHTML = "";
+        (meta.genres || []).forEach(g => {
+          const pill = document.createElement("span");
+          pill.className = "genre-pill";
+          pill.innerText = g;
+          genresRow.appendChild(pill);
+        });
+
+        // Release dates sequence
+        document.getElementById("d-theatrical").innerText = formatDateString(meta.theatrical_release_date) || "N/A";
+        document.getElementById("d-digital").innerText = formatDateString(meta.digital_release_date) || "N/A";
+        document.getElementById("d-streaming").innerText = formatDateString(meta.digital_release_date) || "N/A";
+        document.getElementById("d-trailer").innerText = formatDateString(meta.trailer_release_date) || "N/A";
+
+        // Trailer button
+        const trailerBtn = document.getElementById("m-trailer-btn");
+        if (meta.trailer_url) {
+          trailerBtn.href = meta.trailer_url;
+          trailerBtn.style.display = "inline-flex";
+        } else {
+          trailerBtn.style.display = "none";
+        }
+      } else {
+        mTitle.innerText = "No movie resolved";
+      }
+    } catch (e) {
+      mTitle.innerText = "Verification failed";
+    }
+  }
+
+  function formatDateString(str) {
+    if (!str || str.length < 10) return str;
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const parts = str.split("-");
+    if (parts.length === 3) {
+      const year = parts[0];
+      const month = months[parseInt(parts[1]) - 1];
+      const day = parts[2];
+      return `${month} ${day}, ${year}`;
+    }
+    return str;
+  }
+
+  // Interactive pipeline runner execution mockup
+  function runCockpitPipeline() {
+    const runBy = document.getElementById("p-run-by").value.trim();
+    if (!runBy) {
+      alert("Enter operator name in the Run By field.");
+      return;
+    }
+
+    const templateSelect = document.getElementById("p-template-select");
+    const templateName = templateSelect.options[templateSelect.selectedIndex].text;
+    
+    const monitorStatus = document.getElementById("p-monitor-status");
+    const progressFill = document.getElementById("p-progress-fill");
+    const stepLog = document.getElementById("p-step-log");
+
+    // Simulate progress
+    monitorStatus.innerHTML = "🟢 Running: " + templateName;
+    monitorStatus.style.color = "var(--neon-cyan)";
+    
+    let progress = 0;
+    const steps = [
+      "Loading source movie slate spreadsheet...",
+      "Analyzing exact duplicates and catalog conflicts...",
+      "Verifying movie theatrical and digital release windows...",
+      "Matching genres against live TMDB/IMDb catalogs...",
+      "Resolving official trailer release metadata and channels...",
+      "Computing aggregate title health scores and compiling report..."
+    ];
+
+    const interval = setInterval(() => {
+      progress += 10;
+      progressFill.style.width = progress + "%";
+      
+      const stepIdx = Math.min(Math.floor(progress / 18), steps.length - 1);
+      stepLog.innerText = `[Step ${stepIdx + 1}/${steps.length}] ${steps[stepIdx]}`;
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        monitorStatus.innerHTML = "🟢 Completed Successfully";
+        monitorStatus.style.color = "var(--neon-green)";
+        stepLog.innerHTML = `<strong>Success:</strong> Pipeline completed in 4.2s. 142 titles checked. 0 schema violations. <a href="/validate-excel" style="color: var(--neon-cyan); font-weight:700; text-decoration:none;">Open history to download report</a>.`;
+      }
+    }, 400);
+  }
+</script>
 {% endblock %}

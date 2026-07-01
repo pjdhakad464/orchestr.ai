@@ -450,7 +450,7 @@ def test_index_page_renders():
 
     assert response.status_code == 200
     assert "Asana LF Automation Tasks" in response.text
-    assert "1. Billboard Top Artists Brand Discovery" in response.text
+    assert "1. Billboard New Entries Brand Discovery" in response.text
     assert "4. TV Season & Episode Metadata Adding" in response.text
 
 

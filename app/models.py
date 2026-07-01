@@ -289,3 +289,12 @@ class ValidationHistoryEntry(BaseModel):
     @property
     def download_path(self) -> str:
         return f"/validate-excel/download/{self.validation_id}"
+
+# Conveniency imports for consolidated schemas
+from app.services.imdb_enricher import IMDbMatch, IMDbMetadata, TitleQuery, EnrichmentResult, MetadataDiscrepancy, PersonMatch, EpisodeData
+from app.services.duplicate_detector import DuplicateRow, DuplicateGroup, DuplicateReport
+from app.services.excel_comparator import CellDiff, RowDiff, ComparisonReport
+from app.services.health_scorer import RowHealthScore, WorkbookHealthReport
+from app.services.anomaly_detector import Anomaly, ColumnHealth, AnomalyReport
+from app.engine.state import StepResult, PipelineState
+
