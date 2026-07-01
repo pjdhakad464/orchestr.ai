@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Literal
+from typing import Literal, Any
 from pydantic import BaseModel, Field
 
 class DuplicateRow(BaseModel):
@@ -83,6 +83,7 @@ class DuplicateDetector:
                 continue
 
             current_group_rows = []
+            group_best_sim = 0.0
 
             for j in range(i + 1, len(rows)):
                 if j in checked_indices:
@@ -96,6 +97,7 @@ class DuplicateDetector:
 
                 sim = _jaro_winkler(norm_a, norm_b)
                 if sim >= threshold:
+                    group_best_sim = max(group_best_sim, sim)
                     if not current_group_rows:
                         current_group_rows.append(DuplicateRow(
                             row_index=i + 1,
@@ -115,7 +117,7 @@ class DuplicateDetector:
                 groups.append(DuplicateGroup(
                     group_id=f"fuzzy_grp_{group_counter}",
                     match_type="fuzzy",
-                    similarity_score=sim,
+                    similarity_score=round(group_best_sim, 4),
                     column_checked=title_column,
                     rows=current_group_rows
                 ))

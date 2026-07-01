@@ -6,6 +6,7 @@ import re
 import shutil
 import sqlite3
 import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from threading import Lock
 from typing import Literal, Any
@@ -802,7 +803,7 @@ class IMDbEnricher:
     def _set_cached_value(self, key: str, value: str, expires_in_sec: int) -> None:
         try:
             with get_connection("metadata_cache.sqlite3") as conn:
-                expires_at = datetime.now(timezone.utc) + datetime.timedelta(seconds=expires_in_sec)
+                expires_at = datetime.now(timezone.utc) + timedelta(seconds=expires_in_sec)
                 conn.execute(
                     "INSERT OR REPLACE INTO general_cache (cache_key, cache_value, expires_at) VALUES (?, ?, ?)",
                     (key, value, expires_at.isoformat())

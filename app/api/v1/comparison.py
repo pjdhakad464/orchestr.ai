@@ -24,8 +24,10 @@ async def compare_files(
         temp_dir = Path(tempfile.gettempdir())
         run_id = str(uuid.uuid4())
         
-        path_a = temp_dir / f"compare_a_{run_id}_{file_a.filename}"
-        path_b = temp_dir / f"compare_b_{run_id}_{file_b.filename}"
+        # Use fixed, run_id-scoped names. Never interpolate the client-supplied
+        # filename into a filesystem path (path-traversal risk).
+        path_a = temp_dir / f"compare_a_{run_id}.xlsx"
+        path_b = temp_dir / f"compare_b_{run_id}.xlsx"
         
         path_a.write_bytes(await file_a.read())
         path_b.write_bytes(await file_b.read())

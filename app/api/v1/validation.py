@@ -3,7 +3,7 @@ from __future__ import annotations
 import openpyxl
 from pathlib import Path
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 
 from app.api.schemas import APIResponse
 from app.models import ValidationRuleSet
@@ -81,14 +81,10 @@ async def download_validated_file(validation_id: str):
         raise HTTPException(status_code=404, detail="Validated workbook file not found.")
     
     file_bytes, filename = res
-    # Write to temporary file for response
-    import tempfile
-    temp = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
-    temp.write(file_bytes)
-    temp.close()
-    
-    return FileResponse(
-        path=temp.name,
-        filename=filename,
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    # Stream from memory: no leaked temp file, works on read-only serverless FS.
+    import io
+    return StreamingResponse(
+        io.BytesIO(file_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )

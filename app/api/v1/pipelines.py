@@ -45,44 +45,28 @@ async def run_pipeline(payload: PipelineRunRequest, background_tasks: Background
     if "file_path" not in payload.inputs and "file_a" not in payload.inputs:
         raise HTTPException(status_code=400, detail="Required inputs 'file_path' or 'file_a' not found.")
 
-    # Start runner in background tasks
-    async def task_runner():
-        await engine.execute_run(template, payload.inputs, run_by=payload.run_by)
-
-    background_tasks.add_task(task_runner)
-
-    # Let's check status immediately
-    # Note: We don't have the run_id returned by execute_run until it finishes/saves, so let's pre-generate the run_id.
-    # To facilitate this, let's update engine.execute_run or pre-generate the UUID here and pass it as run_id.
-    # Wait, in engine.execute_run we generated one. Let's make sure it's saved.
-    # Alternatively, since execute_run is async, we can await a quick setup or run it asynchronously.
-    # Let's adjust engine.execute_run signature: we can pass an optional run_id! Let's update pipeline.py to support pre-generated UUIDs.
+    # Pre-generate the run_id so the caller can poll status immediately, and
+    # pre-insert a "pending" row before the work starts.
     import uuid
     run_id = str(uuid.uuid4())
-    
-    # We can pre-insert the pending state to database so the user can query it immediately
+
     from app.engine.state import save_pipeline_state, PipelineState
     pending_state = PipelineState(
         run_id=run_id,
         pipeline_name=template.name,
         status="pending",
-        run_by=payload.run_by
+        run_by=payload.run_by,
     )
     save_pipeline_state(pending_state)
 
-    async def run_with_pregenerated_id():
-        # Execute run but override run_id inside handler if we match it.
-        # Let's call a modified engine runner that accepts the pre-generated run_id!
-        # Wait, since we wrote execute_run inside pipeline.py, let's make sure it can handle custom pre-generated ID.
-        # Let's check pipeline.py execute_run:
-        # async def execute_run(self, pipeline: Pipeline, initial_inputs: dict[str, Any], run_by: str = ""):
-        #    run_id = str(uuid.uuid4())
-        # Let's change pipeline.py to:
-        # async def execute_run(self, pipeline: Pipeline, initial_inputs: dict[str, Any], run_by: str = "", run_id: str | None = None)
-        # We will do that! Let's update execute_run invocation here, and we'll update pipeline.py in a moment.
+    async def run_pipeline_task():
         await engine.execute_run(template, payload.inputs, run_by=payload.run_by, run_id=run_id)
 
-    background_tasks.add_task(run_with_pregenerated_id)
+    # NOTE (serverless): on Vercel the function instance is frozen once the
+    # response is returned, so this background task is not guaranteed to finish,
+    # and pipeline state in /tmp is per-instance. Durable async pipelines need an
+    # external worker/queue + shared store; tracked as a known limitation.
+    background_tasks.add_task(run_pipeline_task)
 
     return APIResponse(
         status="success",

@@ -196,7 +196,12 @@ class MetadataHealthScorer:
         seen_ids = {}
         id_keys = []
         if rows:
-            id_keys = [k for k in rows[0].keys() if "imdb" in k.casefold() or "id" in k.casefold()]
+            id_keys = [
+                k for k in rows[0].keys()
+                if k.casefold() in ("id", "imdb_id", "tmdb_id")
+                or k.casefold().endswith(("_id", " id", "-id"))
+                or "imdb" in k.casefold() or "tmdb" in k.casefold()
+            ]
 
         for r_idx, row in enumerate(rows):
             for id_key in id_keys:
