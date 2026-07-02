@@ -4,10 +4,60 @@
 
 {% block content %}
 <div class="validator-single-container" style="max-width: 1080px; margin: 0 auto;">
-  {% include "_validator_panel.html" %}
+
+  <div class="mode-tabs" role="tablist" aria-label="Data Ops mode" style="display: flex; gap: 4px; border-bottom: 1px solid rgba(15,23,42,0.08); margin-bottom: 20px;">
+    <button type="button" class="mode-tab active" id="tab-validate" role="tab" aria-selected="true" onclick="setDataOpsMode('validate')">
+      <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: -3px;">shield</span>
+      Validate Workbook
+    </button>
+    <button type="button" class="mode-tab" id="tab-bdr" role="tab" aria-selected="false" onclick="setDataOpsMode('bdr')">
+      <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: -3px;">construction</span>
+      BDR Ingest Builder
+    </button>
+  </div>
+
+  <div id="mode-validate">
+    {% include "_validator_panel.html" %}
+  </div>
+  <div id="mode-bdr" style="display: none;">
+    {% include "_bdr_ingest_panel.html" %}
+  </div>
 </div>
 
 <div class="results-workspaces-container" style="max-width: 1080px; margin: 24px auto 0 auto; display: flex; flex-direction: column; gap: 24px;">
   <section id="validation-workspace" class="workspace"></section>
 </div>
+
+<style>
+  .mode-tab {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    padding: 12px 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .mode-tab:hover { color: #0f172a; }
+  .mode-tab.active { color: #4f46e5; border-bottom-color: #4f46e5; }
+  .mode-tab:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(103,61,230,0.25); border-radius: 6px; }
+</style>
+
+<script>
+  function setDataOpsMode(mode) {
+    var isValidate = mode === 'validate';
+    document.getElementById('mode-validate').style.display = isValidate ? 'block' : 'none';
+    document.getElementById('mode-bdr').style.display = isValidate ? 'none' : 'block';
+    var tv = document.getElementById('tab-validate'), tb = document.getElementById('tab-bdr');
+    tv.classList.toggle('active', isValidate);
+    tb.classList.toggle('active', !isValidate);
+    tv.setAttribute('aria-selected', isValidate ? 'true' : 'false');
+    tb.setAttribute('aria-selected', isValidate ? 'false' : 'true');
+  }
+</script>
 {% endblock %}

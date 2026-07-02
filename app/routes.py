@@ -126,6 +126,39 @@ async def excel_validator_guide(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "validator_guide.html", build_template_context(request))
 
 
+@router.post("/bdr-ingest")
+async def bdr_ingest(
+    workbook: Annotated[UploadFile, File()],
+    change_list: Annotated[str, Form()] = "",
+):
+    """BDR Ingest Builder: apply a change list to a BDR workbook and return an
+    ingest-ready, colour-coded workbook (Legend sheet carries the summary)."""
+    from app.services.bdr_ingest import build_ingest
+
+    raw = await workbook.read()
+    if not raw:
+        return HTMLResponse("No workbook uploaded.", status_code=400)
+    try:
+        out_bytes, summary = await run_in_threadpool(build_ingest, raw, change_list)
+    except Exception as exc:  # surface a clean error instead of a 500 stack
+        import traceback
+        traceback.print_exc()
+        return HTMLResponse(f"BDR ingest failed: {exc}", status_code=500)
+
+    base = (workbook.filename or "BDR").rsplit(".", 1)[0]
+    filename = f"{base}_FINAL.xlsx"
+    return StreamingResponse(
+        io.BytesIO(out_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "X-BDR-Rows-Modified": str(summary.rows_modified),
+            "X-BDR-New-Rows": str(len(summary.new_rows)),
+            "X-BDR-Flags": str(len(summary.flags)),
+        },
+    )
+
+
 @router.post("/search", response_class=HTMLResponse)
 async def search(
     request: Request,
