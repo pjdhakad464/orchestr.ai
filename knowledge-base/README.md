@@ -26,6 +26,8 @@ knowledge-base/
 
 - Input files are generally **not** duplicated here when the output preserves the
   full input layout (e.g. Apply-BDR QA reports contain every input row).
-- Outputs may contain client brand data — keep this repository **private**.
+- This repository is **public** (owner's decision, 2026-07-02). Before committing a
+  KB entry, check the output for anything confidential (credentials, unreleased
+  titles, private contact info) — brand social URLs/handles are already public data.
 - The OrchestrAI tools that generate these outputs live in this same repo
   (Data Ops Validator → Validate / BDR Ingest Builder / Apply Report QA tabs).
