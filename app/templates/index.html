@@ -14,6 +14,10 @@
       <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: -3px;">construction</span>
       BDR Ingest Builder
     </button>
+    <button type="button" class="mode-tab" id="tab-apply" role="tab" aria-selected="false" onclick="setDataOpsMode('apply')">
+      <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: -3px;">difference</span>
+      Apply Report QA
+    </button>
   </div>
 
   <div id="mode-validate">
@@ -21,6 +25,9 @@
   </div>
   <div id="mode-bdr" style="display: none;">
     {% include "_bdr_ingest_panel.html" %}
+  </div>
+  <div id="mode-apply" style="display: none;">
+    {% include "_apply_report_panel.html" %}
   </div>
 </div>
 
@@ -50,14 +57,17 @@
 
 <script>
   function setDataOpsMode(mode) {
-    var isValidate = mode === 'validate';
-    document.getElementById('mode-validate').style.display = isValidate ? 'block' : 'none';
-    document.getElementById('mode-bdr').style.display = isValidate ? 'none' : 'block';
-    var tv = document.getElementById('tab-validate'), tb = document.getElementById('tab-bdr');
-    tv.classList.toggle('active', isValidate);
-    tb.classList.toggle('active', !isValidate);
-    tv.setAttribute('aria-selected', isValidate ? 'true' : 'false');
-    tb.setAttribute('aria-selected', isValidate ? 'false' : 'true');
+    var modes = ['validate', 'bdr', 'apply'];
+    modes.forEach(function (m) {
+      var panel = document.getElementById('mode-' + m);
+      var tab = document.getElementById('tab-' + m);
+      var on = m === mode;
+      if (panel) panel.style.display = on ? 'block' : 'none';
+      if (tab) {
+        tab.classList.toggle('active', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      }
+    });
   }
 </script>
 {% endblock %}

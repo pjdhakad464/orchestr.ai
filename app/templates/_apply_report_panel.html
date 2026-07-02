@@ -1,0 +1,36 @@
+<section class="panel" style="position: relative; overflow: hidden;">
+  <div class="validator-heading-row">
+    <div class="validator-heading-copy">
+      <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">difference</span>
+        Apply Report QA
+      </span>
+      <h2 class="validator-heading validator-heading-banner">Diff an Apply BDR (two rows per brand)</h2>
+    </div>
+  </div>
+  <p class="meta" style="margin-bottom: 16px;">
+    Upload an <strong>ApplyBrandDefinitionReport</strong> workbook (each brand has an
+    <code>INGESTED</code> row and a <code>FROM DB</code> row). The report keeps the layout
+    and existing formatting unchanged and highlights the INGESTED row wherever it differs
+    from the database (<strong style="color:#276221;">green</strong> added ·
+    <strong style="color:#9C0006;">red</strong> removed ·
+    <strong style="color:#9C5700;">yellow</strong> changed — the comment carries the DB value).
+    A <strong>URL Manager</strong> sheet compares every <code>url_managers</code> entry
+    against the URLs maintained in the row's own platform columns (OK / MISMATCH /
+    MISSING / ORPHAN), and a Legend sheet summarises the session. Multi-line fields are
+    compared order-insensitively so pure reordering never flags.
+  </p>
+
+  <form method="post" action="/bdr-apply-report" enctype="multipart/form-data">
+    <div class="validator-source-grid">
+      <label class="file-picker">
+        <span>Apply BDR workbook (.xlsx)</span>
+        <input type="file" name="workbook" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required />
+      </label>
+    </div>
+    <button type="submit" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 16px;">
+      <span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+      Build QA report
+    </button>
+  </form>
+</section>

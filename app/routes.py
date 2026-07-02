@@ -159,6 +159,40 @@ async def bdr_ingest(
     )
 
 
+@router.post("/bdr-apply-report")
+async def bdr_apply_report(workbook: Annotated[UploadFile, File()]):
+    """Apply-BDR diff QA: pair each brand's INGESTED row against its FROM DB
+    row, highlight differences on the INGESTED row, cross-check url_managers
+    against the row's maintained platform URLs, and return the annotated
+    workbook (URL Manager + Legend sheets appended; layout unchanged)."""
+    from app.services.apply_bdr_report import build_apply_diff_report
+
+    raw = await workbook.read()
+    if not raw:
+        return HTMLResponse("No workbook uploaded.", status_code=400)
+    try:
+        out_bytes, summary = await run_in_threadpool(build_apply_diff_report, raw)
+    except ValueError as exc:
+        return HTMLResponse(str(exc), status_code=400)
+    except Exception as exc:
+        import traceback
+        traceback.print_exc()
+        return HTMLResponse(f"Apply-report QA failed: {exc}", status_code=500)
+
+    base = (workbook.filename or "ApplyBDR").rsplit(".", 1)[0]
+    filename = f"{base}_QA.xlsx"
+    return StreamingResponse(
+        io.BytesIO(out_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "X-Apply-Pairs": str(summary.pairs_diffed),
+            "X-Apply-Changed": str(summary.cells_changed),
+            "X-Apply-URL-Findings": str(len(summary.urlm_findings)),
+        },
+    )
+
+
 @router.post("/search", response_class=HTMLResponse)
 async def search(
     request: Request,
