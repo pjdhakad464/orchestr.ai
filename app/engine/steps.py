@@ -57,7 +57,7 @@ class PipelineSteps:
             else:
                 ruleset = ValidationRuleSet(rules=[])
 
-        artifact = validate_loaded_workbook(wb, ruleset)
+        artifact = validate_loaded_workbook(wb, inputs.get("filename", "workbook.xlsx"), ruleset.rules)
         wb.close()
         
         return {
