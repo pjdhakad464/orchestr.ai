@@ -1,11 +1,11 @@
 <section class="panel validator-panel" style="position: relative; overflow: hidden;">
   <!-- Subtle glow effect -->
-  <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(129,140,248,0.06); filter: blur(40px); pointer-events: none;"></div>
+  <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; border-radius: 50%; background: rgba(139,92,246,0.06); filter: blur(40px); pointer-events: none;"></div>
 
   <div class="validator-heading-row">
     <div class="validator-heading-copy">
       <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">shield</span>
+        <span class="material-symbols-outlined" style="font-size: 16px; color: var(--brand-primary);">shield</span>
         Workbook Sheet Validator
       </span>
       <h2 class="validator-heading validator-heading-banner">Data Ops Larger Project Validation</h2>
@@ -13,7 +13,7 @@
   </div>
   <p class="meta" style="margin-bottom: 16px;">
     Need setup help? Open the
-    <a href="/excel-validator/guide" style="color: #4f46e5; text-decoration: none; font-weight: 600;">validator how-to guide</a>.
+    <a href="/excel-validator/guide" style="color: var(--brand-primary); text-decoration: none; font-weight: 600;">validator how-to guide</a>.
   </p>
   <form
     class="validator-form"
@@ -42,21 +42,21 @@
         />
       </label>
     </div>
-    <div class="validator-options-container" style="display: flex; flex-direction: column; gap: 16px; margin: 16px 0; background: rgba(79,70,229,0.03); border: 1px solid rgba(79,70,229,0.08); padding: 16px; border-radius: 12px;">
+    <div class="validator-options-container" style="display: flex; flex-direction: column; gap: 16px; margin: 16px 0; background: rgba(255,255,255,0.02); border: 1px solid var(--border-soft); padding: 16px; border-radius: 12px;">
       
       <!-- Columns to Validate (Targets) -->
       <div>
-        <span style="display: block; font-size: 0.76rem; font-weight: 700; color: #475569; margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase;">Columns to Validate</span>
+        <span style="display: block; font-size: 0.76rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase;">Columns to Validate</span>
         <div style="display: flex; flex-wrap: wrap; gap: 16px;">
-          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: #0f172a;">
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text-main);">
             <input type="checkbox" id="chk-social" class="custom-checkbox" checked onchange="updateReviewMode()" />
             <span>Social Handles / Links</span>
           </label>
-          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: #0f172a;">
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text-main);">
             <input type="checkbox" id="chk-categorization" class="custom-checkbox" checked onchange="updateReviewMode()" />
             <span>Categorization</span>
           </label>
-          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: #0f172a;">
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text-main);">
             <input type="checkbox" id="chk-duplicates" class="custom-checkbox" onchange="updateReviewMode()" />
             <span>Duplicate & Conflict Scan</span>
           </label>
@@ -65,17 +65,17 @@
 
       <!-- Scope of Cells to Validate -->
       <div>
-        <span style="display: block; font-size: 0.76rem; font-weight: 700; color: #475569; margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase;">Validation Scope</span>
+        <span style="display: block; font-size: 0.76rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase;">Validation Scope</span>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <label class="scope-radio-label active" id="lbl-scope-all" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid #4f46e5; background: #e0e7ff; color: #4f46e5; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 150ms ease;">
+          <label class="scope-radio-label active" id="lbl-scope-all" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--brand-primary); background: rgba(139, 92, 246, 0.15); color: var(--brand-primary); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 150ms ease;">
             <input type="radio" name="validation_scope" value="all" checked style="display: none;" onchange="setScope('all')" />
             <span>Validate All Cells</span>
           </label>
-          <label class="scope-radio-label" id="lbl-scope-missing" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(15,23,42,0.1); background: #ffffff; color: #475569; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 150ms ease;">
+          <label class="scope-radio-label" id="lbl-scope-missing" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-soft); background: rgba(255,255,255,0.02); color: var(--text-muted); font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 150ms ease;">
             <input type="radio" name="validation_scope" value="missing_only" style="display: none;" onchange="setScope('missing_only')" />
             <span>Empty Cells Only</span>
           </label>
-          <label class="scope-radio-label" id="lbl-scope-existing" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(15,23,42,0.1); background: #ffffff; color: #475569; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 150ms ease;">
+          <label class="scope-radio-label" id="lbl-scope-existing" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-soft); background: rgba(255,255,255,0.02); color: var(--text-muted); font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 150ms ease;">
             <input type="radio" name="validation_scope" value="existing_qa" style="display: none;" onchange="setScope('existing_qa')" />
             <span>QA Existing Data Only</span>
           </label>
@@ -83,13 +83,13 @@
       </div>
 
       <!-- Platform Selection (visible only when Social is selected) -->
-      <div id="platform-filter-container" style="display: block; margin-top: 4px; border-top: 1px solid rgba(15,23,42,0.06); padding-top: 12px;">
+      <div id="platform-filter-container" style="display: block; margin-top: 4px; border-top: 1px solid var(--border-soft); padding-top: 12px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 0.76rem; font-weight: 700; color: #475569; letter-spacing: 0.04em; text-transform: uppercase;">Platforms to Verify</span>
+          <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase;">Platforms to Verify</span>
           <div style="display: flex; gap: 8px; font-size: 0.7rem; font-weight: 600;">
-            <button type="button" onclick="toggleAllPlatforms(true)" style="background: none; border: none; color: #4f46e5; cursor: pointer; padding: 0;">Select All</button>
-            <span style="color: rgba(15,23,42,0.2);">|</span>
-            <button type="button" onclick="toggleAllPlatforms(false)" style="background: none; border: none; color: #64748b; cursor: pointer; padding: 0;">Clear All</button>
+            <button type="button" onclick="toggleAllPlatforms(true)" style="background: none; border: none; color: var(--brand-primary); cursor: pointer; padding: 0;">Select All</button>
+            <span style="color: var(--border-soft);">|</span>
+            <button type="button" onclick="toggleAllPlatforms(false)" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0;">Clear All</button>
           </div>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -239,9 +239,9 @@ function setScope(scopeVal) {
   const labels = document.querySelectorAll(".scope-radio-label");
   labels.forEach(lbl => {
     lbl.classList.remove("active");
-    lbl.style.border = "1px solid rgba(15,23,42,0.1)";
-    lbl.style.background = "#ffffff";
-    lbl.style.color = "#475569";
+    lbl.style.border = "1px solid var(--border-soft)";
+    lbl.style.background = "rgba(255, 255, 255, 0.02)";
+    lbl.style.color = "var(--text-muted)";
     lbl.style.fontWeight = "500";
   });
   
@@ -251,9 +251,9 @@ function setScope(scopeVal) {
   
   const activeLabel = document.getElementById(activeId);
   activeLabel.classList.add("active");
-  activeLabel.style.border = "1px solid #4f46e5";
-  activeLabel.style.background = "#e0e7ff";
-  activeLabel.style.color = "#4f46e5";
+  activeLabel.style.border = "1px solid var(--brand-primary)";
+  activeLabel.style.background = "rgba(139, 92, 246, 0.15)";
+  activeLabel.style.color = "var(--brand-primary)";
   activeLabel.style.fontWeight = "600";
   
   updateReviewMode();

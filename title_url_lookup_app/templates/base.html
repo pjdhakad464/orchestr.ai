@@ -27,6 +27,10 @@
           <span class="material-symbols-outlined">event_note</span>
           Automation Tasks
         </a>
+        <a href="/imdb/" class="suite-navbar-link">
+          <span class="material-symbols-outlined">movie</span>
+          IMDb Lookup
+        </a>
         <a href="/title-lookup/" class="suite-navbar-link">
           <span class="material-symbols-outlined">link</span>
           Title URL Finder
@@ -38,19 +42,19 @@
     <div class="page-shell">
       <header class="hero-split-container">
         <div class="hero-split-left">
-          <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(79, 70, 229, 0.06); border: 1px solid rgba(79, 70, 229, 0.12); margin-bottom: 16px; font-weight: 700; color: #4f46e5; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif;">
-            <span class="material-symbols-outlined" style="font-size: 14px; color: #4f46e5;">auto_awesome</span>
+          <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(139, 92, 246, 0.06); border: 1px solid rgba(139, 92, 246, 0.12); margin-bottom: 16px; font-weight: 700; color: var(--brand-primary); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif;">
+            <span class="material-symbols-outlined" style="font-size: 14px; color: var(--brand-primary);">auto_awesome</span>
             Standalone Title Link Engine
           </span>
-          <h1 style="font-family: 'Outfit', sans-serif; font-weight: 900; color: #0f172a; margin-top: 0; font-size: 2.25rem;">Title URL Finder</h1>
-          <p class="hero-text" style="font-family: 'Inter', sans-serif; color: #475569;">
+          <h1 style="font-family: 'Outfit', sans-serif; font-weight: 900; color: var(--text-main); margin-top: 0; font-size: 2.25rem;">Title URL Finder</h1>
+          <p class="hero-text" style="font-family: 'Inter', sans-serif; color: var(--text-muted);">
             Find the direct Title URL on IMDb, Wikipedia, Rotten Tomatoes, and Metacritic for one title or a whole batch.
           </p>
           <div class="hero-modes-badge" style="margin-top: 12px; font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="background: rgba(15,23,42,0.05); padding: 4px 8px; border-radius: 4px;">IMDb</span>
-            <span style="background: rgba(15,23,42,0.05); padding: 4px 8px; border-radius: 4px;">Wikipedia</span>
-            <span style="background: rgba(15,23,42,0.05); padding: 4px 8px; border-radius: 4px;">Rotten Tomatoes</span>
-            <span style="background: rgba(15,23,42,0.05); padding: 4px 8px; border-radius: 4px;">Metacritic</span>
+            <span style="background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px;">IMDb</span>
+            <span style="background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px;">Wikipedia</span>
+            <span style="background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px;">Rotten Tomatoes</span>
+            <span style="background: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px;">Metacritic</span>
           </div>
         </div>
         <div class="webgl-hero-container"></div>
@@ -67,6 +71,8 @@
         });
         if (path.startsWith('/calendar')) {
           document.querySelectorAll('.suite-navbar-link[href="/calendar/"]').forEach(el => el.classList.add('active'));
+        } else if (path.startsWith('/imdb')) {
+          document.querySelectorAll('.suite-navbar-link[href="/imdb/"]').forEach(el => el.classList.add('active'));
         } else if (path.startsWith('/title-lookup')) {
           document.querySelectorAll('.suite-navbar-link[href="/title-lookup/"]').forEach(el => el.classList.add('active'));
         } else {
