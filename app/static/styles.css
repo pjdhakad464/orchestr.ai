@@ -1031,3 +1031,11 @@ button:active,
 .theme-toggle .icon-dark { display: inline; }
 :root[data-theme="light"] .theme-toggle .icon-light { display: inline; }
 :root[data-theme="light"] .theme-toggle .icon-dark { display: none; }
+
+/* Accessibility · visible keyboard focus for in-app nav + interactive shell */
+.suite-navbar-link:focus-visible,
+.suite-navbar-brand:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--brand-glow);
+  border-radius: var(--radius-sm);
+}
