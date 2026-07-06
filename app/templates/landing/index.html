@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrchestrAI — Data Ops on Autopilot</title>
+  <meta name="description" content="OrchestrAI coordinates workflows, metadata, and automation in one premium workspace for data operations teams." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/landing/landing.css') }}?v={{ asset_version | default('1') }}" />
+</head>
+<body class="lp">
+  {% include "landing/sections/nav.html" %}
+  <main>
+    {% include "landing/sections/hero.html" %}
+    {% include "landing/sections/logos.html" %}
+    {% include "landing/sections/platform.html" %}
+    {% include "landing/sections/hub.html" %}
+    {% include "landing/sections/automation.html" %}
+    {% include "landing/sections/agents.html" %}
+    {% include "landing/sections/analytics.html" %}
+    {% include "landing/sections/integrations.html" %}
+    {% include "landing/sections/benefits.html" %}
+    {% include "landing/sections/testimonials.html" %}
+    {% include "landing/sections/cta.html" %}
+  </main>
+  {% include "landing/sections/footer.html" %}
+
+  <script>
+    // Tasteful scroll-reveal; respects prefers-reduced-motion via CSS.
+    (function () {
+      var els = document.querySelectorAll('.lp-reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (e) { e.classList.add('in'); }); return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(function (e) { io.observe(e); });
+    })();
+  </script>
+</body>
+</html>

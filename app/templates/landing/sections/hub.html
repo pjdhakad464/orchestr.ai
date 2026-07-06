@@ -1,0 +1,19 @@
+<section class="lp-section lp-hub" id="hub">
+  <div class="lp-wrap">
+    <div class="lp-hub-panel lp-reveal">
+      <div style="flex:1 1 340px">
+        <span class="lp-eyebrow">{{ landing.hub.eyebrow }}</span>
+        <h2 class="lp-h2">{{ landing.hub.title }}</h2>
+        <p class="lp-lead">{{ landing.hub.lead }}</p>
+        <div class="lp-hub-tools">
+          {% for t in landing.hub.tools %}<span class="lp-chip">{{ t }}</span>{% endfor %}
+        </div>
+      </div>
+      <a href="{{ landing.hub.cta.href }}" target="_blank" rel="noopener" class="lp-btn lp-btn-primary">
+        <span class="material-symbols-outlined" style="font-size:18px">hub</span>
+        {{ landing.hub.cta.label }}
+        <span class="material-symbols-outlined" style="font-size:16px">open_in_new</span>
+      </a>
+    </div>
+  </div>
+</section>

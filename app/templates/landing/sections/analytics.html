@@ -1,0 +1,19 @@
+<section class="lp-section" id="analytics">
+  <div class="lp-wrap">
+    <div class="lp-section-head lp-reveal">
+      <span class="lp-eyebrow">{{ landing.analytics.eyebrow }}</span>
+      <h2 class="lp-h2">{{ landing.analytics.title }}</h2>
+      <p class="lp-lead">{{ landing.analytics.lead }}</p>
+    </div>
+    <div class="lp-grid lp-grid-4">
+      {% for m in landing.analytics.metrics %}
+      <div class="lp-card lp-reveal" style="text-align:center">
+        <div style="font-family:var(--lp-font-display);font-size:34px;font-weight:700">
+          <span class="lp-gradient-text">{{ m.v }}</span>
+        </div>
+        <p style="margin-top:8px">{{ m.k }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,18 @@
+<section class="lp-section" id="automation">
+  <div class="lp-wrap">
+    <div class="lp-section-head lp-reveal">
+      <span class="lp-eyebrow">{{ landing.automation.eyebrow }}</span>
+      <h2 class="lp-h2">{{ landing.automation.title }}</h2>
+      <p class="lp-lead">{{ landing.automation.lead }}</p>
+    </div>
+    <div class="lp-grid lp-grid-4">
+      {% for s in landing.automation.steps %}
+      <div class="lp-card lp-reveal">
+        <div class="lp-card-icon" style="font-family:var(--lp-font-display);font-weight:700">{{ s.n }}</div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

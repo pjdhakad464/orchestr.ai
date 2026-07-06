@@ -1,0 +1,49 @@
+<section class="lp-hero">
+  <div class="lp-wrap">
+    <span class="lp-hero-badge"><b>{{ landing.hero.badge_new }}</b> {{ landing.hero.badge_text }}</span>
+    <h1>{{ landing.hero.title_lead }} <span class="lp-gradient-text">{{ landing.hero.title_accent }}</span></h1>
+    <p class="lp-lead">{{ landing.hero.subtitle }}</p>
+    <div class="lp-hero-cta">
+      <a href="{{ landing.hero.cta_primary.href }}" class="lp-btn lp-btn-primary">{{ landing.hero.cta_primary.label }}</a>
+      <a href="{{ landing.hero.cta_secondary.href }}" class="lp-btn lp-btn-ghost">{{ landing.hero.cta_secondary.label }}</a>
+    </div>
+
+    <div class="lp-preview lp-reveal">
+      <div class="lp-preview-panel">
+        <div class="lp-preview-bar">
+          <span class="lp-dot" style="background:#ff5f57"></span>
+          <span class="lp-dot" style="background:#febc2e"></span>
+          <span class="lp-dot" style="background:#28c840"></span>
+        </div>
+        <div class="lp-preview-body">
+          <aside class="lp-preview-side">
+            {% for item in landing.preview.sidebar %}
+            <span class="lp-side-item {{ 'active' if loop.first else '' }}">
+              <span class="material-symbols-outlined" style="font-size:16px">{{ ['dashboard','shield','construction','sell','hub','apps','bolt'][loop.index0 % 7] }}</span>
+              {{ item }}
+            </span>
+            {% endfor %}
+          </aside>
+          <div class="lp-preview-main">
+            {% for s in landing.preview.stats %}
+            <div class="lp-stat">
+              <div class="k">{{ s.k }}</div>
+              <div class="v">{{ s.v }}<small class="{{ 'down' if s.down else '' }}">{{ s.delta }}</small></div>
+              <svg class="lp-spark" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
+                <polyline fill="none" stroke="#a78bfa" stroke-width="2"
+                  points="0,45 30,38 60,42 90,25 120,30 150,14 200,20" />
+              </svg>
+            </div>
+            {% endfor %}
+            <div class="lp-stat lp-stat-wide">
+              <div class="k">Auto-resolved this run</div>
+              <div class="lp-kw">
+                {% for kw in landing.preview.keywords %}<span>{{ kw }}</span>{% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

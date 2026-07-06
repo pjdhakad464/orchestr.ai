@@ -37,6 +37,7 @@ from app.services.workbook_validator import (
     validate_workbook,
 )
 from app.services.taxonomy_classifier import TaxonomyClassifier
+from app.landing import LANDING
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -113,7 +114,10 @@ def build_validation_history_context(latest_history: ValidationHistoryEntry | No
 
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(request, "index.html", build_template_context(request))
+    """Premium marketing landing (module: app/landing). The Data Ops Validator
+    tool remains fully available at /excel-validator."""
+    return templates.TemplateResponse(
+        request, "landing/index.html", {"request": request, "landing": LANDING})
 
 
 @router.get("/excel-validator", response_class=HTMLResponse)
