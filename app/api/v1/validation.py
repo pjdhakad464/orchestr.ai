@@ -42,7 +42,7 @@ async def validate_file(
                 ruleset = ValidationRuleSet(rules=[])
 
         # Validate
-        artifact = validate_loaded_workbook(wb, ruleset)
+        artifact = validate_loaded_workbook(wb, file.filename, ruleset.rules)
         
         # Save output and record history
         entry = record_validation_run(artifact, file.filename, run_by=run_by)
