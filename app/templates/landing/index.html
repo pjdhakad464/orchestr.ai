@@ -3,6 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("orchestrai-theme") || "dark";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) { document.documentElement.setAttribute("data-theme", "dark"); }
+    })();
+  </script>
   <title>OrchestrAI — Data Ops on Autopilot</title>
   <meta name="description" content="OrchestrAI coordinates workflows, metadata, and automation in one premium workspace for data operations teams." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +23,6 @@
   {% include "landing/sections/nav.html" %}
   <main>
     {% include "landing/sections/hero.html" %}
-    {% include "landing/sections/logos.html" %}
     {% include "landing/sections/platform.html" %}
     {% include "landing/sections/hub.html" %}
     {% include "landing/sections/automation.html" %}
@@ -23,7 +30,6 @@
     {% include "landing/sections/analytics.html" %}
     {% include "landing/sections/integrations.html" %}
     {% include "landing/sections/benefits.html" %}
-    {% include "landing/sections/testimonials.html" %}
     {% include "landing/sections/cta.html" %}
   </main>
   {% include "landing/sections/footer.html" %}
@@ -43,5 +49,6 @@
       els.forEach(function (e) { io.observe(e); });
     })();
   </script>
+  <script defer src="{{ url_for('static', path='/theme.js') }}?v={{ asset_version | default('1') }}"></script>
 </body>
 </html>

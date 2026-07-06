@@ -996,3 +996,38 @@ button:active,
   color: var(--color-success);
   flex-shrink: 0;
 }
+
+/* ============================================================================
+   THEME SYSTEM · light-mode token overrides
+   ----------------------------------------------------------------------------
+   Dark is the default (the :root tokens above). Light mode only re-defines the
+   same semantic tokens, so every component that already consumes them adapts
+   automatically — no per-component rules needed. The active theme is stamped
+   on <html data-theme="..."> by the inline no-flash script + theme.js.
+   ============================================================================ */
+:root[data-theme="light"] {
+  --bg-main: #f6f7fb;
+  --bg-dark: #eceef5;
+  --text-main: #0f172a;
+  --text-muted: #55617a;
+  --border-soft: rgba(15, 23, 42, 0.10);
+  --surface-card: rgba(255, 255, 255, 0.92);
+  --brand-glow: rgba(139, 92, 246, 0.12);
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.05);
+  --shadow-premium: 0 15px 35px -12px rgba(15, 23, 42, 0.18), 0 1px 3px rgba(139, 92, 246, 0.06);
+}
+
+/* Theme toggle button (shared, both shells) */
+.theme-toggle {
+  display: inline-grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 999px; cursor: pointer; color: var(--text-main);
+  background: var(--surface-card); border: 1px solid var(--border-soft);
+  transition: var(--transition-smooth);
+}
+.theme-toggle:hover { border-color: var(--brand-primary); transform: translateY(-1px); }
+.theme-toggle .material-symbols-outlined { font-size: 19px; }
+.theme-toggle .icon-light { display: none; }
+.theme-toggle .icon-dark { display: inline; }
+:root[data-theme="light"] .theme-toggle .icon-light { display: inline; }
+:root[data-theme="light"] .theme-toggle .icon-dark { display: none; }

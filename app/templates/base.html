@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      /* No-flash theme apply: set before stylesheets paint. Dark is default. */
+      (function () {
+        try {
+          var t = localStorage.getItem("orchestrai-theme") || "dark";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) { document.documentElement.setAttribute("data-theme", "dark"); }
+      })();
+    </script>
     <title>{% block title %}OrchestrAI — Data Ops Intelligence{% endblock %}</title>
     <meta name="description" content="OrchestrAI intelligently coordinates workflows, metadata, automation, and operations for data ops teams." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,28 +55,16 @@
           <span class="material-symbols-outlined">hub</span>
           Media Tools Hub
         </a>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle light or dark theme" title="Toggle theme">
+          <span class="material-symbols-outlined icon-dark">dark_mode</span>
+          <span class="material-symbols-outlined icon-light">light_mode</span>
+        </button>
       </div>
     </nav>
 
-    <!-- Page Content Wrapper -->
+    <!-- Page Content Wrapper — tool pages carry their own titles; the
+         marketing hero lives on the landing (/), not inside the workspace. -->
     <div class="page-shell">
-      <header class="hero-split-container">
-        <div class="hero-split-left">
-          <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 999px; background: rgba(139, 92, 246, 0.06); border: 1px solid rgba(139, 92, 246, 0.12); margin-bottom: 16px; font-weight: 700; color: var(--brand-primary); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif;">
-            <span class="material-symbols-outlined" style="font-size: 14px; color: var(--brand-primary);">auto_awesome</span>
-            AI-Powered Data Operations
-          </span>
-          <h1 style="font-family: 'Outfit', sans-serif; font-weight: 900; color: var(--text-main); margin-top: 0;">Welcome to OrchestrAI</h1>
-          <p class="hero-text" style="font-family: 'Inter', sans-serif; color: var(--text-muted);">A system that intelligently coordinates workflows, metadata, automation, and operations — all in one workspace.</p>
-          <a href="https://media-tools-hub.onrender.com/" target="_blank" rel="noopener"
-             style="display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; padding: 11px 20px; border-radius: 10px; background: var(--brand-primary); color: #fff; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.92rem; text-decoration: none;">
-            <span class="material-symbols-outlined" style="font-size: 18px;">hub</span>
-            Open Media Tools Hub
-            <span class="material-symbols-outlined" style="font-size: 16px; opacity: .8;">open_in_new</span>
-          </a>
-        </div>
-        <div class="webgl-hero-container"></div>
-      </header>
       <main>{% block content %}{% endblock %}</main>
     </div>
 
@@ -91,5 +88,6 @@
     </script>
     <!-- Three.js and WebGL Script -->
     <script defer src="{{ url_for('static', path='/three-graphic.js') }}?v={{ asset_version | default('1') }}"></script>
+    <script defer src="{{ url_for('static', path='/theme.js') }}?v={{ asset_version | default('1') }}"></script>
   </body>
 </html>

@@ -234,3 +234,39 @@
   .lp-reveal { opacity: 1; transform: none; transition: none; }
   .lp-card:hover, .lp-btn:hover { transform: none; }
 }
+
+/* ============================================================================
+   THEME SYSTEM · landing light-mode overrides
+   Dark is default (the .lp token block at the top). Light re-defines the same
+   --lp-* tokens when <html data-theme="light">, so every section adapts with
+   no per-section changes.
+   ============================================================================ */
+html[data-theme="light"] .lp {
+  --lp-bg:            #f7f6fb;
+  --lp-bg-2:          #efeefb;
+  --lp-surface:       rgba(15, 16, 31, 0.03);
+  --lp-surface-2:     rgba(15, 16, 31, 0.05);
+  --lp-glass:         rgba(255, 255, 255, 0.72);
+  --lp-border:        rgba(15, 16, 31, 0.10);
+  --lp-border-strong: rgba(15, 16, 31, 0.16);
+  --lp-text:          #14101f;
+  --lp-text-soft:     #4b4761;
+  --lp-text-mute:     #7c7690;
+  --lp-glow:          radial-gradient(60% 60% at 50% 0%, rgba(124, 58, 237, 0.20) 0%, rgba(124, 58, 237, 0) 70%);
+  --lp-shadow:        0 30px 80px -34px rgba(124, 58, 237, 0.28);
+}
+html[data-theme="light"] .lp .lp-nav { background: rgba(247, 246, 251, 0.75); }
+html[data-theme="light"] .lp .lp-btn-primary { background: #14101f; color: #fff; }
+
+/* Theme toggle inside the landing nav */
+.lp .theme-toggle {
+  display: inline-grid; place-items: center; width: 38px; height: 38px;
+  border-radius: var(--lp-radius-pill); cursor: pointer; color: var(--lp-text);
+  background: var(--lp-surface-2); border: 1px solid var(--lp-border-strong);
+  transition: transform var(--lp-dur) var(--lp-ease), border-color .2s;
+}
+.lp .theme-toggle:hover { transform: translateY(-1px); border-color: var(--lp-brand); }
+.lp .theme-toggle .material-symbols-outlined { font-size: 19px; }
+.lp .theme-toggle .icon-light { display: none; }
+html[data-theme="light"] .lp .theme-toggle .icon-light { display: inline; }
+html[data-theme="light"] .lp .theme-toggle .icon-dark { display: none; }
