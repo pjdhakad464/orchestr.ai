@@ -1,0 +1,98 @@
+/* ============================================================================
+   MEDIA TOOLS HUB · consumes the app design tokens (styles.css :root),
+   so it adapts to light/dark automatically. No hardcoded colors.
+   ============================================================================ */
+.hub { max-width: 1120px; margin: 0 auto; padding: 40px 24px 72px; }
+
+.hub-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap; margin-bottom: 28px;
+}
+.hub-title {
+  font-family: var(--font-heading); font-weight: 800; letter-spacing: -0.02em;
+  font-size: clamp(26px, 3.4vw, 38px); margin: 0; color: var(--text-main);
+}
+.hub-sub { color: var(--text-muted); margin: 8px 0 0; max-width: 56ch; }
+
+.hub-search {
+  display: inline-flex; align-items: center; gap: 10px; min-width: 260px;
+  padding: 10px 16px; border-radius: var(--radius-md);
+  background: var(--surface-card); border: 1px solid var(--border-soft);
+  color: var(--text-muted); transition: var(--transition-smooth);
+}
+.hub-search:focus-within { border-color: var(--brand-primary); box-shadow: 0 0 0 3px var(--brand-glow); }
+.hub-search input {
+  border: 0; outline: 0; background: transparent; color: var(--text-main);
+  font: inherit; font-size: 14px; width: 100%;
+}
+.hub-search .material-symbols-outlined { font-size: 20px; }
+
+.hub-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+.hub-chip {
+  padding: 7px 16px; border-radius: var(--radius-sm); cursor: pointer;
+  background: var(--surface-card); border: 1px solid var(--border-soft);
+  color: var(--text-muted); font: inherit; font-size: 13px; font-weight: 600;
+  transition: var(--transition-smooth);
+}
+.hub-chip:hover { color: var(--text-main); border-color: var(--brand-primary); }
+.hub-chip.is-active { background: var(--brand-gradient); color: #fff; border-color: transparent; }
+.hub-chip:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--brand-glow); }
+
+.hub-shelf { margin-bottom: 40px; }
+.hub-shelf-title {
+  font-family: var(--font-heading); font-size: 14px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
+  margin: 0 0 16px;
+}
+.hub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.hub-card { position: relative; }
+.hub-card-link {
+  display: flex; gap: 16px; height: 100%; padding: 20px;
+  border-radius: var(--radius-lg); text-decoration: none;
+  background: var(--surface-card); border: 1px solid var(--border-soft);
+  transition: var(--transition-smooth);
+}
+.hub-card-link:hover { transform: translateY(-3px); border-color: var(--brand-primary); box-shadow: var(--shadow-premium); }
+.hub-card-link:focus-visible { outline: none; border-color: var(--brand-primary); box-shadow: 0 0 0 3px var(--brand-glow); }
+.hub-card-icon {
+  flex: none; width: 44px; height: 44px; border-radius: 12px;
+  display: grid; place-items: center; color: var(--brand-primary);
+  background: var(--brand-glow); border: 1px solid var(--border-soft);
+}
+.hub-card-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.hub-card-name {
+  font-family: var(--font-heading); font-weight: 600; font-size: 15px;
+  color: var(--text-main); display: inline-flex; align-items: center; gap: 6px;
+}
+.hub-ext { font-size: 14px; color: var(--text-muted); }
+.hub-card-desc { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+.hub-card-cat {
+  margin-top: 6px; align-self: flex-start; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--brand-primary);
+  background: var(--brand-glow); padding: 2px 9px; border-radius: 999px;
+}
+.hub-fav {
+  position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
+  display: grid; place-items: center; border-radius: 8px; cursor: pointer;
+  background: transparent; border: 1px solid transparent; color: var(--text-muted);
+  transition: var(--transition-smooth);
+}
+.hub-fav:hover { color: var(--brand-primary); background: var(--brand-glow); }
+.hub-fav:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--brand-glow); }
+.hub-fav .material-symbols-outlined { font-size: 19px; }
+.hub-fav[aria-pressed="true"] { color: #f5b301; }
+.hub-fav[aria-pressed="true"] .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+
+.hub-empty { color: var(--text-muted); text-align: center; padding: 40px 0; }
+
+@media (max-width: 900px) { .hub-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) {
+  .hub-grid { grid-template-columns: 1fr; }
+  .hub-head { flex-direction: column; align-items: stretch; }
+  .hub-search { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-card-link:hover, .hub-chip { transition: none; }
+  .hub-card-link:hover { transform: none; }
+}

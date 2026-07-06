@@ -38,6 +38,7 @@ from app.services.workbook_validator import (
 )
 from app.services.taxonomy_classifier import TaxonomyClassifier
 from app.landing import LANDING
+from app.hub import CATEGORIES, TOOLS
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -822,44 +823,10 @@ async def download_taxonomy_file(job_id: str):
     )
 
 
-HUB_BASE = "https://media-tools-hub.onrender.com"
-
-TOOL_GROUPS = [
-    {
-        "title": "Platform — built in",
-        "tools": [
-            {"name": "Data Ops Validator", "url": "/excel-validator", "icon": "shield",
-             "desc": "Workbook validation with BDR QA rules", "external": False},
-            {"name": "Research Assistant", "url": "/", "icon": "person_search",
-             "desc": "Entity, media & talent profile research", "external": False},
-            {"name": "Automation Tasks", "url": "/calendar/", "icon": "event_note",
-             "desc": "Metacritic calendar automations", "external": False},
-            {"name": "Title URL Finder", "url": "/title-lookup/", "icon": "link",
-             "desc": "Official title URLs by name", "external": False},
-            {"name": "IMDb Lookup", "url": "/imdb/", "icon": "movie",
-             "desc": "IMDb ttcode / nmcode search", "external": False},
-        ],
-    },
-    {
-        "title": "Media Tools Hub — to be ported",
-        "tools": [
-            {"name": "Billboard New Entries", "url": f"{HUB_BASE}/billboard-new-entries",
-             "icon": "queue_music", "desc": "Artist 100 rows with LW = dash", "external": True},
-            {"name": "YouTube Release Verifier", "url": f"{HUB_BASE}/youtube-release-verifier",
-             "icon": "smart_display", "desc": "Official trailer checks via YouTube API", "external": True},
-            {"name": "TV Premiere Calendar", "url": HUB_BASE, "icon": "live_tv",
-             "desc": "Metacritic TV premieres by window", "external": True},
-            {"name": "Movie & Game Calendars", "url": HUB_BASE, "icon": "calendar_month",
-             "desc": "Metacritic movie / game release schedules", "external": True},
-            {"name": "Box Office Tools", "url": HUB_BASE, "icon": "theaters",
-             "desc": "BOM schedule, weekly openings, date changes", "external": True},
-        ],
-    },
-]
-
-
 @router.get("/tools", response_class=HTMLResponse)
 async def all_tools(request: Request) -> HTMLResponse:
+    """Media Tools Hub — searchable, filterable tool catalog (module: app/hub)."""
     context = build_template_context(request)
-    context["tool_groups"] = TOOL_GROUPS
-    return templates.TemplateResponse(request, "tools.html", context)
+    context["tools"] = TOOLS
+    context["categories"] = CATEGORIES
+    return templates.TemplateResponse(request, "hub.html", context)
