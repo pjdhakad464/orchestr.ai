@@ -1,0 +1,22 @@
+<footer class="lp-footer">
+  <div class="lp-wrap">
+    <div class="lp-footer-top">
+      <div class="lp-footer-col" style="max-width:280px">
+        <a href="/" class="lp-brand" style="margin-bottom:14px"><span class="lp-brand-dot"></span> OrchestrAI</a>
+        <p style="color:var(--lp-text-mute);font-size:14px">{{ landing.footer.note }}</p>
+      </div>
+      {% for col in landing.footer.columns %}
+      <div class="lp-footer-col">
+        <h4>{{ col.title }}</h4>
+        {% for link in col.links %}
+        <a href="{{ link.href }}"{% if link.href.startswith('http') %} target="_blank" rel="noopener"{% endif %}>{{ link.label }}</a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="lp-footer-bottom">
+      <span>© OrchestrAI · Data Ops Intelligence</span>
+      <a href="{{ landing.hub.cta.href if landing.hub else '#' }}" target="_blank" rel="noopener" style="color:var(--lp-text-soft);text-decoration:none">Media Tools Hub ↗</a>
+    </div>
+  </div>
+</footer>

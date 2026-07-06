@@ -1,0 +1,18 @@
+<section class="lp-section" id="agents">
+  <div class="lp-wrap">
+    <div class="lp-section-head lp-reveal">
+      <span class="lp-eyebrow">{{ landing.agents.eyebrow }}</span>
+      <h2 class="lp-h2">{{ landing.agents.title }}</h2>
+      <p class="lp-lead">{{ landing.agents.lead }}</p>
+    </div>
+    <div class="lp-grid lp-grid-4">
+      {% for a in landing.agents.entries %}
+      <div class="lp-card lp-reveal">
+        <div class="lp-card-icon"><span class="material-symbols-outlined">{{ a.icon }}</span></div>
+        <h3>{{ a.title }}</h3>
+        <p>{{ a.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+<section class="lp-section" id="integrations">
+  <div class="lp-wrap">
+    <div class="lp-section-head lp-reveal">
+      <span class="lp-eyebrow">{{ landing.integrations.eyebrow }}</span>
+      <h2 class="lp-h2">{{ landing.integrations.title }}</h2>
+      <p class="lp-lead">{{ landing.integrations.lead }}</p>
+    </div>
+    <div class="lp-grid lp-grid-3">
+      {% for i in landing.integrations.entries %}
+      <div class="lp-card lp-reveal" style="display:flex;align-items:center;gap:14px">
+        <div class="lp-card-icon" style="margin-bottom:0"><span class="material-symbols-outlined">{{ i.icon }}</span></div>
+        <h3 style="margin:0">{{ i.name }}</h3>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,10 @@
+<section class="lp-section lp-logos" style="padding-top:40px">
+  <div class="lp-wrap">
+    <p>{{ landing.logos.caption }}</p>
+    <div class="lp-logo-grid">
+      {% for name in landing.logos.entries %}
+      <div class="lp-logo-cell">{{ name }}</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

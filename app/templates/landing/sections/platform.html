@@ -1,0 +1,18 @@
+<section class="lp-section" id="platform">
+  <div class="lp-wrap">
+    <div class="lp-section-head lp-reveal">
+      <span class="lp-eyebrow">{{ landing.platform.eyebrow }}</span>
+      <h2 class="lp-h2">{{ landing.platform.title }}</h2>
+      <p class="lp-lead">{{ landing.platform.lead }}</p>
+    </div>
+    <div class="lp-grid lp-grid-3">
+      {% for f in landing.platform.features %}
+      <div class="lp-card lp-reveal">
+        <div class="lp-card-icon"><span class="material-symbols-outlined">{{ f.icon }}</span></div>
+        <h3>{{ f.title }}</h3>
+        <p>{{ f.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

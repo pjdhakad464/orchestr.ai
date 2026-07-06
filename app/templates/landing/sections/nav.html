@@ -1,0 +1,14 @@
+<nav class="lp-nav">
+  <div class="lp-wrap lp-nav-inner">
+    <a href="/" class="lp-brand"><span class="lp-brand-dot"></span> OrchestrAI</a>
+    <div class="lp-nav-links">
+      {% for link in landing.nav.links %}
+      <a href="{{ link.href }}">{{ link.label }}</a>
+      {% endfor %}
+    </div>
+    <div class="lp-nav-cta">
+      <a href="/tools" class="lp-btn lp-btn-ghost">All tools</a>
+      <a href="/excel-validator" class="lp-btn lp-btn-primary">Open platform</a>
+    </div>
+  </div>
+</nav>
