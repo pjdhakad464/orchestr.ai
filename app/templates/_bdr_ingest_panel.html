@@ -2,7 +2,7 @@
   <div class="validator-heading-row">
     <div class="validator-heading-copy">
       <span class="eyebrow" style="display: inline-flex; align-items: center; gap: 6px;">
-        <span class="material-symbols-outlined" style="font-size: 16px; color: #4f46e5;">construction</span>
+        <span class="material-symbols-outlined" style="font-size: 16px; color: var(--brand-primary);">construction</span>
         BDR Ingest Builder
       </span>
       <h2 class="validator-heading validator-heading-banner">Build an Ingest-Ready BDR</h2>
@@ -10,10 +10,10 @@
   </div>
   <p class="meta" style="margin-bottom: 16px;">
     Upload a BDR workbook and a change list. Changes are applied and colour-coded
-    (<strong style="color:#276221;">green</strong> added ·
-    <strong style="color:#9C0006;">red</strong> removed ·
-    <strong style="color:#9C5700;">yellow</strong> updated ·
-    <strong style="color:#1F4E79;">blue</strong> new row), every change carries a DataOps
+    (<strong style="color:#4ade80;">green</strong> added ·
+    <strong style="color:#f87171;">red</strong> removed ·
+    <strong style="color:#fbbf24;">yellow</strong> updated ·
+    <strong style="color:#60a5fa;">blue</strong> new row), every change carries a DataOps
     comment, <code>twitter_search_terms</code> is rebuilt per the DAR rule, and a Legend
     sheet with the session summary is added. Research-required fields (IMDb, Wikipedia,
     unprovided handles) are <strong>flagged, never invented</strong>.
@@ -31,7 +31,7 @@
       <span>Change list — one instruction per line</span>
       <textarea name="change_list" rows="9"
         placeholder="ADD | Bryan Cranston - DAR | instagram | thebryancranston&#10;REMOVE | Teala Dunn - DAR | tiktok&#10;RENAME | Teala Dunn - DAR | Teala C. Dunn - DAR&#10;NEW | Zoe Saldana | Talent | gender=Woman; type=Actress,Producer; instagram=zoesaldana"
-        style="font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: 0.85rem; color: #0f172a; background: #ffffff; border: 1px solid rgba(15,23,42,0.16); border-radius: 8px; padding: 10px 12px; width: 100%; resize: vertical;"></textarea>
+        style="font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: 0.85rem; color: var(--text-main); background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-soft); border-radius: 8px; padding: 10px 12px; width: 100%; resize: vertical;"></textarea>
     </label>
 
     <div class="task-info-box" style="margin-top: 12px;">
