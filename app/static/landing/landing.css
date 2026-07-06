@@ -270,3 +270,14 @@ html[data-theme="light"] .lp .lp-btn-primary { background: #14101f; color: #fff;
 .lp .theme-toggle .icon-light { display: none; }
 html[data-theme="light"] .lp .theme-toggle .icon-light { display: inline; }
 html[data-theme="light"] .lp .theme-toggle .icon-dark { display: none; }
+
+/* ---- Accessibility · visible keyboard focus (enterprise a11y) ------------- */
+.lp a:focus-visible,
+.lp button:focus-visible,
+.lp .lp-btn:focus-visible,
+.lp .lp-nav-links a:focus-visible,
+.lp input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.45);
+  border-radius: var(--lp-radius-sm);
+}
