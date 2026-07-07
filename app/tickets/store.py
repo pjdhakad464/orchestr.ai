@@ -1,59 +1,44 @@
-"""Ticket storage — pluggable interface.
+"""Ticket storage — now delegates to the datastore-agnostic data layer.
 
-`TicketStore` is the seam a durable backend drops into (Postgres, Redis, a
-managed KV, etc.) without touching the engine or the UI. The shipped default
-is `InMemoryTicketStore`, which is EPHEMERAL: on a serverless host it does not
-persist across requests. The UI surfaces this honestly ("ephemeral store")
-rather than pretending queued tickets are durable.
-
-To make the queue production-durable, implement this interface against a real
-datastore and return it from `get_store()` when a connection string is set.
+Kept as a thin facade so existing callers (routes) are unchanged. The actual
+persistence (in-memory or Postgres/Supabase) is decided in app/data. `durable`
+reflects the active backend so the UI can warn when state is ephemeral.
 """
 
 from __future__ import annotations
 
-from typing import Protocol
-
+from app.data import get_repository
 from .models import Ticket
 
 
-class TicketStore(Protocol):
-    def add(self, ticket: Ticket) -> None: ...
-    def get(self, ticket_id: str) -> Ticket | None: ...
-    def list(self) -> list[Ticket]: ...
-    def update(self, ticket: Ticket) -> None: ...
-    @property
-    def durable(self) -> bool: ...
-
-
-class InMemoryTicketStore:
-    """Process-local store. Durable=False so the UI can warn the operator."""
-
-    def __init__(self) -> None:
-        self._items: dict[str, Ticket] = {}
-
-    durable = False
-
+class _RepoBackedStore:
     def add(self, ticket: Ticket) -> None:
-        self._items[ticket.id] = ticket
+        repo = get_repository()
+        repo.save_ticket(ticket)
+        repo.log_activity(kind="ticket_received", title="Ticket queued for review",
+                          actor=ticket.client or "system", ticket_id=ticket.id,
+                          detail={"request_type": ticket.request_type})
 
     def get(self, ticket_id: str) -> Ticket | None:
-        return self._items.get(ticket_id)
+        return get_repository().get_ticket(ticket_id)
 
     def list(self) -> list[Ticket]:
-        return sorted(self._items.values(), key=lambda t: t.created_at, reverse=True)
+        return get_repository().list_tickets()
 
     def update(self, ticket: Ticket) -> None:
-        self._items[ticket.id] = ticket
+        repo = get_repository()
+        repo.save_ticket(ticket)
+        repo.log_activity(kind=f"ticket_{ticket.status.value}",
+                          title=f"Ticket {ticket.status.value.replace('_', ' ')}",
+                          actor=ticket.approver or "operator", ticket_id=ticket.id)
+
+    @property
+    def durable(self) -> bool:
+        return get_repository().durable
 
 
-_STORE: TicketStore | None = None
+_STORE = _RepoBackedStore()
 
 
-def get_store() -> TicketStore:
-    """Return the active store. Swap in a durable implementation here once a
-    datastore is provisioned (e.g. read a connection string from settings)."""
-    global _STORE
-    if _STORE is None:
-        _STORE = InMemoryTicketStore()
+def get_store() -> _RepoBackedStore:
     return _STORE
