@@ -1,4 +1,4 @@
-"""Ticket storage — now delegates to the datastore-agnostic data layer.
+"""Ticket storage — delegates to the datastore-agnostic data layer.
 
 Kept as a thin facade so existing callers (routes) are unchanged. The actual
 persistence (in-memory or Postgres/Supabase) is decided in app/data. `durable`
