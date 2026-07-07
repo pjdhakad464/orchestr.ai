@@ -39,7 +39,9 @@ from app.services.workbook_validator import (
 from app.services.taxonomy_classifier import TaxonomyClassifier
 from app.landing import LANDING
 from app.hub import CATEGORIES, TOOLS
+from app.docs import DOC_SECTIONS
 from app.platform import (
+    build_commands,
     connected_services,
     dashboard_summary,
     integration_ready_panels,
@@ -107,6 +109,7 @@ def build_template_context(request: Request) -> dict[str, object]:
         "platforms": EntityResolver.SUPPORTED_PLATFORMS,
         "validator_rules_example": build_sample_rules_json(),
         "validation_history": list_validation_runs(settings.validation_history_limit),
+        "command_palette": build_commands(),
         "asset_version": static_asset_version("styles.css", "ai-tech-bg.svg", "htmx-fallback.js"),
     }
 
@@ -857,3 +860,12 @@ async def activity_center(request: Request) -> HTMLResponse:
     context = build_template_context(request)
     context["activity"] = recent_activity(limit=50)
     return templates.TemplateResponse(request, "activity.html", context)
+
+
+@router.get("/guide", response_class=HTMLResponse)
+async def documentation(request: Request) -> HTMLResponse:
+    """In-app documentation (module: app/docs). Served at /guide because
+    /docs is FastAPI's built-in Swagger UI."""
+    context = build_template_context(request)
+    context["sections"] = DOC_SECTIONS
+    return templates.TemplateResponse(request, "docs.html", context)

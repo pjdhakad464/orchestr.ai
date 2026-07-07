@@ -6,6 +6,7 @@ reported honestly as "not connected / integration-ready" — this module never
 fabricates metrics.
 """
 
+from .commands import build_commands
 from .status import (
     connected_services,
     dashboard_summary,
@@ -14,6 +15,7 @@ from .status import (
 )
 
 __all__ = [
+    "build_commands",
     "connected_services",
     "dashboard_summary",
     "integration_ready_panels",
