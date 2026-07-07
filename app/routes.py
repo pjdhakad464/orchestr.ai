@@ -40,6 +40,8 @@ from app.services.taxonomy_classifier import TaxonomyClassifier
 from app.landing import LANDING
 from app.hub import CATEGORIES, TOOLS
 from app.docs import DOC_SECTIONS
+from app.tickets import process as process_ticket, get_store
+from app.tickets.models import Status
 from app.platform import (
     build_commands,
     connected_services,
@@ -869,3 +871,67 @@ async def documentation(request: Request) -> HTMLResponse:
     context = build_template_context(request)
     context["sections"] = DOC_SECTIONS
     return templates.TemplateResponse(request, "docs.html", context)
+
+
+# ----------------------------------------------------------------------- #
+# Approval Queue — human-in-the-loop ticket lifecycle (module: app/tickets)
+# Nothing here executes into ListenFirst; decisions only change status + log.
+# ----------------------------------------------------------------------- #
+@router.get("/approvals", response_class=HTMLResponse)
+async def approvals_queue(request: Request) -> HTMLResponse:
+    store = get_store()
+    context = build_template_context(request)
+    context["tickets"] = store.list()
+    context["durable"] = store.durable
+    return templates.TemplateResponse(request, "approvals/list.html", context)
+
+
+@router.get("/approvals/new", response_class=HTMLResponse)
+async def approvals_new(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request, "approvals/new.html", build_template_context(request))
+
+
+@router.post("/approvals/new")
+async def approvals_submit(request: Request,
+                           raw_text: Annotated[str, Form()] = ""):
+    """Run the intake→review pipeline on a pasted ticket, queue it for review."""
+    if not raw_text.strip():
+        return RedirectResponse("/approvals/new", status_code=303)
+    ticket = process_ticket(raw_text)
+    get_store().add(ticket)
+    return RedirectResponse(f"/approvals/{ticket.id}", status_code=303)
+
+
+@router.get("/approvals/{ticket_id}", response_class=HTMLResponse)
+async def approvals_detail(request: Request, ticket_id: str) -> HTMLResponse:
+    ticket = get_store().get(ticket_id)
+    if ticket is None:
+        return RedirectResponse("/approvals", status_code=303)
+    context = build_template_context(request)
+    context["t"] = ticket
+    return templates.TemplateResponse(request, "approvals/detail.html", context)
+
+
+@router.post("/approvals/{ticket_id}/decision")
+async def approvals_decision(request: Request, ticket_id: str,
+                             action: Annotated[str, Form()] = "",
+                             note: Annotated[str, Form()] = ""):
+    """Human decision. approve → APPROVED (cleared for the operator to ingest
+    into ListenFirst manually); reject → REJECTED; complete → COMPLETED after
+    the operator has ingested it. The system never ingests on its own."""
+    store = get_store()
+    ticket = store.get(ticket_id)
+    if ticket is None:
+        return RedirectResponse("/approvals", status_code=303)
+    import datetime as _dt
+    if action == "approve" and ticket.can_approve:
+        ticket.status = Status.APPROVED
+    elif action == "reject":
+        ticket.status = Status.REJECTED
+    elif action == "complete" and ticket.status == Status.APPROVED:
+        ticket.status = Status.COMPLETED
+    ticket.decision_note = note.strip()
+    ticket.updated_at = _dt.datetime.now(_dt.timezone.utc)
+    store.update(ticket)
+    return RedirectResponse(f"/approvals/{ticket_id}", status_code=303)

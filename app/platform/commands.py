@@ -19,6 +19,10 @@ def build_commands() -> list[dict]:
         # Go to — core platform destinations
         {"group": "Go to", "label": "Operations Dashboard", "icon": "dashboard",
          "href": "/dashboard", "keywords": "home overview kpis status command center"},
+        {"group": "Go to", "label": "Approval Queue", "icon": "inbox",
+         "href": "/approvals", "keywords": "approvals review tickets queue pending approve"},
+        {"group": "Go to", "label": "New ticket intake", "icon": "add_circle",
+         "href": "/approvals/new", "keywords": "new ticket intake paste zendesk analyze"},
         {"group": "Go to", "label": "Activity Center", "icon": "timeline",
          "href": "/activity", "keywords": "timeline history events recent log"},
         {"group": "Go to", "label": "Media Tools Hub", "icon": "hub",

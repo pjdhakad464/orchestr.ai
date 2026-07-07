@@ -72,9 +72,39 @@ def dashboard_summary() -> dict:
     }
 
 
+_TICKET_EVENT = {
+    "pending_review": ("Ticket queued for review", "inbox", "info"),
+    "approved": ("Ticket approved", "check_circle", "success"),
+    "rejected": ("Ticket rejected", "cancel", "warning"),
+    "completed": ("Ticket completed", "task_alt", "success"),
+}
+
+
+def _ticket_events(limit: int) -> list[dict]:
+    """Real ticket lifecycle events from the ticket store (first-party)."""
+    try:
+        from app.tickets import get_store
+        tickets = get_store().list()
+    except Exception:
+        return []
+    items = []
+    for t in tickets[:limit]:
+        title, icon, tone = _TICKET_EVENT.get(
+            t.status.value, ("Ticket updated", "confirmation_number", "info"))
+        items.append({
+            "kind": "ticket", "icon": icon, "tone": tone,
+            "title": title + " · " + t.request_type,
+            "subject": (t.subject or ("#" + t.ticket_id if t.ticket_id else "ticket")),
+            "actor": t.client or "—",
+            "at": t.updated_at.astimezone(timezone.utc),
+            "href": f"/approvals/{t.id}",
+        })
+    return items
+
+
 def recent_activity(limit: int = 12) -> list[dict]:
-    """Unified activity timeline from real validation runs (the first-party
-    source this app owns). Returns [] when there is nothing to show."""
+    """Unified activity timeline from real first-party sources (validation
+    runs + ticket lifecycle). Returns [] when there is nothing to show."""
     items = []
     for r in _runs(limit=limit):
         clean = r.issue_count == 0
@@ -90,7 +120,9 @@ def recent_activity(limit: int = 12) -> list[dict]:
             "at": r.created_at.astimezone(timezone.utc),
             "href": f"/api/v1/validate/{r.validation_id}",
         })
-    return items
+    items.extend(_ticket_events(limit))
+    items.sort(key=lambda x: x["at"], reverse=True)
+    return items[:limit]
 
 
 def integration_ready_panels() -> list[dict]:

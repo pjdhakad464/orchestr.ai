@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Approval Queue — OrchestrAI{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', path='/platform/approvals.css') }}?v={{ asset_version | default('1') }}" />
+<section class="ap">
+  <header class="ap-head">
+    <div>
+      <h1 class="ap-title">Approval Queue</h1>
+      <p class="ap-sub">Every ticket is prepared by OrchestrAI and waits here for your review. Nothing is ingested into ListenFirst without your approval.</p>
+    </div>
+    <a class="ap-btn" href="/approvals/new"><span class="material-symbols-outlined">add</span> New ticket</a>
+  </header>
+
+  {% if not durable %}
+  <div class="ap-banner">
+    <span class="material-symbols-outlined">info</span>
+    Ephemeral store — queued tickets are held in memory for this session. Connect a datastore to persist across sessions and devices.
+  </div>
+  {% endif %}
+
+  {% if tickets %}
+  <div class="ap-list">
+    {% for t in tickets %}
+    <a class="ap-row" href="/approvals/{{ t.id }}">
+      <div class="ap-row-main">
+        <div class="ap-row-subj">{{ t.subject or (t.request_type ~ ' request') }}{% if t.ticket_id %} · #{{ t.ticket_id }}{% endif %}</div>
+        <div class="ap-row-meta">{{ t.client }} · {{ t.created_at.strftime('%b %d, %H:%M') }} UTC{% if t.blockers %} · {{ t.blockers|length }} blocker(s){% endif %}</div>
+      </div>
+      <span class="ap-type">{{ t.request_type }}</span>
+      <span class="ap-confidence {{ t.confidence }}">{{ t.confidence|capitalize }}</span>
+      <span class="ap-status {{ t.status.value }}">{{ t.status.value.replace('_',' ')|capitalize }}</span>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="ap-empty">
+    <span class="material-symbols-outlined">inbox</span>
+    <h3>No tickets in the queue</h3>
+    <p>Paste a Zendesk ticket to have OrchestrAI parse, classify, validate, and prepare it for your review.</p>
+    <p style="margin-top:16px"><a class="ap-btn" href="/approvals/new"><span class="material-symbols-outlined">add</span> New ticket</a></p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

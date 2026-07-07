@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}{{ t.subject or 'Ticket' }} — Approval — OrchestrAI{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', path='/platform/approvals.css') }}?v={{ asset_version | default('1') }}" />
+<section class="ap">
+  <header class="ap-head">
+    <div>
+      <h1 class="ap-title">{{ t.subject or (t.request_type ~ ' request') }}</h1>
+      <p class="ap-sub">{% if t.ticket_id %}Ticket #{{ t.ticket_id }} · {% endif %}{{ t.client }} · prepared {{ t.created_at.strftime('%b %d, %H:%M') }} UTC</p>
+    </div>
+    <a class="ap-btn ghost" href="/approvals"><span class="material-symbols-outlined">arrow_back</span> Queue</a>
+  </header>
+
+  <div class="ap-detail">
+    <div>
+      <!-- Summary -->
+      <div class="ap-panel">
+        <h2><span class="material-symbols-outlined">summarize</span>Ticket summary</h2>
+        <dl class="ap-kv">
+          <dt>Request type</dt><dd>{{ t.request_type }} <span class="ap-note">({{ t.request_confidence }} confidence)</span></dd>
+          <dt>Priority</dt><dd>{{ t.priority }}</dd>
+          <dt>Status</dt><dd><span class="ap-status {{ t.status.value }}">{{ t.status.value.replace('_',' ')|capitalize }}</span></dd>
+          <dt>Confidence</dt><dd class="ap-confidence {{ t.confidence }}">{{ t.confidence|capitalize }}</dd>
+          {% if t.platforms %}<dt>Platforms</dt><dd><div class="ap-chips">{% for p in t.platforms %}<span class="ap-chip">{{ p }}</span>{% endfor %}</div></dd>{% endif %}
+          {% if t.urls %}<dt>URLs</dt><dd>{% for u in t.urls %}<div style="word-break:break-all">{{ u }}</div>{% endfor %}</dd>{% endif %}
+        </dl>
+      </div>
+
+      <!-- Validation -->
+      <div class="ap-panel">
+        <h2><span class="material-symbols-outlined">fact_check</span>Validation results</h2>
+        {% for f in t.findings %}
+        <div class="ap-finding {{ f.severity.value }}">
+          <span class="material-symbols-outlined">{{ {'ok':'check_circle','info':'info','warning':'warning','blocker':'error'}[f.severity.value] }}</span>
+          <div class="ap-finding-body">
+            <div class="ap-finding-msg">{{ f.message }}</div>
+            {% if f.detail %}<div class="ap-finding-detail">{{ f.detail }}</div>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+        {% if t.missing %}
+        <p class="ap-note" style="margin-top:12px">Missing information:</p>
+        <ul class="ap-list-plain">{% for m in t.missing %}<li>{{ m }}</li>{% endfor %}</ul>
+        {% endif %}
+      </div>
+
+      <!-- QA -->
+      <div class="ap-panel">
+        <h2><span class="material-symbols-outlined">checklist</span>QA checklist</h2>
+        <ul class="ap-qa">
+          {% for q in t.qa %}
+          <li>
+            <span class="material-symbols-outlined {{ 'done' if q.done else 'todo' }}">{{ 'check_circle' if q.done else 'radio_button_unchecked' }}</span>
+            <span>{{ q.label }}{% if q.note %} <span class="note">— {{ q.note }}</span>{% endif %}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Research + recommended -->
+      <div class="ap-panel">
+        <h2><span class="material-symbols-outlined">travel_explore</span>Research &amp; recommended actions</h2>
+        <p class="ap-note">Verify against approved sources (never assume):</p>
+        <ul class="ap-list-plain">{% for r in t.research_notes %}<li>{{ r }}</li>{% endfor %}</ul>
+        <p class="ap-note" style="margin-top:12px">Recommended next steps:</p>
+        <ul class="ap-list-plain">{% for r in t.recommended_actions %}<li>{{ r }}</li>{% endfor %}</ul>
+      </div>
+
+      <!-- Draft reply -->
+      <div class="ap-panel">
+        <h2><span class="material-symbols-outlined">mail</span>Draft client reply</h2>
+        <div class="ap-draft">{{ t.draft_reply }}</div>
+        <p class="ap-note" style="margin-top:10px">Internal note: {{ t.internal_notes }}</p>
+        <p class="ap-note">This draft is never sent automatically.</p>
+      </div>
+    </div>
+
+    <!-- Decision rail -->
+    <div>
+      <div class="ap-panel">
+        <h2><span class="material-symbols-outlined">how_to_reg</span>Your decision</h2>
+        {% if t.status.value == 'pending_review' %}
+          {% if t.blockers %}
+          <p class="ap-blocked">Resolve {{ t.blockers|length }} blocking issue(s) before this can be approved.</p>
+          {% endif %}
+          <form class="ap-actions" method="post" action="/approvals/{{ t.id }}/decision">
+            <textarea name="note" placeholder="Optional decision note…"></textarea>
+            <button class="ap-btn ok" type="submit" name="action" value="approve" {{ 'disabled' if not t.can_approve else '' }}>
+              <span class="material-symbols-outlined">check</span> Approve for ListenFirst ingestion
+            </button>
+            <button class="ap-btn danger" type="submit" name="action" value="reject">
+              <span class="material-symbols-outlined">close</span> Reject
+            </button>
+          </form>
+          <p class="ap-note" style="margin-top:12px">Approving authorizes <b>you</b> to ingest this into ListenFirst. OrchestrAI never ingests on its own.</p>
+        {% elif t.status.value == 'approved' %}
+          <p class="ap-note">Approved{% if t.decision_note %} — “{{ t.decision_note }}”{% endif %}. Ingest into ListenFirst Admin, then mark complete.</p>
+          <form class="ap-actions" method="post" action="/approvals/{{ t.id }}/decision" style="margin-top:12px">
+            <button class="ap-btn" type="submit" name="action" value="complete"><span class="material-symbols-outlined">task_alt</span> Mark completed in ListenFirst</button>
+          </form>
+        {% elif t.status.value == 'completed' %}
+          <p class="ap-note">✅ Completed{% if t.decision_note %} — “{{ t.decision_note }}”{% endif %}.</p>
+        {% elif t.status.value == 'rejected' %}
+          <p class="ap-note">Rejected{% if t.decision_note %} — “{{ t.decision_note }}”{% endif %}.</p>
+        {% endif %}
+      </div>
+
+      <div class="ap-panel">
+        <h2><span class="material-symbols-outlined">folder</span>Drive folder</h2>
+        <p class="ap-note">Integration-ready: on approval, OrchestrAI can create <code>{{ t.ticket_id or 'TicketID' }}/</code> with Attachments, Research, QA, Screenshots, Exports, and Logs subfolders. Connect the Drive service account to enable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
