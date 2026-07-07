@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Activity Center — OrchestrAI{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', path='/platform/platform.css') }}?v={{ asset_version | default('1') }}" />
+
+<section class="pf">
+  <header class="pf-head">
+    <h1 class="pf-title">Activity Center</h1>
+    <p class="pf-sub">A unified timeline of platform activity. Validation runs are shown today; workflow, report, and automation events join as their feeds connect.</p>
+  </header>
+
+  <div class="pf-panel">
+    {% if activity %}
+    <div class="pf-timeline">
+      {% for e in activity %}
+      <div class="pf-event">
+        <div class="pf-event-icon {{ e.tone }}"><span class="material-symbols-outlined">{{ e.icon }}</span></div>
+        <div class="pf-event-body">
+          <div class="pf-event-title">{{ e.title }}</div>
+          <div class="pf-event-meta">{{ e.subject }}<span class="dot">•</span>{{ e.actor }}<span class="dot">•</span>{{ e.at.strftime('%b %d, %Y %H:%M') }} UTC</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="pf-empty">
+      <span class="material-symbols-outlined">history</span>
+      <h3>No activity recorded yet</h3>
+      <p>Platform events appear here as you use the tools. Start with the <a href="/excel-validator">Data Ops Validator</a>.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
