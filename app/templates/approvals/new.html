@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}New Ticket — OrchestrAI{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', path='/platform/approvals.css') }}?v={{ asset_version | default('1') }}" />
+<section class="ap">
+  <header class="ap-head">
+    <div>
+      <h1 class="ap-title">New ticket intake</h1>
+      <p class="ap-sub">Paste the Zendesk ticket (or the Slack notification text). OrchestrAI will parse, classify, validate, and prepare it for your review — it will not act on it.</p>
+    </div>
+    <a class="ap-btn ghost" href="/approvals"><span class="material-symbols-outlined">arrow_back</span> Queue</a>
+  </header>
+
+  <form class="ap-form ap-panel" method="post" action="/approvals/new">
+    <label for="raw_text" style="display:block;color:var(--text-muted);font-size:13px;margin-bottom:8px">Ticket text</label>
+    <textarea id="raw_text" name="raw_text" required
+      placeholder="Ticket #34481 — PV Talent Spreadsheet Tracking&#10;Requester: Phil Cutler&#10;&#10;Please add the official social profiles for the talent listed…"></textarea>
+    <div style="margin-top:16px;display:flex;gap:10px">
+      <button class="ap-btn" type="submit"><span class="material-symbols-outlined">bolt</span> Analyze &amp; queue for review</button>
+    </div>
+  </form>
+</section>
+{% endblock %}
