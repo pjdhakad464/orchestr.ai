@@ -99,3 +99,25 @@ class Ticket:
         d["created_at"] = self.created_at.isoformat()
         d["updated_at"] = self.updated_at.isoformat()
         return d
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "Ticket":
+        """Reconstruct a Ticket from to_dict() output (JSONB snapshot)."""
+        d = dict(d)
+        findings = [Finding(check=f["check"], severity=Severity(f["severity"]),
+                            message=f.get("message", ""), detail=f.get("detail", ""))
+                    for f in d.pop("findings", [])]
+        qa = [QAItem(label=q["label"], done=q.get("done", False), note=q.get("note", ""))
+              for q in d.pop("qa", [])]
+        status = Status(d.pop("status", "intake"))
+        created = d.pop("created_at", None)
+        updated = d.pop("updated_at", None)
+        known = {f.name for f in cls.__dataclass_fields__.values()}  # type: ignore
+        kwargs = {k: v for k, v in d.items() if k in known}
+        t = cls(**kwargs)
+        t.findings, t.qa, t.status = findings, qa, status
+        if created:
+            t.created_at = datetime.fromisoformat(created)
+        if updated:
+            t.updated_at = datetime.fromisoformat(updated)
+        return t
