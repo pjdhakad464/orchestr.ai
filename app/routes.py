@@ -39,6 +39,12 @@ from app.services.workbook_validator import (
 from app.services.taxonomy_classifier import TaxonomyClassifier
 from app.landing import LANDING
 from app.hub import CATEGORIES, TOOLS
+from app.platform import (
+    connected_services,
+    dashboard_summary,
+    integration_ready_panels,
+    recent_activity,
+)
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -830,3 +836,24 @@ async def all_tools(request: Request) -> HTMLResponse:
     context["tools"] = TOOLS
     context["categories"] = CATEGORIES
     return templates.TemplateResponse(request, "hub.html", context)
+
+
+@router.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request) -> HTMLResponse:
+    """Operations Dashboard — real validation KPIs + connected services;
+    automation surfaces shown as integration-ready placeholders (module:
+    app/platform). No fabricated metrics."""
+    context = build_template_context(request)
+    context["summary"] = dashboard_summary()
+    context["services"] = connected_services()
+    context["placeholders"] = integration_ready_panels()
+    context["activity"] = recent_activity(limit=6)
+    return templates.TemplateResponse(request, "dashboard.html", context)
+
+
+@router.get("/activity", response_class=HTMLResponse)
+async def activity_center(request: Request) -> HTMLResponse:
+    """Activity Center — unified timeline from real first-party events."""
+    context = build_template_context(request)
+    context["activity"] = recent_activity(limit=50)
+    return templates.TemplateResponse(request, "activity.html", context)

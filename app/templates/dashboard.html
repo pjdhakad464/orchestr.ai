@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Operations Dashboard — OrchestrAI{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', path='/platform/platform.css') }}?v={{ asset_version | default('1') }}" />
+
+<section class="pf">
+  <header class="pf-head">
+    <h1 class="pf-title">Operations Dashboard</h1>
+    <p class="pf-sub">Live view of validation activity and connected services. Automation feeds appear as they are connected.</p>
+  </header>
+
+  <!-- KPIs from real validation history -->
+  <div class="pf-kpis">
+    <div class="pf-kpi">
+      <div class="pf-kpi-k">Validations today</div>
+      <div class="pf-kpi-v">{{ summary.validations_today }}</div>
+      <div class="pf-kpi-foot">Workbooks validated since midnight UTC</div>
+    </div>
+    <div class="pf-kpi">
+      <div class="pf-kpi-k">Total validations</div>
+      <div class="pf-kpi-v">{{ summary.total_validations }}</div>
+      <div class="pf-kpi-foot">Recorded in this environment</div>
+    </div>
+    <div class="pf-kpi">
+      <div class="pf-kpi-k">Clean runs</div>
+      <div class="pf-kpi-v">{{ summary.clean_runs }}</div>
+      <div class="pf-kpi-foot">Passed with zero issues</div>
+    </div>
+    <div class="pf-kpi">
+      <div class="pf-kpi-k">Issues flagged</div>
+      <div class="pf-kpi-v">{{ summary.total_issues }}</div>
+      <div class="pf-kpi-foot">Across {{ summary.flagged_runs }} flagged run{{ '' if summary.flagged_runs == 1 else 's' }}</div>
+    </div>
+  </div>
+
+  <!-- Integration-ready surfaces (no live feed yet — honest placeholders) -->
+  <div class="pf-placeholders">
+    {% for p in placeholders %}
+    <div class="pf-ph">
+      <div class="pf-ph-title"><span class="material-symbols-outlined">{{ p.icon }}</span>{{ p.title }}</div>
+      <p class="pf-ph-note">{{ p.note }}</p>
+      <div class="pf-ph-badge"><span class="pf-pill off">Not connected</span></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="pf-cols">
+    <!-- Recent activity (real) -->
+    <div class="pf-panel">
+      <div class="pf-panel-head">
+        <h2 class="pf-panel-title"><span class="material-symbols-outlined">timeline</span>Recent activity</h2>
+        <a class="pf-panel-link" href="/activity">View all</a>
+      </div>
+      {% if activity %}
+      <div class="pf-timeline">
+        {% for e in activity %}
+        <div class="pf-event">
+          <div class="pf-event-icon {{ e.tone }}"><span class="material-symbols-outlined">{{ e.icon }}</span></div>
+          <div class="pf-event-body">
+            <div class="pf-event-title">{{ e.title }}</div>
+            <div class="pf-event-meta">{{ e.subject }}<span class="dot">•</span>{{ e.actor }}<span class="dot">•</span>{{ e.at.strftime('%b %d, %H:%M') }} UTC</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="pf-empty">
+        <span class="material-symbols-outlined">inbox</span>
+        <h3>No activity yet</h3>
+        <p>Run a validation in the <a href="/excel-validator">Data Ops Validator</a> and it will appear here.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Connected services (real, from config) -->
+    <div class="pf-panel">
+      <div class="pf-panel-head">
+        <h2 class="pf-panel-title"><span class="material-symbols-outlined">hub</span>Connected services</h2>
+      </div>
+      {% for s in services %}
+      <div class="pf-svc">
+        <span class="pf-svc-name"><span class="material-symbols-outlined">{{ s.icon }}</span>{{ s.name }}</span>
+        {% if s.status == 'Connected' %}<span class="pf-pill ok">Connected</span>
+        {% elif s.status == 'Available' %}<span class="pf-pill ok">Available</span>
+        {% else %}<span class="pf-pill off">Not configured</span>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
